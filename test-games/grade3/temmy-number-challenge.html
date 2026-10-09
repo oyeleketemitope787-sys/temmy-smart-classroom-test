@@ -1,8 +1,5 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Temmy Number Challenge • TEST</title>
 <style>
 body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f7f5ff,#e9fbf8);color:#26334d}
@@ -29,15 +26,12 @@ button{border:0;border-radius:16px;padding:15px 20px;font-size:18px;font-weight:
 @keyframes shake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
 @keyframes pulse{50%{transform:scale(1.04)}}
 @media(max-width:650px){.modes,.answers{grid-template-columns:1fr}.card{padding:18px}}
-.small{font-size:13px;color:#68758a}
-</style>
-</head>
-<body>
-<div class="wrap"><div class="card">
+</style></head><body><div class="wrap"><div class="card">
+
 <section id="home" class="center">
-<div class="badge">TEMMY SMART GAMES • GRADE 3 • TEST</div><div class="icon">🏆</div>
+<div class="badge">TEMMY SMART CLASSROOM • GRADE 3</div><div class="icon">🏆</div>
 <div class="title">TEMMY NUMBER CHALLENGE</div><div class="sub">Comparing & Ordering Numbers</div>
-<p>Interactive Mathematics • TEST environment</p>
+<p>Teacher Ade • Interactive Mathematics</p>
 <h3>👤 Enter your name</h3><input id="player" maxlength="24" placeholder="Type your name here">
 <h3>🎮 Choose your game</h3>
 <div class="modes">
@@ -45,23 +39,20 @@ button{border:0;border-radius:16px;padding:15px 20px;font-size:18px;font-weight:
 <button id="challenge" class="mode" onclick="setMode('challenge')"><b>🟣 Challenge</b>Lives • Points • Streaks</button>
 <button id="classmode" class="mode" onclick="setMode('class')"><b>🟡 Class Mode</b>Teacher-led • Discuss answers</button>
 </div><button class="primary" onclick="startGame()">START MY GAME 🚀</button>
-<div id="launchStatus" class="small" role="status" aria-live="polite" style="margin-top:12px"></div>
 </section>
+
 <section id="game" class="hidden" style="position:relative">
 <div class="top"><span class="pill">👤 <span id="name"></span></span><span class="pill">LEVEL <span id="level"></span></span><span class="pill">⭐ <span id="score"></span></span><span id="lifePill" class="pill">❤️ <span id="lives"></span></span><span class="pill">🔥 <span id="streak"></span></span></div>
-<div class="bar"><div id="fill" class="fill"></div></div><div id="progressText" class="small"></div>
-<div id="visual" class="visual"></div><div id="question" class="q"></div><div id="hint" class="hint"></div>
-<div id="answers" class="answers"></div><div id="feedback" class="feedback"></div>
-<button id="next" class="primary next hidden" onclick="nextQ()">NEXT ➜</button>
+<div class="bar"><div id="fill" class="fill"></div></div><div id="question" class="q"></div><div id="visual" class="visual"></div><div id="hint" class="hint"></div>
+<div id="answers" class="answers"></div><div id="feedback" class="feedback"></div><div id="progressText" class="hint"></div><button id="next" class="next teal hidden" onclick="nextQ()">NEXT ➜</button>
 </section>
+
 <section id="done" class="center hidden">
-<div id="stars" class="stars"></div><div class="title">WELL DONE!</div><div id="achievement" class="badge"></div><h2 id="rank"></h2>
-<div class="q">Official score: <span id="final"></span>/<span id="officialMax">15</span></div>
-<p id="arcadeScoreLine" class="small"></p><p id="message" style="font-size:20px"></p>
-<p><b>Temmy Number Challenge Rule:</b> Compare <span class="h">hundreds</span> → <span class="t">tens</span> → <span class="o">ones</span>.</p>
-<p id="submitStatus" role="status" aria-live="polite" style="font-weight:700;color:#5b3cc4"></p>
-<button id="restart" class="primary" onclick="location.reload()">PLAY AGAIN 🔄</button>
+<div id="stars" class="stars"></div><div class="title">WELL DONE!</div><div id="achievement" class="badge"></div><h2 id="rank"></h2><div class="q">Official score: <span id="final"></span>/<span id="officialMax">15</span></div><p id="arcadeScoreLine" class="small"></p><p id="submitStatus" role="status" aria-live="polite" style="font-weight:700;color:#5b3cc4"></p>
+<p id="message" style="font-size:20px"></p><p><b>Temmy Number Challenge Rule:</b> Compare <span class="h">hundreds</span> → <span class="t">tens</span> → <span class="o">ones</span>.</p>
+<button class="primary" onclick="location.reload()">PLAY AGAIN 🔄</button>
 </section></div><p class="center" style="color:#68758a">Temmy Smart Classroom • Maths is fun when we think like mathematicians!</p></div>
+
 <script>
 const Q=[
 ["Choose the correct symbol","45 ___ 48",["<",">","=","+"],"<","Compare the tens.",0],
@@ -73,23 +64,61 @@ const Q=[
 ["NUMBER LINE","Which number is closest to 300?",["280","520","90","760"],"280","280 is only 20 away.",0],
 ["INEQUALITY DETECTIVE","___ < 263",["362","263","236","326"],"236","It must be less than 263.",0],
 ["INEQUALITY DETECTIVE","671 < ___",["617","670","671","712"],"712","It must be greater than 671.",0],
-["INEQUALITY DETECTIVE","___ > 704",["740","704","407","640"],"740","It must be greater than 704.",0],
+["INEQUALITY DETECTIVE","___ > 457",["405","447","457","475"],"475","It must be greater than 457.",0],
+["INEQUALITY DETECTIVE","346 > ___",["364","463","346","289"],"289","It must be less than 346.",0],
+["THINK LIKE A MATHEMATICIAN","Which statement is TRUE?",["234 > 243","243 = 243","278 < 243","287 < 278"],"243 = 243","Equal numbers have the same value.",0],
 ["MATHS DETECTIVE","A pupil says 452 > 425 because 2 > 5. Correct?",["Yes","No","Sometimes","Cannot tell"],"No","Compare hundreds, then tens, then ones.",0],
 ["ORDER CHECK","Which list is smallest → greatest?",["305, 350, 503","503, 350, 305","350, 305, 503","305, 503, 350"],"305, 350, 503","Check digits from left to right.",0],
-["ORDER CHECK","Which list is greatest → smallest?",["702, 620, 206","206, 620, 702","620, 702, 206","702, 206, 620"],"702, 620, 206","Start with the largest number.",0],
-["PLACE VALUE SHOWDOWN","Choose the smallest number.",["890","809","908","980"],"809","Compare hundreds, tens, then ones.",0],
 ["FINAL BOSS 👑","Which is the greatest?",["399","939","393","903"],"939","Compare the hundreds digits.",1]
 ];
+
 let i=0,score=0,lives=3,streak=0,bestStreak=0,mode='practice',locked=false,correctCount=0;
 const $=x=>document.getElementById(x);
-const classroomGameSession={token:new URLSearchParams(location.search).get('session'),gameId:'grade3-temmy-number-challenge'};
-let submissionStarted=false;
-let gameEnded=false;
+
+
+const classroomGameSession = {
+  token: new URLSearchParams(location.search).get('session'),
+  gameId: 'grade3-temmy-number-challenge'
+};
+let submissionStarted = false;
+let gameEnded = false;
+
+async function submitGameResult() {
+  if (submissionStarted || !classroomGameSession.token) return;
+  submissionStarted = true;
+  $('submitStatus').textContent = 'Submitting result to TEST…';
+  const officialScore = Math.max(0, Math.min(correctCount, Q.length));
+  try {
+    const response = await fetch('https://askhdgmjqezvwavfhqzj.supabase.co/rest/v1/rpc/record_student_game_result', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'sb_publishable_EKVC5DHPb6oZu63ulxj-pQ_hEwd4bZv',
+        'Authorization': 'Bearer sb_publishable_EKVC5DHPb6oZu63ulxj-pQ_hEwd4bZv'
+      },
+      body: JSON.stringify({
+        p_session_token: classroomGameSession.token,
+        p_game_id: classroomGameSession.gameId,
+        p_game_name: 'Temmy Number Challenge',
+        p_score: officialScore,
+        p_max_score: Q.length
+      })
+    });
+    if (!response.ok) throw new Error('TEST database rejected the result (HTTP ' + response.status + ').');
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows.length !== 1 || !rows[0]) {
+      throw new Error('Session rejected, expired, or already used; no result was confirmed.');
+    }
+    $('final').textContent = String(rows[0].score);
+    $('officialMax').textContent = String(rows[0].max_score);
+    $('submitStatus').textContent = 'Saved to TEST • ' + rows[0].score + '/' + rows[0].max_score +
+      ' • Points awarded: ' + rows[0].points_awarded + '.';
+  } catch (error) {
+    $('submitStatus').textContent = (error && error.message) ? error.message : 'Result submission failed.';
+  }
+}
 
 function setMode(m){
-  if(classroomGameSession.token && m==='practice') {
-    $('launchStatus').textContent='This is an assigned classroom session. Choose Challenge or Class Mode to continue.';
-  }
   mode=m;
   ['practice','challenge','classmode'].forEach(x=>$(x).classList.remove('selected'));
   $(m==='class'?'classmode':m).classList.add('selected');
@@ -98,86 +127,153 @@ function setMode(m){
 function startGame(){
   let n=$('player').value.trim();
   if(!n){alert('Please enter your name first.');return}
-  if(classroomGameSession.token && mode==='practice') {
-    alert('Assigned classroom sessions cannot be played in Practice mode. Choose Challenge or Class Mode.');
-    return;
-  }
-  i=0;score=0;lives=3;streak=0;bestStreak=0;correctCount=0;locked=false;gameEnded=false;
-  $('home').classList.add('hidden');$('done').classList.add('hidden');$('game').classList.remove('hidden');
-  $('name').textContent=n;$('lifePill').style.display=mode==='challenge'?'inline-block':'none';showQ();
+  i=0;score=0;lives=3;streak=0;bestStreak=0;correctCount=0;
+  $('home').classList.add('hidden');
+  $('done').classList.add('hidden');
+  $('game').classList.remove('hidden');
+  $('name').textContent=n;
+  $('lifePill').style.display=mode==='challenge'?'inline-block':'none';
+  showQ();
 }
+
 function showQ(){
-  locked=false;let d=Q[i];
-  $('level').textContent=i<4?1:i<8?2:i<12?3:4;$('score').textContent=score;$('lives').textContent=lives;$('streak').textContent=streak;
+  locked=false;
+  let d=Q[i];
+  $('level').textContent=i<4?1:i<8?2:i<12?3:4;
+  $('score').textContent=score;
+  $('lives').textContent=lives;
+  $('streak').textContent=streak;
   $('fill').style.width=(i/Q.length*100)+'%';
   $('progressText').textContent='Question '+(i+1)+' of '+Q.length+' • '+(mode==='practice'?'Practice Mode':mode==='challenge'?'Challenge Mode':'Class Mode');
-  $('question').innerHTML='<small style="color:#13a89e">'+d[0]+'</small><br>'+d[1];$('hint').textContent='💡 '+d[4];$('feedback').textContent='';$('next').classList.add('hidden');$('visual').innerHTML='';
-  if(d[5]) $('visual').innerHTML='<div class="pv"><span class="h">4 hundreds</span> • <span class="t">7 tens</span> • <span class="o">5 ones</span></div><div class="pv"><span class="h">4 hundreds</span> • <span class="t">7 tens</span> • <span class="o">2 ones</span></div>';
+  $('question').innerHTML='<small style="color:#13a89e">'+d[0]+'</small><br>'+d[1];
+  $('hint').textContent='💡 '+d[4];
+  $('feedback').textContent='';
+  $('next').classList.add('hidden');
+  $('visual').innerHTML='';
+
+  if(d[5]){
+    $('visual').innerHTML='<div class="pv"><span class="h">4 hundreds</span> • <span class="t">7 tens</span> • <span class="o">5 ones</span></div><div class="pv"><span class="h">4 hundreds</span> • <span class="t">7 tens</span> • <span class="o">2 ones</span></div>';
+  }
+
   $('answers').innerHTML='';
-  d[2].forEach(a=>{let b=document.createElement('button');b.textContent=a;b.onclick=()=>answer(b,a);$('answers').appendChild(b)});
+  d[2].forEach(a=>{
+    let b=document.createElement('button');
+    b.textContent=a;
+    b.onclick=()=>answer(b,a);
+    $('answers').appendChild(b);
+  });
 }
+
 function showToast(text){
-  let t=document.createElement('div');t.className='toast';t.textContent=text;document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));
+  let t=document.createElement('div');
+  t.className='toast';
+  t.textContent=text;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
   setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),350)},1300);
 }
+
 function scorePop(text){
-  let p=document.createElement('div');p.className='scorepop';p.textContent=text;p.style.left='50%';p.style.top='145px';$('game').appendChild(p);setTimeout(()=>p.remove(),850);
+  let p=document.createElement('div');
+  p.className='scorepop';
+  p.textContent=text;
+  p.style.left='50%';p.style.top='145px';
+  $('game').appendChild(p);
+  setTimeout(()=>p.remove(),850);
 }
+
 function answer(btn,a){
-  if(locked||gameEnded)return;locked=true;
-  let d=Q[i],ok=a===d[3];
+  if(locked)return;
+  locked=true;
+
+  let d=Q[i], ok=a===d[3];
+
   if(ok){
-    correctCount++;streak++;bestStreak=Math.max(bestStreak,streak);
-    let points=1;if(streak>=3)points+=1;if(streak>=5)points+=1;if(i===Q.length-1)points+=2;
-    score+=points;btn.classList.add('correct');$('feedback').textContent='✅ Correct! '+(points>1?'+'+points+' points! 🔥':' +1 point 🎉');scorePop('+'+points+' ⭐');
-    if(streak===3)showToast('🔥 3-answer streak! Bonus point!');if(streak===5)showToast('🔥🔥 5-answer streak! Extra bonus!');if(i===Q.length-1)showToast('👑 Final Boss bonus unlocked!');
-    $('feedback').classList.add('pulse');setTimeout(()=>$('feedback').classList.remove('pulse'),500);
+    correctCount++;
+    streak++;
+    bestStreak=Math.max(bestStreak,streak);
+
+    // Base point + streak bonus.
+    let points=1;
+    if(streak>=3) points+=1;
+    if(streak>=5) points+=1;
+    if(i===Q.length-1) points+=2;
+
+    score+=points;
+    btn.classList.add('correct');
+    $('feedback').textContent='✅ Correct! '+(points>1?'+'+points+' points! 🔥':' +1 point 🎉');
+    scorePop('+'+points+' ⭐');
+
+    if(streak===3) showToast('🔥 3-answer streak! Bonus point!');
+    if(streak===5) showToast('🔥🔥 5-answer streak! Extra bonus!');
+    if(i===Q.length-1) showToast('👑 Final Boss bonus unlocked!');
+
+    $('feedback').classList.add('pulse');
+    setTimeout(()=>$('feedback').classList.remove('pulse'),500);
   }else{
-    streak=0;if(mode==='challenge')lives--;btn.classList.add('wrong');$('feedback').textContent='❌ Let’s learn from it. Correct answer: '+d[3];
-    [...$('answers').children].forEach(b=>{if(b.textContent===d[3])b.classList.add('correct')});$('answers').classList.add('shake');setTimeout(()=>$('answers').classList.remove('shake'),400);
-  }
-  $('score').textContent=score;$('lives').textContent=lives;$('streak').textContent=streak;$('next').classList.remove('hidden');
-  if(mode==='challenge'&&lives<=0){$('next').classList.add('hidden');setTimeout(endGame,800)}
-}
-function nextQ(){if(gameEnded)return;if(mode==='challenge'&&lives<=0){endGame();return}i++;if(i>=Q.length)endGame();else showQ()}
-async function submitGameResult(){
-  if(submissionStarted||!classroomGameSession.token)return;submissionStarted=true;
-  $('submitStatus').textContent='Submitting result to TEST…';
-  const supabaseUrl='https://askhdgmjqezvwavfhqzj.supabase.co';
-  const supabaseKey='sb_publishable_EKVC5DHPb6oZu63ulxj-pQ_hEzvW'; // TEST publishable key
-  const payload={p_session_token:classroomGameSession.token,p_game_id:classroomGameSession.gameId,p_game_name:'Temmy Number Challenge',p_score:correctCount,p_max_score:Q.length};
-  try{
-    const res=await fetch(supabaseUrl+'/rest/v1/rpc/record_student_game_result',{
-      method:'POST',headers:{'Content-Type':'application/json','apikey':supabaseKey,'Authorization':'Bearer '+supabaseKey},
-      body:JSON.stringify(payload)
+    streak=0;
+    if(mode==='challenge')lives--;
+    btn.classList.add('wrong');
+    $('feedback').textContent='❌ Let’s learn from it. Correct answer: '+d[3];
+    [...$('answers').children].forEach(b=>{
+      if(b.textContent===d[3])b.classList.add('correct');
     });
-    if(!res.ok)throw new Error('TEST database rejected the result (HTTP '+res.status+').');
-    const rows=await res.json();
-    if(!Array.isArray(rows)||rows.length!==1||!rows[0])throw new Error('Session rejected, expired, or already used; no result was confirmed.');
-    $('final').textContent=String(rows[0].score);$('officialMax').textContent=String(rows[0].max_score);
-    $('submitStatus').textContent='Saved to TEST • '+rows[0].score+'/'+rows[0].max_score+' • Points awarded: '+rows[0].points_awarded+'.';
-  }catch(e){$('submitStatus').textContent=(e&&e.message)||'Result submission failed. No saved result was confirmed.'}
-}
-function endGame(){
-  if(gameEnded)return;gameEnded=true;locked=true;
-  $('game').classList.add('hidden');$('done').classList.remove('hidden');
-  $('final').textContent=correctCount;$('officialMax').textContent=Q.length;$('arcadeScoreLine').textContent='Arcade points (streak/final-question bonuses): '+score;
-  let accuracy=Math.round(correctCount/Q.length*100);let s=accuracy>=90?5:accuracy>=75?4:accuracy>=60?3:accuracy>=40?2:1;
-  $('stars').textContent='★'.repeat(s)+'☆'.repeat(5-s);
-  $('rank').textContent=s===5?'🌟 SUPER TEMMY NUMBER CHALLENGE!':s>=4?'🏆 TEMMY NUMBER CHALLENGE!':s>=3?'👏 TEMMY NUMBER EXPLORER!':'💪 TEMMY NUMBER LEARNER!';
-  $('achievement').textContent=s===5?'🏆 GOLD MATHEMATICIAN':s>=4?'🥇 SILVER MATHEMATICIAN':s>=3?'🥉 BRONZE MATHEMATICIAN':'🌱 MATHEMATICS STARTER';
-  $('message').innerHTML='<b>'+accuracy+'% accuracy</b> • '+correctCount+'/'+Q.length+' correct • Best streak: '+bestStreak+' 🔥<br>'+(correctCount>=12?'Excellent mathematical thinking, ':'Great effort, ')+$('name').textContent+'! Keep practising place value and ordering.';
-  if(classroomGameSession.token)submitGameResult();else $('submitStatus').textContent='Practice mode: no classroom session was supplied; no points were submitted.';
-}
-window.addEventListener('DOMContentLoaded',()=>{
-  if(classroomGameSession.token){
-    $('launchStatus').textContent='TEST classroom session detected. Result submission will use the TEST database.';
-    $('player').value='Student';
-    $('player').disabled=true;
-    setMode('challenge');
-  }else{
-    $('launchStatus').textContent='Standalone practice preview. Scores are not submitted.';
+    $('answers').classList.add('shake');
+    setTimeout(()=>$('answers').classList.remove('shake'),400);
   }
-});
-</script>
-</body></html>
+
+  $('score').textContent=score;
+  $('lives').textContent=lives;
+  $('streak').textContent=streak;
+  $('next').classList.remove('hidden');
+
+  if(mode==='challenge'&&lives<=0){
+    $('next').classList.add('hidden');
+    setTimeout(endGame,800);
+  }
+}
+
+function nextQ(){
+  if(mode==='challenge'&&lives<=0){endGame();return}
+  i++;
+  if(i>=Q.length)endGame();
+  else showQ();
+}
+
+function endGame(){
+  if (gameEnded) return;
+  gameEnded = true;
+  locked = true;
+  $('game').classList.add('hidden');
+  $('done').classList.remove('hidden');
+  $('final').textContent=correctCount;
+  $('officialMax').textContent=Q.length;
+  $('arcadeScoreLine').textContent='Arcade points (including streak/final-question bonuses): '+score;
+
+  let accuracy=Math.round((correctCount/Q.length)*100);
+  let s=accuracy>=90?5:accuracy>=75?4:accuracy>=60?3:accuracy>=40?2:1;
+
+  $('stars').textContent='★'.repeat(s)+'☆'.repeat(5-s);
+  $('rank').textContent=
+    s===5?'🌟 SUPER TEMMY NUMBER CHALLENGE!':
+    s>=4?'🏆 TEMMY NUMBER CHALLENGE!':
+    s>=3?'👏 TEMMY NUMBER EXPLORER!':
+    '💪 TEMMY NUMBER LEARNER!';
+
+  $('achievement').textContent=
+    s===5?'🏆 GOLD MATHEMATICIAN':
+    s>=4?'🥇 SILVER MATHEMATICIAN':
+    s>=3?'🥉 BRONZE MATHEMATICIAN':
+    '🌱 MATHEMATICS STARTER';
+
+  $('message').innerHTML=
+    '<b>'+accuracy+'% accuracy</b> • '+correctCount+'/'+Q.length+' correct • Best streak: '+bestStreak+' 🔥<br>'+
+    (score>=12?'Excellent mathematical thinking, ':'Great effort, ')+
+    $('name').textContent+'! Keep practising place value and ordering.';
+  if (classroomGameSession.token) {
+    submitGameResult();
+  } else {
+    $('submitStatus').textContent='Practice preview: no classroom session supplied; no points were submitted.';
+  }
+}
+</script></body></html>
