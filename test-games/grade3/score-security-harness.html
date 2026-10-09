@@ -68,7 +68,7 @@ code{overflow-wrap:anywhere}
      test('Missing session token rejected',false,()=>validatePayload({...base,sessionToken:''})),
      test('Arcade bonus excluded from official score',true,()=>{const correctCount=9,arcadeBonus=40;const officialScore=Math.max(0,Math.min(correctCount,MAX_SCORE));return officialScore===9 && arcadeBonus!==officialScore;}),
      test('First simulated session claim accepted',true,()=>simulatedClaim({used:false,expired:false,gameId:GAME_ID},base)),
-     test('Second simulated claim rejected',false,()=>{const s={used:false,expired:false,gameId:GAME_ID};const first=simulatedClaim(s,base);const second=simulatedClaim(s,base);return first && !second;}),
+     test('Second simulated claim rejected',true,()=>{const s={used:false,expired:false,gameId:GAME_ID};const first=simulatedClaim(s,base);const second=simulatedClaim(s,base);return first && !second;}),
      test('Expired session rejected',false,()=>simulatedClaim({used:false,expired:true,gameId:GAME_ID},base)),
      test('Already-used session rejected',false,()=>simulatedClaim({used:true,expired:false,gameId:GAME_ID},base)),
      test('Session for a different game rejected',false,()=>simulatedClaim({used:false,expired:false,gameId:'another-game'},base))
