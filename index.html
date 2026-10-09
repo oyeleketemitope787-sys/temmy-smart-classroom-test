@@ -1618,25 +1618,7 @@ function openAddReward(){
 function renderMarket(){
   const el=document.getElementById('marketItems');if(!el)return;
   if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to manage marketplace rewards.</div>';return;}
-  el.innerHTML=(data.rewards.length?data.rewards.map(r=>`<div class="item"><div class="icon">${esc(r.icon)}</div><h3>${esc(r.name)}</h3><div class="price">${r.price} points</div><div style="margin-top:12px"><button class="btn primary" onclick="buyReward('${esc(r.id)}')">Buy for Student</button> <button class="btn negative" onclick="deleteReward('${esc(r.id)}')">Delete</button></div></div>`).join(''):'<div class="empty">No marketplace items yet. Create your first reward.</div>') + '<div class="notice" style="margin-top:16px;border-color:#d6a700"><strong>TEST ONLY — Duplicate-request diagnostic</strong><br><span class="small">Replays the saved test request; it should not create another purchase or deduct points.</span><br><button class="btn" style="margin-top:8px" onclick="replayExistingTestPurchase()">Replay existing request (TEST)</button></div>';
-}
-async function replayExistingTestPurchase(){
-  if(!authSession||!authSession.user?.id){alert('Please sign in as the teacher first.');return;}
-  if(!confirm('TEST ONLY: Replay the existing request ID 7b45c4c0-1bda-4a3e-b39e-96f835edcfb7 for the same reward and Test Student? No new purchase should be created. Continue?'))return;
-  const btn=[...document.querySelectorAll('#marketItems button')].find(b=>b.textContent.includes('Replay existing request'));
-  if(btn)btn.disabled=true;
-  try{
-    const {data:result,error}=await supabaseClient.rpc('purchase_marketplace_reward',{
-      p_request_id:'7b45c4c0-1bda-4a3e-b39e-96f835edcfb7',
-      p_reward_id:'c3306589-55ef-44d6-912d-6161d2b3c9d3',
-      p_student_ids:['0cf1c3fc-dbe9-48f6-ac1a-5c5b6888b9b4']
-    });
-    if(error){alert('Replay failed: '+error.message);return;}
-    alert('Replay response: '+JSON.stringify(result));
-    await loadCloudClasses();
-    await loadCloudMarketplace();
-  }catch(err){alert('Replay failed: '+(err?.message||String(err)));}
-  finally{if(btn)btn.disabled=false;}
+  el.innerHTML=data.rewards.length?data.rewards.map(r=>`<div class="item"><div class="icon">${esc(r.icon)}</div><h3>${esc(r.name)}</h3><div class="price">${r.price} points</div><div style="margin-top:12px"><button class="btn primary" onclick="buyReward('${esc(r.id)}')">Buy for Student</button> <button class="btn negative" onclick="deleteReward('${esc(r.id)}')">Delete</button></div></div>`).join(''):'<div class="empty">No marketplace items yet. Create your first reward.</div>';
 }
 function buyReward(id){
   const r=data.rewards.find(x=>String(x.id)===String(id)),cls=current(),students=cls?.students||[];
