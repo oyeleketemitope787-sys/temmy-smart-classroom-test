@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Temmy Number Challenge — Local Score Test Harness</title>
+<style>
+:root{font-family:system-ui,Segoe UI,Arial,sans-serif;color:#17233c;background:#f4f7fc}
+body{max-width:900px;margin:24px auto;padding:0 16px}
+header,.panel{background:#fff;border:1px solid #dbe3f0;border-radius:14px;padding:18px;margin:14px 0}
+h1{font-size:1.45rem;margin:0 0 8px;color:#153b7a}
+.warning{border-left:5px solid #c99700;background:#fff9e8;padding:12px;border-radius:8px}
+button{background:#153b7a;color:white;border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{text-align:left;border-bottom:1px solid #e3e9f2;padding:9px;font-size:.94rem}
+.pass{color:#137547;font-weight:700}.fail{color:#b42318;font-weight:700}.muted{color:#56657e;font-size:.92rem}
+code{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+<h1>Temmy Number Challenge — Local Score Test Harness</h1>
+<p><b>TEST classroom only · Offline simulation · No database connection</b></p>
+<div class="warning"><b>Safety:</b> This page does not contact Supabase, read a real session token, or write student scores. It tests only local validation and duplicate-submit simulation. Passing results do not prove database security.</div>
+</header>
+<section class="panel">
+<p>Checks the expected Grade 3 official score rules: game ID <code>grade3-temmy-number-challenge</code>, game name <code>Temmy Number Challenge</code>, maximum 15. Arcade bonus points are kept separate from the official score.</p>
+<button id="run">Run local tests</button>
+<p id="summary" aria-live="polite" class="muted">No tests run yet.</p>
+<table>
+<thead><tr><th>Test</th><th>Expected</th><th>Result</th></tr></thead>
+<tbody id="results"><tr><td colspan="3" class="muted">Select “Run local tests”.</td></tr></tbody>
+</table>
+</section>
+<script>
+(function(){
+ const GAME_ID='grade3-temmy-number-challenge';
+ const GAME_NAME='Temmy Number Challenge';
+ const MAX_SCORE=15;
+ function validatePayload(p){
+   return !!p &&
+     typeof p.sessionToken==='string' && p.sessionToken.length>0 &&
+     p.gameId===GAME_ID &&
+     p.gameName===GAME_NAME &&
+     Number.isInteger(p.score) && p.score>=0 && p.score<=MAX_SCORE &&
+     p.maxScore===MAX_SCORE;
+ }
+ function simulatedClaim(session, payload){
+   // Simulation only; not a replacement for atomic database enforcement.
+   if(!validatePayload(payload)) return false;
+   if(!session || session.used || session.expired || session.gameId!==GAME_ID) return false;
+   session.used=true;
+   return true;
+ }
+ function test(name, expected, fn){
+   try { const actual=fn(); return {name,expected,pass:actual===expected,actual:String(actual)}; }
+   catch(e){ return {name,expected,pass:false,actual:'ERROR: '+e.message}; }
+ }
+ document.getElementById('run').addEventListener('click',function(){
+   const base={sessionToken:'LOCAL-FAKE-TOKEN',gameId:GAME_ID,gameName:GAME_NAME,score:0,maxScore:MAX_SCORE};
+   const cases=[
+     test('Zero correct answers accepted',true,()=>validatePayload({...base,score:0})),
+     test('Full score 15/15 accepted',true,()=>validatePayload({...base,score:15})),
+     test('Negative score rejected',false,()=>validatePayload({...base,score:-1})),
+     test('Score above 15 rejected',false,()=>validatePayload({...base,score:16})),
+     test('Caller-supplied maximum 14 rejected',false,()=>validatePayload({...base,maxScore:14})),
+     test('Wrong game ID rejected',false,()=>validatePayload({...base,gameId:'another-game'})),
+     test('Wrong game name rejected',false,()=>validatePayload({...base,gameName:'Different Name'})),
+     test('Missing session token rejected',false,()=>validatePayload({...base,sessionToken:''})),
+     test('Arcade bonus excluded from official score',true,()=>{const correctCount=9,arcadeBonus=40;const officialScore=Math.max(0,Math.min(correctCount,MAX_SCORE));return officialScore===9 && arcadeBonus!==officialScore;}),
+     test('First simulated session claim accepted',true,()=>simulatedClaim({used:false,expired:false,gameId:GAME_ID},base)),
+     test('Second simulated claim rejected',false,()=>{const s={used:false,expired:false,gameId:GAME_ID};const first=simulatedClaim(s,base);const second=simulatedClaim(s,base);return first && !second;}),
+     test('Expired session rejected',false,()=>simulatedClaim({used:false,expired:true,gameId:GAME_ID},base)),
+     test('Already-used session rejected',false,()=>simulatedClaim({used:true,expired:false,gameId:GAME_ID},base)),
+     test('Session for a different game rejected',false,()=>simulatedClaim({used:false,expired:false,gameId:'another-game'},base))
+   ];
+   document.getElementById('results').innerHTML=cases.map(c=>'<tr><td>'+c.name+'</td><td><code>'+c.expected+'</code></td><td class="'+(c.pass?'pass':'fail')+'">'+(c.pass?'PASS':'FAIL')+' <span class="muted">('+c.actual+')</span></td></tr>').join('');
+   const passed=cases.filter(c=>c.pass).length;
+   document.getElementById('summary').textContent=passed+' of '+cases.length+' local simulation checks passed. This does not test Supabase, SQL permissions, or real concurrent requests.';
+ });
+})();
+</script>
+</body>
+</html>
