@@ -1,0 +1,2426 @@
+<!DOCTYPE html>
+<!-- Temmy Smart Classroom V8.9.2 — Teacher Activity Monitoring • Clean Build -->
+<html lang="en">
+<head>
+<script>
+(function(){
+  try {
+    if (!localStorage.getItem('temmyProductionCleanV1')) {
+      ['temmySmartClassroomV2','temmySmartClassroomV3','temmySmartClassroomV4','temmySmartClassroomV4_1','temmySmartClassroomV4_2','temmySmartClassroomV4_3','temmySmartClassroomFinal','temmySmartClassroomV5','temmyCleanMasterV1'].forEach(function(k){localStorage.removeItem(k);});
+      localStorage.setItem('temmyProductionCleanV1','1');
+    }
+  } catch(e) {}
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temmy Smart Classroom — V8.9.2 Teacher Activity Monitoring • Clean Build</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}button{cursor:pointer}.top{background:linear-gradient(135deg,#153b7a,#2457a6);color:#fff;padding:22px 28px}.top h1{margin:0 0 5px;font-size:30px}.top p{margin:0;opacity:.9}.wrap{max-width:1380px;margin:20px auto;padding:0 18px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.nav button{border:1px solid #ccd5e2;background:#fff;padding:11px 17px;border-radius:9px;font-weight:700}.nav button.active{background:#153b7a;color:#fff;border-color:#153b7a}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.select,input{border:1px solid #ccd5e2;border-radius:8px;padding:10px 12px;background:#fff}.btn{border:1px solid #ccd5e2;border-radius:8px;padding:9px 13px;background:#fff}.primary{background:#153b7a;color:#fff;border-color:#153b7a}.success{background:#eaf8ee;color:#12602c;border-color:#bfe3c9}.negative{background:#fff0f0;color:#a11;border-color:#e6bcbc}.gold{background:#fff8df;color:#765800;border-color:#ead58a}.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(21,59,122,.10);margin-bottom:18px}.hidden{display:none!important}.grid2{display:grid;grid-template-columns:1.6fr .8fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f6f8fc;border-radius:12px;padding:14px}.stat small{display:block;color:#637087}.stat strong{display:block;font-size:28px;margin-top:4px}h2,h3{margin-top:0}.small{font-size:13px;color:#68758a}.notice{padding:12px;border-radius:9px;background:#fff8df;border:1px solid #ead58a;margin-bottom:15px}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #edf0f5;text-align:left}th{background:#f8fafc}.points{font-size:20px;font-weight:800}.student-list{max-height:510px;overflow:auto;border:1px solid #e1e6ee;border-radius:10px}.student-row{display:grid;grid-template-columns:38px 1fr 90px 70px;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid #edf0f5}.student-row:last-child{border-bottom:0}.student-row:hover{background:#fafcff}.student-name{font-weight:700}.rank{font-weight:800;color:#6a7485}.check{width:18px;height:18px}.scopebar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.scopebar button{padding:8px 12px;border:1px solid #ccd5e2;border-radius:8px;background:#fff;font-weight:700}.scopebar button.active{background:#2457a6;color:#fff;border-color:#2457a6}.selection-info{padding:10px 12px;background:#f6f8fc;border-radius:9px;margin-bottom:12px;font-weight:700}.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{padding:12px;border-radius:10px;text-align:left;border:1px solid #ccd5e2;background:#fff}.action strong{display:block}.action span{font-size:12px;opacity:.75}.positive-action{background:#f0faf3;border-color:#c5e4ce}.negative-action{background:#fff4f4;border-color:#ecc4c4}.custom{border-top:1px solid #e8ecf2;margin-top:16px;padding-top:16px}.custom-row{display:grid;grid-template-columns:110px 1fr;gap:8px}.history-scroll{max-height:430px;overflow:auto}.tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}.tag.plus{background:#eaf8ee;color:#12602c}.tag.minus{background:#fff0f0;color:#a11}.market{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.item{border:1px solid #e1e6ee;border-radius:13px;padding:16px;background:#fff}.item .icon{font-size:36px}.price{font-weight:800;color:#153b7a}.empty{text-align:center;color:#68758a;padding:28px}.class-card{border:1px solid #e1e6ee;border-radius:13px;padding:16px;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}.modalbox{background:#fff;width:min(620px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:22px}.formrow{display:grid;gap:7px;margin:12px 0}.formactions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.summary-title{display:flex;justify-content:space-between;align-items:center;gap:10px}.search{width:100%}.reward-table td{vertical-align:top}.danger-link{color:#a11;font-weight:700}.menu-wrap{position:relative;display:inline-block}.menu-btn{min-width:38px;padding:8px 10px;font-weight:800}.menu{position:absolute;right:0;top:calc(100% + 4px);min-width:160px;background:#fff;border:1px solid #ccd5e2;border-radius:10px;box-shadow:0 8px 24px rgba(21,59,122,.16);padding:6px;z-index:15}.menu button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:9px 10px;border-radius:7px}.menu button:hover{background:#f4f7fb}.menu .menu-danger{color:#a11}.member-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #edf0f5}.member-row:last-child{border-bottom:0}.footer-note{font-size:12px;color:#6d788a;margin-top:8px}@media(max-width:980px){.grid2,.grid3{grid-template-columns:1fr}.student-row{grid-template-columns:34px 1fr 70px 50px}.action-grid{grid-template-columns:1fr}}@media(max-width:620px){.top h1{font-size:24px}.wrap{padding:0 10px}.student-row{grid-template-columns:30px 1fr 55px}.student-row .rank{display:none}}
+.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}.group-card{background:#fff;border:1px solid #dfe5ef;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(21,59,122,.07)}.group-card h3{margin:0 0 5px}.group-members{margin:12px 0;display:flex;flex-wrap:wrap;gap:6px}.member-chip{display:inline-block;padding:6px 9px;border-radius:999px;background:#eef3fb;border:1px solid #d9e3f4;font-size:12px}.group-actions{display:flex;gap:8px;flex-wrap:wrap}.group-empty{padding:22px;text-align:center;border:1px dashed #ccd5e3;border-radius:12px;background:#fafbfd}.member-check-list{max-height:300px;overflow:auto;border:1px solid #e2e7ef;border-radius:10px;padding:8px}.member-check{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #eef1f5}.member-check:last-child{border-bottom:0}</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://askhdgmjqezvwavfhqzj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_EKVC5DHPb6oZu63ulxj-pQ_hEwd4bZv';
+const AUTH_REDIRECT_URL='https://oyeleketemitope787-sys.github.io/temmy-smart-classroom-test/';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let authSession=null;
+let cloudReady=false;
+let cloudGroups=[];
+let cloudClasses=[];
+let cloudActivities=[];
+let cloudLoading=false;
+let passwordFlowActive=false;
+</script>
+</head>
+<body>
+<header class="top"><h1>⭐ Temmy Smart Classroom</h1><p>Smart Learning • Smart Behaviour • Smart Rewards</p><div style="margin-top:10px;font-size:12px;opacity:.85">STABLE CLASSROOM BUILD • V8.9.2 TEACHER ACTIVITY MONITORING • CLOUD HISTORY FIX • CLEAN BUILD</div></header>
+<div class="wrap">
+<nav class="nav">
+<button id="studentsTab" class="active" onclick="showTab('students')">🧑‍🎓 Students</button>
+<button id="classesTab" onclick="showTab('classes')">🏫 My Classes</button><button id="groupsTab" onclick="showTab('groups')">👥 Groups</button>
+<button id="activitiesTab" onclick="showTab('activities')">📚 Activities</button>
+<button id="awardTab" onclick="showTab('award')">⭐ Award Points</button>
+<button id="marketTab" onclick="showTab('market')">🛒 Marketplace</button>
+<button id="purchasesTab" onclick="showTab('purchases')">📜 Purchases</button>
+<button id="reportsTab" onclick="showTab('reports')">📊 Reports</button>
+<button id="historyTab" onclick="showTab('history')">👤 Student History</button>
+<button id="portalTab" onclick="showTab('portal')">🎓 Student Portal</button>
+<button id="accountTab" onclick="showTab('account')">👨‍🏫 Teacher Account</button>
+<button id="messagesTab" onclick="showTab('messages')">💬 Messages</button>
+</nav>
+
+<section id="students">
+<div id="cloudStatus" class="notice" style="display:none"></div>
+<div class="controls">
+<select id="classSelect" class="select"></select>
+<button class="btn primary" onclick="openAddStudent()">➕ Add Student</button>
+<button class="btn" onclick="showTab('award')">⭐ Award Points</button>
+<button class="btn" onclick="exportData()">⬇️ Export Data</button>
+</div>
+<div class="grid2">
+<div class="card"><div class="summary-title"><div><h2 id="classTitle">Class</h2><div class="small">Student leaderboard</div></div><button class="btn" onclick="showTab('award')">Award points →</button></div>
+<table><thead><tr><th>Rank</th><th>Student</th><th>Points</th><th>Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+<div>
+<div class="card"><h2>🏆 Class Summary</h2><div class="grid3"><div class="stat"><small>Class Points</small><strong id="classPoints">0</strong></div><div class="stat"><small>Students</small><strong id="studentCount">0</strong></div><div class="stat"><small>Average</small><strong id="classAverage">0</strong></div></div></div>
+<div class="card"><h2>🎯 Reward Level Progress</h2><p>🥉 <strong>Bronze</strong> — 50+ points</p><p>🥈 <strong>Silver</strong> — 100+ points</p><p>🥇 <strong>Gold</strong> — 150+ points</p><p>🏆 <strong>Champion</strong> — 200+ points</p></div>
+</div></div></section>
+
+
+<section id="groups" class="hidden">
+<div class="card">
+<div class="summary-title">
+<div><h2>👥 Student Groups</h2><div class="small">Create and manage cloud groups within each class for collaborative learning.</div></div>
+<button class="btn primary" onclick="openCreateGroup()">➕ Create Group</button>
+</div>
+<div class="controls" style="margin-top:16px">
+<select id="groupClassSelect" class="select"></select>
+<button class="btn" onclick="refreshGroups()">🔄 Refresh</button>
+</div>
+<div id="groupsList"></div>
+</div>
+</section>
+<section id="activities" class="hidden">
+<div class="card">
+<div class="summary-title">
+<div><h2>📚 Learning Activities</h2><div class="small">Create and manage Live Tasks and Temmy Smart Games for your classes.</div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn primary" onclick="openCreateActivity()">➕ Create Live Task</button>
+<button class="btn gold" onclick="openGameLauncher()">🎮 Start Smart Game</button>
+</div></div>
+<div class="controls" style="margin-top:16px">
+<select id="activityClassSelect" class="select"></select>
+<button class="btn" onclick="refreshActivities()">🔄 Refresh</button>
+</div>
+<div id="activitiesList"></div>
+</div>
+</section>
+
+<section id="award" class="hidden">
+<div class="controls"><select id="awardClassSelect" class="select"></select><button class="btn" onclick="showTab('students')">← Students</button></div>
+<div class="grid2">
+<div class="card"><div class="summary-title"><div><h2>⭐ Award Points</h2><div class="small">Select exactly who should receive the points.</div></div><button id="awardLockBtn" class="btn gold" onclick="toggleAwardLock()">🔒 Lock Award Points</button></div><div id="awardLockNotice" class="notice hidden"></div>
+<div class="scopebar"><button id="scopeIndividual" class="active" onclick="setScope('individual')">👤 Individual</button><button id="scopeMultiple" onclick="setScope('multiple')">👥 Multiple</button><button id="scopeAll" onclick="setScope('all')">🌟 Select All</button></div>
+<input id="studentSearch" class="search" placeholder="🔎 Search students..." oninput="renderAwardStudents()">
+<div class="selection-info" id="selectionInfo">1 student selected</div>
+<div id="awardStudents" class="student-list"></div>
+<div class="footer-note">Individual = one student • Multiple = any selected students • Select All = the whole class</div>
+</div>
+<div class="card"><h2>Positive Actions</h2><div class="action-grid">
+<button class="action positive-action" onclick="applyAward(1,'Participation')"><strong>🙋 Participation +1</strong><span>Active contribution</span></button>
+<button class="action positive-action" onclick="applyAward(2,'Correct Answer')"><strong>✅ Correct Answer +2</strong><span>Correct mathematical response</span></button>
+<button class="action positive-action" onclick="applyAward(3,'Excellent Explanation')"><strong>💡 Excellent Explanation +3</strong><span>Clear reasoning</span></button>
+<button class="action positive-action" onclick="applyAward(5,'Outstanding Effort')"><strong>🌟 Outstanding Effort +5</strong><span>Exceptional effort</span></button>
+<button class="action positive-action" onclick="applyAward(2,'Helping a Classmate')"><strong>🤝 Helping a Classmate +2</strong><span>Positive peer support</span></button>
+<button class="action positive-action" onclick="applyAward(2,'Homework Completed')"><strong>📘 Homework Completed +2</strong><span>Work completed responsibly</span></button>
+<button class="action positive-action" onclick="applyAward(3,'Excellent Behaviour')"><strong>👏 Excellent Behaviour +3</strong><span>Consistently positive conduct</span></button>
+<button class="action positive-action" onclick="applyAward(3,'Live Task Completed')"><strong>📝 Live Task +3</strong><span>Completed an in-class live task</span></button>
+<button class="action positive-action" onclick="applyAward(5,'Excellent Task Performance')"><strong>🏅 Task Excellence +5</strong><span>Outstanding performance on a learning task</span></button>
+<div style="grid-column:1 / -1;border:1px solid #d9e3f4;border-radius:12px;padding:16px;background:#f8fbff">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+    <div>
+      <h3 style="margin:0">⏰ Punctuality</h3>
+      <div class="small">Record punctuality for selected students.</div>
+    </div>
+    <div style="font-weight:700;color:#2457a6">Today</div>
+  </div>
+
+  <div class="scopebar" style="margin-bottom:12px">
+<button type="button" id="punctualityAllBtn" class="active" onclick="setPunctualityScope('all')">ALL</button>
+<button type="button" id="punctualityMultipleBtn" onclick="setPunctualityScope('multiple')">MULTIPLE</button>
+  </div>
+
+<div class="selection-info" id="punctualitySelectionInfo">    All students selected
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <button type="button" id="punctualityOnTimeBtn" class="btn success" onclick="selectPunctualityStatus('On Time',2)">
+      <strong>On Time</strong><br>
+      <span class="small">+2 points</span>
+    </button>
+
+    <button type="button" id="punctualityLateBtn" class="btn gold" onclick="selectPunctualityStatus('Late',1)">
+      <strong>Late</strong><br>
+      <span class="small">+1 point</span>
+    </button>
+
+    <button type="button" id="punctualityAbsentBtn" class="btn" onclick="selectPunctualityStatus('Absent',0)">
+      <strong>Absent</strong><br>
+      <span class="small">0 points</span>
+    </button>
+
+    <button type="button" id="punctualityExcusedBtn" class="btn" onclick="selectPunctualityStatus('Excused',0)">
+      <strong>Excused</strong><br>
+      <span class="small">0 points</span>
+    </button>
+  </div>
+
+  <div style="margin-top:12px;text-align:right">
+    <button type="button" class="btn primary" onclick="applyPunctuality()">Apply Punctuality</button>
+  </div>
+</div></div>
+<div class="custom"><h3>➕ Custom Positive Adjustment</h3><div class="custom-row"><input id="customPlus" type="number" min="1" value="1"><button class="btn success" onclick="applyCustom(1)">Add Points</button></div></div>
+</div></div>
+<div class="grid2">
+<div class="card"><h2>Negative Actions</h2><div class="action-grid">
+<button class="action negative-action" onclick="applyAward(-2,'Off-task Behaviour')"><strong>⚠️ Off-task Behaviour −2</strong><span>Not focused on learning</span></button>
+<button class="action negative-action" onclick="applyAward(-3,'Disruption')"><strong>🔕 Disruption −3</strong><span>Interfering with learning</span></button>
+<button class="action negative-action" onclick="applyAward(-2,'Unprepared')"><strong>📚 Unprepared −2</strong><span>Missing required materials/work</span></button>
+<button class="action negative-action" onclick="applyAward(-1,'Late Work')"><strong>⏰ Late Work −1</strong><span>Work submitted late</span></button>
+</div>
+<div class="custom"><h3>➖ Custom Negative Adjustment</h3><div class="custom-row"><input id="customMinus" type="number" min="1" value="1"><button class="btn negative" onclick="applyCustom(-1)">Remove Points</button></div></div>
+</div>
+<div class="card"><div class="summary-title"><h2>↩️ Last Point Action</h2><button class="btn gold" onclick="undoLastPointAction()">Undo</button></div><div id="lastActionBox" class="notice">No point action recorded yet.</div><h3>Recent Activity</h3><div id="recentHistory" class="history-scroll"></div></div>
+</div>
+</section>
+
+<section id="classes" class="hidden"><div class="card"><h2>🏫 My Classes</h2><div class="notice">Create and manage your classes. Your classes and student data are loaded from the production cloud database.</div><button class="btn primary" onclick="openCreateClass()">➕ Create New Class</button><div id="classCards"></div></div></section>
+
+<section id="market" class="hidden"><div class="controls"><button class="btn primary" onclick="openAddReward()">➕ Create Marketplace Item</button></div><div class="card"><h2>🛒 Marketplace</h2><div class="small">Students spend points earned in the selected class.</div><div id="marketItems" class="market" style="margin-top:16px"></div></div></section>
+
+<section id="purchases" class="hidden"><div class="card"><h2>📜 Purchase History</h2><div class="small">Complete marketplace history for all classes and students. Purchases made for multiple students are recorded individually.</div><div id="purchaseList" style="margin-top:16px"></div></div></section>
+
+<section id="history" class="hidden"><div class="card"><h2>👤 Individual Student History</h2><div class="controls"><select id="historyClass" class="select"></select><select id="historyStudent" class="select"></select><button class="btn" onclick="renderStudentHistory()">Refresh</button></div><div id="studentProfile"></div><div id="studentHistoryList" style="margin-top:16px"></div></div></section>
+
+<section id="portal" class="hidden"><div class="card"><h2>🎓 Student Portal</h2><div class="notice"><strong>Secure student access.</strong><br>Enter the student access code provided by your teacher. Students do not need a teacher email or password.</div><div id="studentPortalLogin" class="card" style="box-shadow:none;border:1px solid #d9e2ef;margin-top:14px"><div class="formrow"><label>Student Access Code</label><input id="studentAccessCode" class="select" inputmode="text" autocomplete="off" maxlength="32" placeholder="Enter your access code"></div><div class="formactions" style="justify-content:flex-start"><button class="btn primary" onclick="studentPortalLogin()">🎓 Enter Student Portal</button><button class="btn" onclick="studentPortalLogout()">Clear</button></div><div id="studentPortalLoginMsg" class="small" style="margin-top:8px"></div></div><div id="studentPortalBody"></div></div></section>
+
+<section id="account" class="hidden">
+<div class="card"><h2>Teacher Account</h2><div id="authPanel"></div></div>
+</section>
+
+<section id="messages" class="hidden">
+  <div class="card">
+
+    <div class="summary-title">
+      <div>
+        <h2>💬 Teacher–Student Messages</h2>
+        <div class="small">
+          Private chat between you and your students.
+        </div>
+      </div>
+
+      <button class="btn" onclick="loadTeacherMessages()">
+        🔄 Refresh
+      </button>
+    </div>
+
+    <div id="teacherMessageStatus"
+         class="notice"
+         style="margin-top:14px">
+      Click Refresh to load your messages.
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+
+      <div class="card"
+           style="box-shadow:none;border:1px solid #d9e2ef">
+
+        <div class="summary-title">
+          <div>
+            <h3>Inbox</h3>
+            <div class="small">
+              Select a student conversation.
+            </div>
+          </div>
+        </div>
+
+        <div id="teacherMessageInbox"
+             style="margin-top:14px">
+        </div>
+
+      </div>
+
+      <div class="card"
+           style="box-shadow:none;border:1px solid #d9e2ef">
+
+        <div class="summary-title">
+          <div>
+            <h3 id="teacherConversationTitle">
+              Conversation
+            </h3>
+
+            <div class="small">
+              Your private conversation with the selected student.
+            </div>
+          </div>
+        </div>
+
+        <div id="teacherConversation"
+             style="margin-top:14px">
+          <div class="empty">
+            Select a student from the inbox.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<section id="reports" class="hidden"><div class="card"><h2>📊 Class Reports</h2><div class="controls"><select id="reportClass" class="select"></select><button class="btn" onclick="renderReports()">Refresh</button></div><div id="reportBody"></div></div></section>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox"><h2 id="modalTitle"></h2><div id="modalBody"></div><div class="formactions"><button class="btn" onclick="closeModal()">Cancel</button><button id="modalSave" class="btn primary">Save</button></div></div></div>
+
+<script>
+const OLD_KEY='temmySmartClassroomV2', V3_KEY='temmySmartClassroomV3', KEY='temmySmartClassroomV4';
+const FINAL_KEY='temmySmartClassroomV5';
+let awardAutoTimer=null;
+const AWARD_IDLE_MS=5*60*1000;
+let scope='individual', selectedIds=[];
+let awardLocked=false;
+let awardBusy=false;
+const defaultNames={
+'6A_2':['Ahmed','Aisha','Daniel','Fatima','Hassan','Maryam','Michael','Noor','Omar','Sarah'],
+'7A_1':['Adam','Ali','Amal','David','Hana','Ibrahim','John','Layla','Mariam','Yusuf'],
+'7B':['Abdullah','Anna','Bilal','Chloe','Elias','Grace','Khalid','Lina','Peter','Zain']};
+const defaultData={classes:Object.fromEntries(Object.entries(defaultNames).map(([k,names])=>[k,{students:names.map(name=>({id:uid(),name,points:0}))}])),currentClass:'6A_2',rewards:[{id:1,name:'REWARD',price:20,icon:'🏆'},{id:2,name:'Oral 1 Pass',price:20,icon:'🎫'},{id:3,name:'Oral 2 Pass',price:30,icon:'🎫'},{id:4,name:'Excellent - A',price:50,icon:'⭐'}],purchases:[],history:[],activity:[],lastPointAction:null,awardLocked:false,awardPin:'',teacherProfile:null,groups:{}};
+function uid(){return 's_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function normalize(raw){
+ if(!raw||!raw.classes)return null;
+ const out={classes:{},currentClass:raw.currentClass||Object.keys(raw.classes)[0],rewards:raw.rewards||raw.items||[],purchases:raw.purchases||[],history:raw.history||[],activity:Array.isArray(raw.activity)?raw.activity:[],lastPointAction:raw.lastPointAction||null,awardLocked:!!raw.awardLocked,teacherProfile:raw.teacherProfile||null,awardPin:raw.awardPin||'',groups:raw.groups||{}};
+ Object.entries(raw.classes).forEach(([name,c])=>{
+   const arr=Array.isArray(c?.students)?c.students:Object.entries(c||{}).map(([student,points])=>({name:student,points:Number(points)||0}));
+   out.classes[name]={students:arr.map(s=>({id:s.id||uid(),name:String(s.name||'Unnamed'),points:Math.max(0,Number(s.points)||0)}))};
+ });
+ out.rewards=out.rewards.map((r,i)=>({id:r.id||Date.now()+i,name:String(r.name||'Reward'),price:Math.max(1,Number(r.price)||1),icon:r.icon||'🎁'}));
+ // Upgrade legacy purchase records with student IDs and activity records.
+ out.purchases=out.purchases.map((p,i)=>{let sid=p.studentId||'';const cls=out.classes[p.className];if(!sid&&cls){const found=cls.students.find(s=>s.name===p.student);if(found)sid=found.id}return {...p,id:p.id||('p_'+Date.now().toString(36)+'_'+i),studentId:sid}});
+ if(!out.activity.length){
+   out.history.forEach(h=>{(h.deltas||[]).forEach(d=>{out.activity.push({id:'a_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),date:h.date,className:h.className,studentId:d.studentId,student:d.name,type:'points',action:h.reason,delta:d.delta,before:d.before,after:d.after})})});
+   out.purchases.forEach(p=>out.activity.push({id:'a_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),date:p.date,className:p.className,studentId:p.studentId,student:p.student,type:'purchase',action:'Marketplace Purchase: '+p.item,delta:-Number(p.cost)||0,before:null,after:null,cost:p.cost,item:p.item}));
+   out.activity.reverse();
+ }
+ return Object.keys(out.classes).length?out:null;
+}
+function load(){try{const v5=normalize(JSON.parse(localStorage.getItem(FINAL_KEY)||'null'));if(v5)return v5;const v4=normalize(JSON.parse(localStorage.getItem(KEY)||'null'));if(v4)return v4;const v3=normalize(JSON.parse(localStorage.getItem(V3_KEY)||'null'));if(v3)return v3;const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');const m=normalize(old);if(m)return m}catch(e){}return structuredClone(defaultData)}
+let data=load();
+awardLocked=!!data.awardLocked;
+if(!data.classes[data.currentClass])data.currentClass=Object.keys(data.classes)[0];
+function save(){localStorage.setItem(FINAL_KEY,JSON.stringify(data));localStorage.setItem(KEY,JSON.stringify(data))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function current(){return data.classes[data.currentClass]||null}
+function now(){return new Date().toLocaleString()}
+function showTab(tab){
+const tabs=['students','classes','groups','activities','award','market','purchases','reports','history','portal','account','messages'];
+tabs.forEach(t=>{const el=document.getElementById(t);if(el)el.classList.toggle('hidden',t!==tab);});
+const buttons=['studentsTab','classesTab','groupsTab','activitiesTab','awardTab','marketTab','purchasesTab','reportsTab','historyTab','portalTab','accountTab','messagesTab'];
+buttons.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+const active=document.getElementById(tab+'Tab');if(active)active.classList.add('active');
+if(tab==='award')syncAwardClass();
+if(tab==='groups')renderGroups();
+if(tab==='activities')loadCloudActivities();
+if(tab==='reports')renderReports();
+if(tab==='history')syncHistorySelectors();
+if(tab==='portal')syncPortalSelectors();
+}
+let teacherMessageRows=[];
+let selectedTeacherStudentId='';
+
+async function loadTeacherMessages(){
+  const status=document.getElementById('teacherMessageStatus');
+  const inbox=document.getElementById('teacherMessageInbox');
+  const conversation=document.getElementById('teacherConversation');
+
+  if(!authSession){
+    if(status)status.textContent='Please sign in as a teacher to view messages.';
+    if(inbox)inbox.innerHTML='<div class="empty">Teacher sign-in required.</div>';
+    if(conversation)conversation.innerHTML='<div class="empty">Sign in to view conversations.</div>';
+    return;
+  }
+
+  if(status)status.textContent='Loading messages...';
+  if(inbox)inbox.innerHTML='<div class="notice">Loading your messages...</div>';
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'get_teacher_messages'
+  );
+
+  if(error){
+    console.error(error);
+
+    teacherMessageRows=[];
+
+    if(status){
+      status.textContent='Messages could not be loaded: '+error.message;
+      status.style.background='#fff0f0';
+      status.style.borderColor='#e6bcbc';
+    }
+
+    if(inbox){
+      inbox.innerHTML=
+        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
+          Unable to load messages.
+        </div>`;
+    }
+
+    return;
+  }
+
+  teacherMessageRows=rows||[];
+
+  if(status){
+    status.textContent=
+      teacherMessageRows.length
+        ? `${teacherMessageRows.length} message${teacherMessageRows.length===1?'':'s'} loaded.`
+        : 'No student messages yet.';
+    status.style.background='#eef7ff';
+    status.style.borderColor='#c8def4';
+  }
+
+  renderTeacherMessageInbox();
+
+  if(
+    selectedTeacherStudentId &&
+    teacherMessageRows.some(m=>m.student_id===selectedTeacherStudentId)
+  ){
+    renderTeacherConversation(selectedTeacherStudentId);
+  }else{
+    selectedTeacherStudentId='';
+    if(conversation){
+      conversation.innerHTML=
+        '<div class="empty">Select a student from the inbox.</div>';
+    }
+  }
+}
+
+function renderTeacherMessageInbox(){
+  const inbox=document.getElementById('teacherMessageInbox');
+  if(!inbox)return;
+
+  if(!teacherMessageRows.length){
+    inbox.innerHTML=
+      '<div class="empty">No messages from students yet.</div>';
+    return;
+  }
+
+  const grouped={};
+
+  teacherMessageRows.forEach(m=>{
+    if(!grouped[m.student_id]){
+      grouped[m.student_id]=[];
+    }
+    grouped[m.student_id].push(m);
+  });
+
+  const students=Object.values(grouped).map(messages=>{
+    const latest=messages[0];
+
+    return {
+      student_id:latest.student_id,
+      first_name:latest.student_first_name||'',
+      last_name:latest.student_last_name||'',
+      messages
+    };
+  });
+
+  inbox.innerHTML=students.map(item=>{
+    const name=
+      [item.first_name,item.last_name]
+        .filter(Boolean)
+        .join(' ')
+        .trim()||'Unnamed Student';
+
+    const unread=item.messages.filter(
+      m=>m.sender_role==='student'&&!m.read_at
+    ).length;
+
+    const latest=item.messages[0];
+
+    return `
+      <button
+        type="button"
+        class="btn"
+        style="width:100%;text-align:left;margin-bottom:10px;padding:14px"
+        onclick="openTeacherConversation('${esc(item.student_id)}')"
+      >
+        <strong>${esc(name)}</strong>
+
+        ${
+          unread
+            ? `<span style="float:right;font-weight:800">🔴 ${unread}</span>`
+            : ''
+        }
+
+        <div class="small" style="margin-top:6px">
+          ${esc(latest.message||'')}
+        </div>
+
+        <div class="small" style="margin-top:5px">
+          ${esc(latest.created_at||'')}
+        </div>
+      </button>
+    `;
+  }).join('');
+}
+
+async function openTeacherConversation(studentId){
+  selectedTeacherStudentId=studentId;
+
+  const {error}=await supabaseClient.rpc(
+    'mark_teacher_messages_read',
+    {
+      p_student_id:studentId
+    }
+  );
+
+  if(error){
+    console.error(
+      'Unable to mark messages as read:',
+      error
+    );
+  }
+
+  await loadTeacherMessages();
+}
+
+function renderTeacherConversation(studentId){
+  const box=document.getElementById('teacherConversation');
+  const title=document.getElementById('teacherConversationTitle');
+
+  if(!box)return;
+
+  const messages=teacherMessageRows
+    .filter(m=>m.student_id===studentId)
+    .sort(
+      (a,b)=>
+        new Date(a.created_at)-new Date(b.created_at)
+    );
+
+  if(!messages.length){
+    box.innerHTML='<div class="empty">No messages in this conversation.</div>';
+    return;
+  }
+
+  const first=messages[0];
+
+  const name=
+    [first.student_first_name,first.student_last_name]
+      .filter(Boolean)
+      .join(' ')
+      .trim()||'Student';
+
+  if(title){
+    title.textContent='Conversation with '+name;
+  }
+
+  box.innerHTML=`
+
+    <div style="max-height:360px;overflow-y:auto;padding:8px 4px">
+
+      ${messages.map(m=>{
+
+        const teacher=m.sender_role==='teacher';
+
+        return `
+          <div style="
+            margin-bottom:12px;
+            display:flex;
+            justify-content:${teacher?'flex-end':'flex-start'};
+          ">
+
+            <div style="
+              max-width:78%;
+              padding:12px 14px;
+              border:1px solid #d9e2ef;
+              border-radius:12px;
+              background:${teacher?'#eef4ff':'#fffaf0'};
+            ">
+
+              <div style="font-weight:800;margin-bottom:4px">
+                ${teacher?'You':esc(name)}
+              </div>
+
+              <div style="white-space:pre-wrap">
+                ${esc(m.message)}
+              </div>
+
+              <div class="small" style="margin-top:6px">
+                ${esc(m.created_at||'')}
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join('')}
+
+    </div>
+
+    <div style="margin-top:14px">
+
+      <textarea
+        id="teacherReplyMessage"
+        class="select"
+        rows="4"
+        maxlength="2000"
+        placeholder="Type your reply..."
+        style="width:100%;resize:vertical"
+      ></textarea>
+
+      <div style="margin-top:10px;text-align:right">
+        <button
+          type="button"
+          class="btn primary"
+          onclick="sendTeacherReply('${esc(studentId)}')"
+        >
+          Send Reply
+        </button>
+      </div>
+
+    </div>
+  `;
+}
+
+async function sendTeacherReply(studentId){
+  const input=document.getElementById('teacherReplyMessage');
+
+  if(!input)return;
+
+  const message=input.value.trim();
+
+  if(!message){
+    alert('Please enter a message.');
+    return;
+  }
+
+  if(!authSession){
+    alert('Please sign in as a teacher.');
+    return;
+  }
+
+  const {data:result,error}=await supabaseClient.rpc(
+    'send_teacher_message',
+    {
+      p_student_id:studentId,
+      p_message:message
+    }
+  );
+
+  if(error){
+    alert(
+      'Unable to send reply: '+error.message
+    );
+    return;
+  }
+
+  if(!result||!result.length){
+    alert('The reply was not recorded.');
+    return;
+  }
+
+  input.value='';
+
+  await loadTeacherMessages();
+
+  renderTeacherConversation(studentId);
+}
+  function renderAll(){
+renderClassSelects();renderStudents();renderClasses();renderGroups();renderActivities();renderAwardStudents();renderAwardLock();renderHistory();renderMarket();renderPurchases();renderReports();syncHistorySelectors();syncPortalSelectors();save();
+}
+function renderClassSelects(){const opts=Object.keys(data.classes).map(c=>`<option value="${esc(c)}" ${c===data.currentClass?'selected':''}>${esc(c)}</option>`).join('');const a=document.getElementById('classSelect');a.innerHTML=opts;a.onchange=()=>{data.currentClass=a.value;selectedIds=[];renderAll()};const b=document.getElementById('awardClassSelect');b.innerHTML=opts;b.value=data.currentClass;b.onchange=()=>{data.currentClass=b.value;selectedIds=[];renderAll()};const r=document.getElementById('reportClass');r.innerHTML=opts;r.value=data.currentClass;const h=document.getElementById('historyClass');if(h){h.innerHTML=opts;h.value=data.currentClass;h.onchange=()=>syncHistorySelectors()};const pc=document.getElementById('portalClass');if(pc){pc.innerHTML=opts;pc.value=data.currentClass;pc.onchange=()=>syncPortalSelectors()}}
+function renderStudents(){
+  const cls=current();
+  if(!cls)return;
+
+  document.getElementById('classTitle').textContent='Class '+data.currentClass;
+
+  const sorted=[...cls.students].sort(
+    (a,b)=>b.points-a.points||a.name.localeCompare(b.name)
+  );
+
+  document.getElementById('studentRows').innerHTML=
+    sorted.length
+      ? sorted.map((s,i)=>{
+          const status=
+            s.points>=200?'Champion':
+            s.points>=150?'Gold':
+            s.points>=100?'Silver':
+            s.points>=50?'Bronze':
+            '—';
+
+          return `
+            <tr>
+              <td>${i+1}</td>
+
+              <td>
+                <button class="btn" onclick="openStudentHistory('${esc(s.id)}')">
+                  ${esc(s.name)}
+                </button>
+              </td>
+
+              <td class="points">${s.points}</td>
+
+              <td>
+                ${status}
+
+                <span class="menu-wrap">
+                  <button
+                    class="btn menu-btn"
+                    onclick="toggleMenu('studentMenu_${s.id}')"
+                  >
+                    ...
+                  </button>
+
+                  <span
+                    id="studentMenu_${s.id}"
+                    class="menu hidden"
+                  >
+                    <button
+                      onclick="openStudentCode('${esc(s.id)}');closeAllMenus()"
+                    >
+                      Generate / Regenerate Access Code
+                    </button>
+
+                    <button
+                      onclick="editStudent('${esc(s.id)}');closeAllMenus()"
+                    >
+                      Edit Student
+                    </button>
+
+                    <button
+                      class="menu-danger"
+                      onclick="deactivateStudent('${esc(s.id)}');closeAllMenus()"
+                    >
+                      Deactivate Student
+                    </button>
+                  </span>
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('')
+      : `<tr>
+          <td colspan="4" class="empty">
+            No students yet. Add your first student.
+          </td>
+        </tr>`;
+
+  const total=cls.students.reduce(
+    (a,s)=>a+s.points,
+    0
+  );
+
+  document.getElementById('classPoints').textContent=total;
+  document.getElementById('studentCount').textContent=cls.students.length;
+  document.getElementById('classAverage').textContent=
+    cls.students.length
+      ? (total/cls.students.length).toFixed(1)
+      : '0';
+}
+async function editStudent(id){
+  const cls=current();
+
+  if(!cls)return;
+
+  const student=cls.students.find(
+    s=>s.id===id
+  );
+
+  if(!student)return;
+
+  openModal(
+    'Edit Student',
+    `<div class="formrow">
+      <label>First name</label>
+      <input
+        id="editStudentFirstName"
+        value="${esc(student.first_name||student.name.split(' ')[0]||'')}"
+        autofocus
+      >
+    </div>
+
+    <div class="formrow">
+      <label>Last name</label>
+      <input
+        id="editStudentLastName"
+        value="${esc(student.last_name||student.name.split(' ').slice(1).join(' ')||'')}"
+      >
+    </div>`,
+    async()=>{
+      const first=document
+        .getElementById('editStudentFirstName')
+        .value
+        .trim();
+
+      const last=document
+        .getElementById('editStudentLastName')
+        .value
+        .trim();
+
+      if(!first){
+        return alert('Please enter the student first name.');
+      }
+
+      const {error}=await supabaseClient
+        .from('students')
+        .update({
+          first_name:first,
+          last_name:last
+        })
+        .eq('id',id);
+
+      if(error){
+        return alert(
+          'Could not update student: '+error.message
+        );
+      }
+
+      closeModal();
+      await loadCloudClasses();
+      showTab('students');
+    },
+    'Save Changes'
+  );
+}
+async function deactivateStudent(id){
+  const cls=current();
+
+  if(!cls)return;
+
+  const student=cls.students.find(
+    s=>s.id===id
+  );
+
+  if(!student)return;
+
+  if(!confirm(
+    `Deactivate ${student.name}? This will remove the student from the active class list, but their points, history, messages and records will be preserved.`
+  )){
+    return;
+  }
+
+  const {error}=await supabaseClient
+    .from('students')
+    .update({
+      active:false
+    })
+    .eq('id',id);
+
+  if(error){
+    return alert(
+      'Could not deactivate student: '+error.message
+    );
+  }
+
+  await loadCloudClasses();
+  showTab('students');
+}
+  async function openStudentCode(id){
+  const cls=current();
+
+  if(!cls)return;
+
+  const student=cls.students.find(
+    s=>s.id===id
+  );
+
+  if(!student)return;
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'generate_student_access_code',
+    {p_student_id:id}
+  );
+
+  if(error){
+    alert(
+      'Unable to generate the student access code: '+
+      error.message
+    );
+    return;
+  }
+
+  const accessCode=rows?.[0]?.student_code;
+
+  if(!accessCode){
+    alert(
+      'No student access code was returned.'
+    );
+    return;
+  }
+
+  openModal(
+    'Student Access Code',
+    `<div class="notice">
+      <strong>${esc(student.name)}</strong>
+      <br><br>
+      A new access code has been generated.
+      The previous code is no longer valid.
+    </div>
+
+    <div style="margin-top:16px;padding:20px;border:2px dashed #c99700;border-radius:12px;text-align:center;background:#fffaf0">
+      <div class="small">Student Access Code</div>
+
+      <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">
+        ${esc(accessCode)}
+      </div>
+    </div>
+
+    <div class="footer-note" style="margin-top:14px">
+      Give this code to the student. Keep it private.
+    </div>`,
+    closeModal,
+'Done',
+true
+  );
+}function setScope(next){scope=next;selectedIds=[];['Individual','Multiple','All'].forEach(x=>{const id='scope'+x;document.getElementById(id).classList.toggle('active',x.toLowerCase()===next)});renderAwardStudents()}
+function renderAwardStudents(){const cls=current();if(!cls)return;let arr=[...cls.students];const q=(document.getElementById('studentSearch')?.value||'').toLowerCase();if(q)arr=arr.filter(s=>s.name.toLowerCase().includes(q));const allIds=cls.students.map(s=>s.id);if(scope==='all')selectedIds=[...allIds];if(scope==='individual'&&selectedIds.length>1)selectedIds=[selectedIds[0]];document.getElementById('selectionInfo').textContent=scope==='all'?`All ${cls.students.length} students selected`:scope==='individual'?`${selectedIds.length?1:0} student selected`:`${selectedIds.length} students selected`;document.getElementById('awardStudents').innerHTML=arr.length?arr.map(s=>`<label class="student-row"><input class="check" data-student-id="${esc(s.id)}" type="checkbox" ${selectedIds.includes(s.id)?'checked':''} ${scope==='all'?'disabled':''} onchange="toggleStudent('${s.id}')"><span class="rank">#${cls.students.slice().sort((a,b)=>b.points-a.points).findIndex(x=>x.id===s.id)+1}</span><span class="student-name">${esc(s.name)}</span><strong>${s.points}</strong></label>`).join(''):`<div class="empty">No matching students.</div>`}
+function setPunctualityScope(next){
+  scope=next;
+  selectedIds=[];
+
+  const allBtn=document.getElementById('punctualityAllBtn');
+  const multipleBtn=document.getElementById('punctualityMultipleBtn');
+
+  if(allBtn)allBtn.classList.toggle('active',next==='all');
+  if(multipleBtn)multipleBtn.classList.toggle('active',next==='multiple');
+
+  renderAwardStudents();
+
+  const info=document.getElementById('punctualitySelectionInfo');
+  const cls=current();
+
+  if(info&&cls){
+    info.textContent=next==='all'
+      ? `All ${cls.students.length} students selected`
+      : '0 students selected';
+  }
+}
+function selectPunctualityStatus(status,points){
+  window.punctualityStatus={status,points};
+
+  const ids={
+    'On Time':'punctualityOnTimeBtn',
+    'Late':'punctualityLateBtn',
+    'Absent':'punctualityAbsentBtn',
+    'Excused':'punctualityExcusedBtn'
+  };
+
+  Object.values(ids).forEach(id=>{
+    const btn=document.getElementById(id);
+    if(btn){
+      btn.style.outline='';
+      btn.style.outlineOffset='';
+    }
+  });
+
+  const selected=document.getElementById(ids[status]);
+  if(selected){
+    selected.style.outline='3px solid #2457a6';
+    selected.style.outlineOffset='2px';
+  }
+}
+async function applyPunctuality(){
+  if(awardLocked){
+    alert('Award Points is locked. Unlock it first.');
+    return;
+  }
+  if(awardBusy)return;
+  if(!authSession){
+    alert('Please sign in as the teacher first.');
+    return;
+  }
+
+  const cls=current();
+  if(!cls||!cls.id){
+    alert('Please select a cloud class first.');
+    return;
+  }
+
+  const targets=getSelected();
+  if(!targets.length){
+    alert('Please select at least one student.');
+    return;
+  }
+
+  const status=window.punctualityStatus||{status:'On Time',points:2};
+
+  try{
+    awardBusy=true;
+
+   const studentIds=targets.map(s=>s.id);
+
+const {error}=await supabaseClient.rpc('record_student_punctuality',{
+  p_student_ids:studentIds,
+  p_class_id:cls.id,
+  p_status:status.status,
+  p_points:status.points,
+  p_punctuality_date:new Date().toISOString().slice(0,10)
+});
+
+if(error)throw error;
+    alert(`Punctuality recorded for ${targets.length} student${targets.length===1?'':'s'}.`);
+    renderAwardStudents();
+  }catch(error){
+    console.error(error);
+    alert('Unable to record punctuality: '+(error.message||error));
+  }finally{
+    awardBusy=false;
+  }
+}
+function toggleStudent(id){if(scope==='all')return;if(scope==='individual')selectedIds=[id];else selectedIds=selectedIds.includes(id)?selectedIds.filter(x=>x!==id):[...selectedIds,id];renderAwardStudents();const info=document.getElementById('punctualitySelectionInfo');if(info){const cls=current();info.textContent=scope==='all'?`All ${cls.students.length} students selected`:selectedIds.length?`${selectedIds.length} student${selectedIds.length===1?'':'s'} selected`:'Select students';}}
+function getSelected(){const cls=current();if(!cls)return[];const domIds=[...document.querySelectorAll('#awardStudents input.check:checked')].map(el=>el.dataset.studentId).filter(Boolean);if(domIds.length){selectedIds=[...new Set(domIds)];if(scope==='all')selectedIds=[...cls.students.map(s=>s.id)];}return cls.students.filter(s=>selectedIds.includes(s.id))}
+async function applyAward(amount,reason){
+ if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
+ if(awardBusy)return;
+ if(!authSession){alert('Please sign in as the teacher first.');return;}
+ const cls=current();
+ if(!cls||!cls.id){alert('Please select a cloud class first.');return;}
+
+ const targets=getSelected();
+ if(!targets.length){
+   renderAwardStudents();
+   return alert('Please select at least one student.');
+ }
+
+ const deltas=targets.map(s=>({
+   studentId:s.id,
+   name:s.name,
+   before:Number(s.points)||0,
+   after:Math.max(0,(Number(s.points)||0)+amount),
+   delta:Math.max(0,(Number(s.points)||0)+amount)-(Number(s.points)||0)
+ })).filter(d=>d.delta!==0);
+
+ if(!deltas.length)return alert('No points were changed. The selected students are already at 0 points.');
+
+ awardBusy=true;
+ const buttons=[...document.querySelectorAll('.action')];
+ buttons.forEach(b=>b.disabled=true);
+
+ try{
+   const stamp=new Date().toISOString();
+   const rows=deltas.map(d=>({
+     student_id:d.studentId,
+     teacher_id:authSession.user.id,
+     points:d.delta,
+     action_name:reason,
+     action_type:amount>0?'positive':'negative',
+     reason:reason,
+     source:'teacher',
+     created_at:stamp
+   }));
+
+   const {error}=await supabaseClient.from('point_transactions').insert(rows);
+   if(error){alert('Could not save points to Supabase: '+error.message);return;}
+
+   deltas.forEach(d=>{
+     const s=cls.students.find(x=>x.id===d.studentId);
+     if(s)s.points=d.after;
+   });
+   recordPointAction(reason,deltas,stamp);
+   renderAwardStudents();
+
+   const totalStudents=deltas.length;
+   const totalPoints=deltas.reduce((sum,d)=>sum+Math.abs(Number(d.delta)||0),0);
+   const verb=amount>0?'added to':'deducted from';
+   const unit=totalPoints===1?'point':'points';
+   const targetText=totalStudents===1?deltas[0].name:`${totalStudents} students`;
+   alert(`✓ ${totalPoints} ${unit} ${verb} ${targetText}.`);
+
+   // Refresh cloud balances in the background, but keep the current student selection.
+   const keepSelection=[...selectedIds];
+   await loadCloudClasses();
+   selectedIds=keepSelection.filter(id=>current()?.students.some(s=>s.id===id));
+   renderAwardStudents();
+ }finally{
+   awardBusy=false;
+   buttons.forEach(b=>b.disabled=false);
+ }
+}
+
+function applyCustom(sign){
+ if(awardLocked){alert('Award Points is locked. Unlock it first.');return}
+ const id=sign>0?'customPlus':'customMinus';
+ const n=Math.floor(Number(document.getElementById(id).value));
+ if(!Number.isFinite(n)||n<1)return alert('Enter a valid point amount.');
+ applyAward(sign*n,sign>0?'Custom Positive Adjustment':'Custom Negative Adjustment');
+}
+
+function recordPointAction(reason,deltas,stamp){
+ const action={id:Date.now(),date:stamp||new Date().toISOString(),className:data.currentClass,reason,deltas};
+ data.history.unshift(action);
+ data.history=data.history.slice(0,200);
+ deltas.forEach(d=>data.activity.unshift({
+   id:'a_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),
+   date:action.date,
+   className:data.currentClass,
+   studentId:d.studentId,
+   student:d.name,
+   type:'points',
+   action:reason,
+   delta:d.delta,
+   before:d.before,
+   after:d.after
+ }));
+ data.activity=data.activity.slice(0,1000);
+ data.lastPointAction=action;
+}
+
+async function undoLastPointAction(){
+ if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
+ if(awardBusy)return;
+ if(!authSession){alert('Please sign in as the teacher first.');return;}
+
+ const a=data.lastPointAction;
+ if(!a)return alert('There is no point action to undo.');
+ if(!confirm(`Undo "${a.reason}" for ${a.deltas.length} student${a.deltas.length===1?'':'s'}?`))return;
+
+ const cls=data.classes[a.className];
+ if(!cls||!cls.id)return alert('The cloud class is no longer available.');
+
+ const reversible=a.deltas.filter(d=>Number(d.delta)!==0);
+ if(!reversible.length)return alert('There is no cloud point change to undo.');
+
+ awardBusy=true;
+ const stamp=new Date().toISOString();
+ const rows=reversible.map(d=>({
+   student_id:d.studentId,
+   teacher_id:authSession.user.id,
+   points:-Number(d.delta),
+   action_name:'Undo: '+a.reason,
+   action_type:'undo',
+   reason:'Undo: '+a.reason,
+   source:'teacher',
+   created_at:stamp
+ }));
+
+ try{
+   const {error}=await supabaseClient.from('point_transactions').insert(rows);
+   if(error){alert('Could not save the undo to Supabase: '+error.message);return;}
+
+   // Update the visible UI immediately from the confirmed cloud write.
+   reversible.forEach(d=>{
+     const s=cls.students.find(x=>x.id===d.studentId);
+     if(s)s.points=d.before;
+     data.activity.unshift({
+       id:'a_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),
+       date:stamp,
+       className:a.className,
+       studentId:d.studentId,
+       student:d.name,
+       type:'points',
+       action:'Undo: '+a.reason,
+       delta:-Number(d.delta),
+       before:d.after,
+       after:d.before
+     });
+   });
+
+   data.activity=data.activity.slice(0,1000);
+   data.history=data.history.filter(x=>x.id!==a.id);
+   data.lastPointAction=data.history.find(x=>x.className===a.className)||null;
+
+   // Render immediately so the teacher sees the reversal without refreshing.
+   renderStudents();
+   renderAwardStudents();
+   renderHistory();
+   renderReports();
+
+   alert(`Last point action has been undone successfully for ${reversible.length} student${reversible.length===1?'':'s'}.`);
+
+   // Reconcile the UI with the authoritative cloud balance in the background.
+   const keepSelection=[...selectedIds];
+   await loadCloudClasses();
+   selectedIds=keepSelection.filter(id=>current()?.students.some(s=>s.id===id));
+   renderAwardStudents();
+ }finally{
+   awardBusy=false;
+ }
+}
+
+async function loadCloudGroups(){
+ if(!authSession)return;
+ const selectedClassId=document.getElementById('groupClassSelect')?.value||current()?.id||'';
+ let groupQuery=supabaseClient.from('groups').select('*').order('created_at',{ascending:true});
+ if(selectedClassId) groupQuery=groupQuery.eq('class_id',selectedClassId);
+ const {data:rows,error}=await groupQuery;
+ if(error){showCloudStatus('Groups could not be loaded: '+error.message,true);return;}
+ const ids=(rows||[]).map(g=>g.id); let memberships=[];
+ if(ids.length){
+   const {data:mr,error:me}=await supabaseClient.from('group_members').select('*').in('group_id',ids);
+   if(me){
+     // Group records are still valid even if membership permissions are not ready yet.
+     showCloudStatus('Groups loaded. Group membership access still needs configuration: '+me.message,true);
+   } else memberships=mr||[];
+ }
+ cloudGroups=(rows||[]).map(g=>({id:g.id,classId:g.class_id,name:g.name,description:g.description||'',members:memberships.filter(m=>m.group_id===g.id).map(m=>m.student_id),createdAt:g.created_at}));
+ renderGroups();
+}
+function syncGroupClassSelect(){const el=document.getElementById('groupClassSelect');if(!el)return;const previous=el.value;const opts=cloudClasses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');el.innerHTML=opts;const wanted=cloudClasses.some(c=>c.id===previous)?previous:(current()?.id||cloudClasses[0]?.id||'');if(wanted)el.value=wanted;el.onchange=()=>renderGroups();}
+function renderGroups(){const el=document.getElementById('groupsList');if(!el)return;syncGroupClassSelect();if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to manage your cloud groups.</div>';return;}if(!cloudClasses.length){el.innerHTML='<div class="group-empty">Create a class first before creating student groups.</div>';return;}const classId=document.getElementById('groupClassSelect')?.value||current()?.id;const cls=cloudClasses.find(c=>c.id===classId);const groups=cloudGroups.filter(g=>g.classId===classId);if(!groups.length){el.innerHTML='<div class="group-empty"><strong>No groups yet.</strong><br>Create your first group for this class.</div>';return;}el.innerHTML='<div class="group-grid">'+groups.map(g=>{const names=g.members.map(id=>cls?.students.find(s=>s.id===id)?.name).filter(Boolean);return `<div class="group-card"><div class="summary-title"><div><h3>👥 ${esc(g.name)}</h3><div class="small">${esc(g.description||'No description')}</div></div><strong>${names.length}</strong></div><div class="small">student${names.length===1?'':'s'}</div><div class="group-members">${names.length?names.map(n=>`<span class="member-chip">${esc(n)}</span>`).join(''):'<span class="small">No students assigned yet.</span>'}</div><div class="group-actions"><button class="btn" onclick="editGroup('${esc(g.id)}')">✏️ Edit</button><button class="btn" onclick="manageGroupMembers('${esc(g.id)}')">👥 Members</button><button class="btn danger" onclick="deleteGroup('${esc(g.id)}')">🗑️ Delete</button></div></div>`;}).join('')+'</div>';}
+async function refreshGroups(){await loadCloudGroups();}
+function openCreateGroup(){if(!authSession)return showTab('account');const classId=document.getElementById('groupClassSelect')?.value||current()?.id;const cls=cloudClasses.find(c=>c.id===classId);if(!cls)return alert('Please select a class first.');openModal('Create Student Group',`<div class="formrow"><label>Class</label><input value="${esc(cls.name)}" disabled></div><div class="formrow"><label>Group name</label><input id="newGroupName" placeholder="e.g. Group A" autofocus></div><div class="formrow"><label>Description (optional)</label><input id="newGroupDescription" placeholder="e.g. Problem-solving team"></div>`,async()=>{const name=document.getElementById('newGroupName').value.trim();const description=document.getElementById('newGroupDescription').value.trim();if(!name)return alert('Please enter a group name.');if(cloudGroups.some(g=>g.classId===classId&&g.name.toLowerCase()===name.toLowerCase()))return alert('That group already exists in this class.');const {error}=await supabaseClient.from('groups').insert({class_id:classId,name,description:description||null});if(error)return alert('Could not create group: '+error.message);closeModal();await loadCloudGroups();alert(`✓ Group "${name}" created successfully.`);});}
+function groupById(id){return cloudGroups.find(g=>g.id===id)||null}
+function editGroup(id){const g=groupById(id);if(!g)return;openModal('Edit Student Group',`<div class="formrow"><label>Group name</label><input id="editGroupName" value="${esc(g.name)}"></div><div class="formrow"><label>Description</label><input id="editGroupDescription" value="${esc(g.description||'')}"></div>`,async()=>{const name=document.getElementById('editGroupName').value.trim();const description=document.getElementById('editGroupDescription').value.trim();if(!name)return alert('Please enter a group name.');const {error}=await supabaseClient.from('groups').update({name,description:description||null}).eq('id',g.id);if(error)return alert('Could not update group: '+error.message);closeModal();await loadCloudGroups();alert('✓ Group updated successfully.');});}
+async function deleteGroup(id){const g=groupById(id);if(!g)return;if(!confirm(`Delete group "${g.name}"? Student records will remain in the class.`))return;const {error}=await supabaseClient.from('groups').delete().eq('id',g.id);if(error)return alert('Could not delete group: '+error.message);await loadCloudGroups();alert(`✓ Group "${g.name}" deleted successfully.`);}
+function manageGroupMembers(id){const g=groupById(id);if(!g)return;const cls=cloudClasses.find(c=>c.id===g.classId);if(!cls)return;const body=`<div class="small" style="margin-bottom:10px">Select the students who belong to <strong>${esc(g.name)}</strong>. A student may belong to more than one group.</div><div class="member-check-list">${cls.students.map(s=>`<label class="member-check"><input type="checkbox" class="group-member-check" value="${esc(s.id)}" ${g.members.includes(s.id)?'checked':''}> <span>${esc(s.name)}</span></label>`).join('')}</div>`;openModal('Manage Group Members',body,async()=>{const ids=[...document.querySelectorAll('.group-member-check:checked')].map(x=>x.value);const {error:de}=await supabaseClient.from('group_members').delete().eq('group_id',g.id);if(de)return alert('Could not update group members: '+de.message);if(ids.length){const rows=ids.map(student_id=>({group_id:g.id,student_id}));const {error:ie}=await supabaseClient.from('group_members').insert(rows);if(ie)return alert('Could not save group members: '+ie.message);}closeModal();await loadCloudGroups();alert(`✓ ${ids.length} student${ids.length===1?'':'s'} assigned to "${g.name}".`);});}
+
+async function loadCloudActivities(){
+ if(!authSession)return;
+ const classId=document.getElementById('activityClassSelect')?.value||current()?.id||'';
+ let q=supabaseClient.from('class_activities').select('*').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
+ if(classId)q=q.eq('class_id',classId);
+ const {data:rows,error}=await q;
+ if(error){
+   const el=document.getElementById('activitiesList');
+   if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>'+esc(error.message)+'</div>';
+   return;
+ }
+ cloudActivities=(rows||[]).map(a=>({id:a.id,classId:a.class_id,type:a.activity_type||a.type,title:a.title,instructions:a.description||a.instructions||'',points:Number(a.points)||0,status:a.status||'draft',createdBy:a.teacher_id,createdAt:a.created_at}));
+ renderActivities();
+}
+function syncActivityClassSelect(){
+ const el=document.getElementById('activityClassSelect');if(!el)return;
+ const previous=el.value;
+ el.innerHTML=cloudClasses.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');
+ const wanted=cloudClasses.some(c=>c.id===previous)?previous:(current()?.id||cloudClasses[0]?.id||'');
+ if(wanted)el.value=wanted;
+ el.onchange=()=>loadCloudActivities();
+}
+function activityTypeLabel(type){return type==='live_task'?'Live Task':'Activity'}function activityStatusLabel(status){return status==='live'?'LIVE':status==='closed'?'CLOSED':'DRAFT'}
+function renderActivities(){
+ const el=document.getElementById('activitiesList');if(!el)return;
+ if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to manage cloud activities.</div>';return;}
+ if(!cloudClasses.length){el.innerHTML='<div class="group-empty">Create a class first before creating an activity.</div>';return;}
+ syncActivityClassSelect();
+ const classId=document.getElementById('activityClassSelect')?.value||current()?.id;
+ const rows=cloudActivities.filter(a=>a.classId===classId);
+ if(!rows.length){el.innerHTML='<div class="group-empty"><strong>No activities yet.</strong><br>Create your first Live Task, Live Assignment or Live Quiz.</div>';return;}
+ el.innerHTML='<div class="group-grid">'+rows.map(a=>{
+   const tag=a.status==='live'?'plus':a.status==='closed'?'minus':'';
+   return '<div class="group-card"><div class="summary-title"><div><h3>'+activityTypeLabel(a.type)+'</h3><div class="small">'+esc(a.title)+'</div></div><span class="tag '+tag+'">'+activityStatusLabel(a.status)+'</span></div><div class="small" style="margin-top:10px">'+esc(a.instructions||'No instructions provided.')+'</div><div style="margin-top:10px"><strong>'+a.points+' points</strong> <span class="small">available</span></div><div class="group-actions" style="margin-top:14px">'+(a.status==='draft'?'<button class="btn primary" onclick="launchActivity(\''+esc(a.id)+'\')">▶ Launch</button>':'')+(a.status==='live'?'<button class="btn negative" onclick="closeActivity(\''+esc(a.id)+'\')">■ Close</button>':'')+'<button class="btn primary" onclick="monitorActivity(\''+esc(a.id)+'\')">👀 Monitor</button><button class="btn" onclick="viewActivityDetails(\''+esc(a.id)+'\')">View</button>'+(a.status==='draft'?'<button class="btn danger" onclick="deleteActivity(\''+esc(a.id)+'\')">🗑️ Delete</button>':'')+'</div></div>';
+ }).join('')+'</div>';
+}
+function refreshActivities(){loadCloudActivities()}
+function openGameLauncher(){
+  if(!authSession)return showTab('account');
+
+  const classId=document.getElementById('activityClassSelect')?.value||current()?.id;
+  const cls=cloudClasses.find(c=>c.id===classId);
+
+  if(!cls)return alert('Please select a class first.');
+  if(!cls.students.length)return alert('This class has no active students.');
+
+const studentsHtml=cls.students.map(s=>`
+  <label class="student-row" data-name="${esc(s.name.toLowerCase())}">
+    <input type="checkbox"
+           class="game-student-check"
+           value="${esc(s.id)}"
+           onchange="document.getElementById('gameSelectionInfo').textContent=document.querySelectorAll('.game-student-check:checked').length+(document.querySelectorAll('.game-student-check:checked').length===1?' student selected':' students selected')">
+    <span class="student-name">${esc(s.name)}</span>
+    <strong>${s.points}</strong>
+  </label>
+`).join('');
+
+  openModal(
+    'Start Temmy Smart Game',
+    `<div class="formrow">
+       <label>Class</label>
+       <input value="${esc(cls.name)}" disabled>
+     </div>
+     <div class="formrow">
+       <label>Game</label>
+       <select id="gameSelect" class="select">
+         <option value="grade3-temmy-number-challenge">Temmy Number Challenge</option>
+       </select>
+     </div>
+     <div class="small" style="margin:10px 0">
+       Select the student(s) who will receive the game session.
+     </div>
+     <div class="controls" style="margin:10px 0;gap:8px;flex-wrap:wrap">
+  <input
+    class="search"
+    placeholder="🔎 Search students..."
+    oninput="const q=this.value.toLowerCase().trim();document.querySelectorAll('#gameStudentList .student-row').forEach(row=>row.style.display=(row.dataset.name||'').includes(q)?'':'none')"
+  >
+  <button
+    type="button"
+    class="btn"
+onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked=true);const n=document.querySelectorAll('.game-student-check:checked').length;document.getElementById('gameSelectionInfo').textContent=n+(n===1?' student selected':' students selected')"  >
+    ✅ Select All
+  </button>
+  <button
+    type="button"
+    class="btn"
+    onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked=false);document.getElementById('gameSelectionInfo').textContent='0 students selected'"
+  >
+    ↩ Clear All
+  </button>
+</div>
+     <div class="selection-info" id="gameSelectionInfo">
+       0 students selected
+     </div>
+     <div class="student-list" id="gameStudentList">
+       ${studentsHtml}
+     </div>
+     <div class="footer-note" style="margin-top:10px">
+       Each selected student receives a secure 30-minute game session.
+     </div>`,
+    async()=>{
+      const gameId=document.getElementById('gameSelect')?.value;
+      const ids=[...document.querySelectorAll('.game-student-check:checked')].map(el=>el.value);
+
+      if(!ids.length)return alert('Please select at least one student.');
+
+      const selected=cls.students.filter(s=>ids.includes(s.id));
+      const results=[];
+
+      for(const student of selected){
+        const {data,error}=await supabaseClient.rpc(
+          'start_teacher_game_session',
+          {
+            p_student_id:student.id,
+            p_game_id:gameId
+          }
+        );
+
+        if(error){
+          results.push({name:student.name,error:error.message});
+          continue;
+        }
+
+        const row=data?.[0];
+
+        if(!row?.session_token){
+          results.push({name:student.name,error:'No game session was returned.'});
+          continue;
+        }
+
+        const gameUrl=new URL(
+          'https://games.stgloriousschool.org/games/temmy-number-challenge.html'
+        );
+
+        gameUrl.searchParams.set('session',row.session_token);
+
+        results.push({
+          name:student.name,
+          url:gameUrl.toString()
+        });
+      }
+
+      const success=results.filter(r=>r.url);
+      const failed=results.filter(r=>r.error);
+
+      document.getElementById('modalTitle').textContent='Game Sessions Ready';
+
+      document.getElementById('modalBody').innerHTML=
+        (success.length
+          ? `<div class="notice">
+               <strong>${success.length} game session${success.length===1?'':'s'} created successfully.</strong>
+             </div>
+             <div class="group-grid" style="margin-top:12px">
+               ${success.map(r=>`
+                 <div class="group-card">
+                   <div class="summary-title">
+                     <div>
+                       <h3>${esc(r.name)}</h3>
+                       <div class="small">Temmy Number Challenge</div>
+                     </div>
+                     <span class="tag plus">READY</span>
+                   </div>
+                   <div class="group-actions" style="margin-top:14px">
+                     <a class="btn primary"
+                        href="${esc(r.url)}"
+                        target="_blank"
+                        rel="noopener">
+                       Open Game
+                     </a>
+                   </div>
+                 </div>
+               `).join('')}
+             </div>`
+          : '')+
+        (failed.length
+          ? `<div class="notice" style="margin-top:12px;background:#fff0f0;border-color:#e6bcbc">
+               <strong>Some sessions could not be created:</strong><br>
+               ${failed.map(r=>`${esc(r.name)} — ${esc(r.error)}`).join('<br>')}
+             </div>`
+          : '');
+
+      document.getElementById('modalSave').textContent='Done';
+      document.getElementById('modalSave').onclick=closeModal;
+    },
+    'Start Smart Game'
+  );
+}
+  function openCreateActivity(){
+ if(!authSession)return showTab('account');
+ const classId=document.getElementById('activityClassSelect')?.value||current()?.id;
+ const cls=cloudClasses.find(c=>c.id===classId);if(!cls)return alert('Please select a class first.');
+ openModal('Create Learning Activity','<div class="formrow"><label>Class</label><input value="'+esc(cls.name)+'" disabled></div><div class="formrow"><label>Activity type</label><select id="activityType"><option value="live_task">📝 Live Task</select></div><div class="formrow"><label>Title</label><input id="activityTitle" placeholder="e.g. Factors Challenge" autofocus></div><div class="formrow"><label>Instructions</label><textarea id="activityInstructions" rows="4" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px" placeholder="Tell students what they need to do."></textarea></div><div class="formrow"><label>Maximum points</label><input id="activityPoints" type="number" min="1" value="5"></div><div class="notice"><strong>Important:</strong> submitting an activity will not automatically award classroom points. The teacher will review and score the activity first.</div>',async()=>{
+   const type=document.getElementById('activityType').value,title=document.getElementById('activityTitle').value.trim(),instructions=document.getElementById('activityInstructions').value.trim(),points=Math.floor(Number(document.getElementById('activityPoints').value));
+   if(!title)return alert('Please enter an activity title.');
+   if(!Number.isFinite(points)||points<1)return alert('Maximum points must be at least 1.');
+   const payload={class_id:classId,activity_type:type,title,description:instructions||null,points,status:'draft',teacher_id:authSession.user.id};
+   const {error}=await supabaseClient.from('class_activities').insert(payload);
+   if(error)return alert('Could not create activity: '+error.message);
+   closeModal();await loadCloudActivities();alert('✓ Activity "'+title+'" created successfully.');
+ });
+}
+function findActivity(id){return cloudActivities.find(a=>a.id===id)||null}
+async function launchActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Launch "'+a.title+'"? Students will be able to receive the activity when the student portal is connected.'))return;const {error}=await supabaseClient.from('class_activities').update({status:'live'}).eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not launch activity: '+error.message);await loadCloudActivities();alert('✓ "'+a.title+'" is now LIVE.')}
+async function closeActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Close "'+a.title+'"?'))return;const {error}=await supabaseClient.from('class_activities').update({status:'closed'}).eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not close activity: '+error.message);await loadCloudActivities();alert('✓ "'+a.title+'" is now closed.')}
+async function deleteActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Delete "'+a.title+'"? This removes the draft activity from the cloud.'))return;const {error}=await supabaseClient.from('class_activities').delete().eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not delete activity: '+error.message);await loadCloudActivities();alert('✓ Activity deleted.')}
+function viewActivityDetails(id){const a=findActivity(id);if(!a)return;const cls=cloudClasses.find(c=>c.id===a.classId);openModal(activityTypeLabel(a.type)+' — '+a.title,'<div class="notice"><strong>Status:</strong> '+activityStatusLabel(a.status)+'<br><strong>Class:</strong> '+esc(cls?.name||'')+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Instructions</label><div class="card" style="box-shadow:none;border:1px solid #e1e6ee">'+esc(a.instructions||'No instructions provided.')+'</div></div><div class="small">Created: '+esc(a.createdAt||'')+'</div>',closeModal,'Close')}
+
+async function monitorActivity(id){
+ const a=findActivity(id);
+ if(!a||!authSession)return;
+ const cls=cloudClasses.find(c=>c.id===a.classId);
+ const students=cls?.students||[];
+ const {data:records,error}=await supabaseClient.from('student_activity_records').select('id,activity_id,student_id,teacher_id,status,answer,points_awarded,completed_at,notes').eq('activity_id',a.id).eq('teacher_id',authSession.user.id).order('completed_at',{ascending:true});
+ if(error){alert('Could not load activity submissions: '+error.message);return;}
+ const byStudent={};
+ (records||[]).forEach(r=>{byStudent[r.student_id]=r;});
+ const submitted=(records||[]).length;
+ const body='<div class="notice"><strong>Status:</strong> '+activityStatusLabel(a.status)+'<br><strong>Class:</strong> '+esc(cls?.name||'')+'<br><strong>Maximum points:</strong> '+a.points+'<br><strong>Students:</strong> '+students.length+' &nbsp; • &nbsp; <strong>Submitted:</strong> '+submitted+'</div>'+
+   '<div class="small" style="margin:12px 0">Teacher review is required before classroom points are awarded.</div>'+
+   '<div style="display:grid;gap:10px">'+(students.length?students.map(st=>{const r=byStudent[st.id];const state=r?(r.status==='scored'?'Scored':'Submitted'):'Not Submitted';const tag=r&&r.status==='scored'?'plus':r?'':'neutral';const score=r&&r.points_awarded!=null?Number(r.points_awarded):null;return '<div class="card" style="box-shadow:none;border:1px solid #e1e6ee;padding:14px"><div class="summary-title"><div><strong>'+esc(st.name)+'</strong><div class="small">'+state+(score!==null?' • '+score+'/'+a.points+' points':'')+'</div></div><span class="tag '+tag+'">'+state+'</span></div>'+(r?'<div class="small" style="margin-top:10px"><strong>Submitted:</strong> '+esc(r.completed_at||'')+'</div><div style="margin-top:8px;white-space:pre-wrap;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:8px;padding:10px">'+esc(r.answer||'No response text stored.')+'</div><div class="group-actions" style="margin-top:10px"><button class="btn primary" onclick="reviewActivitySubmission(\''+esc(r.id)+'\',\''+esc(a.id)+'\')">'+(r.status==='scored'?'✏️ Edit Score':'📝 Review & Score')+'</button></div>':'<div class="small" style="margin-top:8px">No submission yet.</div>')+'</div>';}).join(''):'<div class="empty">No students found in this class.</div>')+'</div>';
+ openModal('👀 Monitor — '+a.title,body,closeModal,'Close');
+}
+
+async function reviewActivitySubmission(recordId,activityId){
+ const a=findActivity(activityId);
+ if(!a||!authSession)return;
+ const {data:r,error}=await supabaseClient.from('student_activity_records').select('id,student_id,status,answer,points_awarded,completed_at,notes').eq('id',recordId).eq('activity_id',activityId).eq('teacher_id',authSession.user.id).maybeSingle();
+ if(error||!r){alert('Could not load the submission: '+(error?.message||'Submission not found.'));return;}
+ const cls=cloudClasses.find(c=>c.id===a.classId);
+ const student=cls?.students.find(s=>s.id===r.student_id);
+ const currentScore=Number(r.points_awarded)||0;
+ const body='<div class="notice"><strong>Student:</strong> '+esc(student?.name||'Student')+'<br><strong>Activity:</strong> '+esc(a.title)+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Student response</label><div style="white-space:pre-wrap;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:8px;padding:12px;min-height:80px">'+esc(r.answer||'No response text stored.')+'</div></div><div class="formrow"><label>Score (0–'+a.points+')</label><input id="activityScore" type="number" min="0" max="'+a.points+'" step="1" value="'+currentScore+'"></div><div class="formrow"><label>Teacher feedback / notes (optional)</label><textarea id="activityNotes" rows="3" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px">'+esc(r.notes||'')+'</textarea></div><div class="notice"><strong>Point rule:</strong> Only the difference between the new score and the previous score will be added or deducted from the student\'s classroom points.</div>';
+ openModal('📝 Review Submission',body,async()=>{
+   const score=Math.floor(Number(document.getElementById('activityScore').value));
+   const notes=document.getElementById('activityNotes').value.trim();
+   if(!Number.isFinite(score)||score<0||score>a.points)return alert('Score must be between 0 and '+a.points+'.');
+   const delta=score-currentScore;
+   const nowStamp=new Date().toISOString();
+   const {error:updateError}=await supabaseClient.from('student_activity_records').update({status:'scored',points_awarded:score,completed_at:r.completed_at||nowStamp,notes:notes||null}).eq('id',r.id).eq('teacher_id',authSession.user.id);
+   if(updateError)return alert('Could not save the score: '+updateError.message);
+   if(delta!==0){
+     const tx={student_id:r.student_id,teacher_id:authSession.user.id,points:delta,action_name:'Activity Score: '+a.title,action_type:'activity_score',reason:'Activity Score: '+a.title,source:'teacher',created_at:nowStamp};
+     const {error:txError}=await supabaseClient.from('point_transactions').insert(tx);
+     if(txError){
+       await supabaseClient.from('student_activity_records').update({status:r.status||'submitted',points_awarded:currentScore,notes:r.notes||null}).eq('id',r.id).eq('teacher_id',authSession.user.id);
+       return alert('Score was not finalized because the point transaction failed: '+txError.message);
+     }
+   }
+   closeModal();
+   await loadCloudClasses();
+   alert('✓ '+(student?.name||'Student')+' scored '+score+'/'+a.points+'.'+(delta!==0?' Classroom points updated by '+(delta>0?'+':'')+delta+'.':''));
+   await monitorActivity(activityId);
+ },'Save Score');
+}
+
+function renderHistory(){const box=document.getElementById('recentHistory'),list=data.history.filter(h=>h.className===data.currentClass).slice(0,12);const last=data.lastPointAction;if(last&&last.className===data.currentClass)document.getElementById('lastActionBox').innerHTML=`<strong>${esc(last.reason)}</strong><br>${last.deltas.length} student${last.deltas.length===1?'':'s'} • ${esc(last.date)}<br><span class="small">${last.deltas.map(d=>esc(d.name)+' '+(d.delta>=0?'+':'')+d.delta).join(' • ')}</span>`;else document.getElementById('lastActionBox').textContent='No point action recorded for this class.';box.innerHTML=list.length?list.map(h=>`<div style="padding:9px 0;border-bottom:1px solid #edf0f5"><strong>${esc(h.reason)}</strong> <span class="small">• ${esc(h.date)}</span><div class="small">${h.deltas.map(d=>esc(d.name)+' '+(d.delta>=0?'+':'')+d.delta).join(' • ')}</div></div>`).join(''):'<div class="empty">No recent activity.</div>'}
+function openModal(title,body,fn,buttonText='Save',hideCancel=false){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalSave').textContent=buttonText;document.getElementById('modalSave').onclick=fn;const cancelBtn=document.querySelector('#modal .formactions .btn:not(#modalSave)');if(cancelBtn)cancelBtn.style.display=hideCancel?'none':'';document.getElementById('modal').classList.remove('hidden')}function closeModal(){document.getElementById('modal').classList.add('hidden')}
+function closeAllMenus(){document.querySelectorAll('.menu').forEach(m=>m.classList.add('hidden'))}
+function toggleMenu(id){const target=document.getElementById(id);if(!target)return;const wasHidden=target.classList.contains('hidden');closeAllMenus();if(wasHidden)target.classList.remove('hidden')}
+document.addEventListener('click',e=>{if(!e.target.closest('.menu-wrap'))closeAllMenus()});
+
+function openCreateClass(){
+ if(!authSession)return showTab('account');
+ openModal('Create New Class',`<div class="formrow"><label>Class name</label><input id="newClass" placeholder="e.g. 8A_1" autofocus></div><div class="formrow"><label>Description (optional)</label><input id="newClassDescription" placeholder="e.g. Mathematics Class"></div>`,async()=>{
+  const name=document.getElementById('newClass').value.trim();
+  const description=document.getElementById('newClassDescription').value.trim();
+  if(!name)return alert('Please enter a class name.');
+  if(cloudClasses.some(c=>c.name.toLowerCase()===name.toLowerCase()))return alert('That class already exists.');
+  const {data:row,error}=await supabaseClient.from('classes').insert({teacher_id:authSession.user.id,name,description:description||null,active:true}).select().single();
+  if(error)return alert('Could not create class: '+error.message);
+  closeModal();
+  await loadCloudClasses();
+  data.currentClass=name;
+  renderAll();
+  showTab('students');
+ });
+}
+function renderClasses(){
+ const el=document.getElementById('classCards');
+ if(!el)return;
+ if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to load your cloud classes.</div>';return;}
+ if(cloudLoading){el.innerHTML='<div class="notice">Loading your classes from Supabase...</div>';return;}
+ el.innerHTML=cloudClasses.length?cloudClasses.map(c=>{const pts=(c.students||[]).reduce((a,s)=>a+(Number(s.points)||0),0);return `<div class="class-card"><div class="summary-title"><div><h3>🏫 ${esc(c.name)}</h3><div class="small">${c.students.length} students • ${pts} total points</div></div><div class="controls" style="margin:0"><button class="btn primary" onclick="selectClass('${esc(c.name)}')">Open Class</button></div></div></div>`}).join(''):'<div class="empty">No cloud classes yet. Create your first class.</div>';
+}
+function selectClass(name){data.currentClass=name;selectedIds=[];renderAll();showTab('students')}
+async function loadCloudClasses(){
+ if(!authSession)return;
+ cloudLoading=true;renderClasses();
+
+ const {data:rows,error}=await supabaseClient.from('classes').select('*').eq('teacher_id',authSession.user.id).eq('active',true).order('name');
+ if(error){cloudLoading=false;showCloudStatus('Cloud classes could not be loaded: '+error.message,true);return;}
+
+ const {data:txRows,error:txError}=await supabaseClient.from('point_transactions').select('student_id,points,created_at,action_name,action_type,reason,source').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
+ if(txError){cloudLoading=false;showCloudStatus('Classes loaded, but cloud points could not be loaded: '+txError.message,true);return;}
+
+ const totals={};
+ (txRows||[]).forEach(t=>{
+   totals[t.student_id]=(totals[t.student_id]||0)+(Number(t.points)||0);
+ });
+
+ const mapped=[];
+ for(const c of (rows||[])){
+  const {data:students,error:se}=await supabaseClient.from('students').select('*').eq('class_id',c.id).order('first_name');
+  if(se){cloudLoading=false;showCloudStatus('Class loaded, but students could not be loaded: '+se.message,true);return;}
+  mapped.push({
+   id:c.id,
+   name:c.name,
+   description:c.description||'',
+   students:(students||[]).filter(x=>x.active!==false).map(x=>({
+     id:x.id,
+     name:[x.first_name,x.last_name].filter(Boolean).join(' ').trim()||'Unnamed',
+     first_name:x.first_name||'',
+     last_name:x.last_name||'',
+     student_code_hint:x.student_code_hint||'',
+     points:Math.max(0,totals[x.id]||0),
+     cloud:true
+   }))
+  });
+ }
+
+ cloudClasses=mapped;
+ data.classes={};
+ mapped.forEach(c=>{data.classes[c.name]={id:c.id,students:c.students}});
+ if(!mapped.length)data.currentClass='';
+ else if(!data.classes[data.currentClass])data.currentClass=mapped[0].name;
+
+ cloudLoading=false;
+ cloudReady=true;
+ showCloudStatus('Cloud classes and point balances connected. Points are loaded from Supabase.',false);
+ renderAll();
+ await loadCloudGroups();
+ await loadCloudActivities();
+ await loadCloudMarketplace();
+}
+function showCloudStatus(msg,isError){const el=document.getElementById('cloudStatus');if(!el)return;el.style.display='block';el.textContent=msg;el.style.background=isError?'#fff0f0':'#eef7ff';el.style.borderColor=isError?'#e6bcbc':'#c8def4';}
+async function openAddStudent(){
+  if(!authSession)return showTab('account');
+
+  const cls=current();
+
+  if(!cls||!cls.id){
+    return alert('Create or select a cloud class first.');
+  }
+
+  openModal(
+    'Add Student',
+    `<div class="formrow">
+      <label>First name</label>
+      <input id="studentFirstName" placeholder="First name" autofocus>
+    </div>
+
+    <div class="formrow">
+      <label>Last name</label>
+      <input id="studentLastName" placeholder="Last name">
+    </div>
+
+    <div class="notice">
+      A secure Student Access Code will be generated automatically after the student is added.
+    </div>`,
+    async()=>{
+      const first=document.getElementById('studentFirstName').value.trim();
+      const last=document.getElementById('studentLastName').value.trim();
+      const name=[first,last].filter(Boolean).join(' ');
+
+      if(!first){
+        return alert('Please enter the student first name.');
+      }
+
+      if(
+        cls.students.some(
+          s=>s.name.toLowerCase()===name.toLowerCase()
+        )
+      ){
+        return alert('That student is already in this class.');
+      }
+
+      const {data:student,error}=await supabaseClient
+        .from('students')
+        .insert({
+          class_id:cls.id,
+          first_name:first,
+          last_name:last,
+          active:true
+        })
+        .select('id')
+        .single();
+
+      if(error){
+        return alert('Could not add student: '+error.message);
+      }
+
+      const {data:codeResult,error:codeError}=await supabaseClient.rpc(
+        'generate_student_access_code',
+        {p_student_id:student.id}
+      );
+
+      if(codeError){
+        return alert(
+          'Student was added, but the access code could not be generated: '+
+          codeError.message
+        );
+      }
+
+      const accessCode=codeResult?.[0]?.student_code;
+
+      if(!accessCode){
+        return alert(
+          'Student was added, but no access code was returned.'
+        );
+      }
+
+      closeModal();
+
+      await loadCloudClasses();
+      showTab('students');
+
+      openModal(
+        'Student Added Successfully',
+        `<div class="notice">
+<strong>${esc(name)}</strong> has been added to <strong>${esc(data.currentClass)}</strong>.        </div>
+
+        <div style="margin-top:16px;padding:20px;border:2px dashed #c99700;border-radius:12px;text-align:center;background:#fffaf0">
+          <div class="small">Student Access Code</div>
+          <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">
+            ${esc(accessCode)}
+          </div>
+        </div>
+
+        <div class="footer-note" style="margin-top:14px">
+          Give this code to the student. Keep it private.
+        </div>`,
+()=>closeModal(),'Done',true      );
+    }
+  );
+}
+function renameClass(oldName){openModal('Rename Class',`<div class="formrow"><label>New class name</label><input id="renameClass" value="${esc(oldName)}"></div>`,()=>{const n=document.getElementById('renameClass').value.trim();if(!n)return alert('Please enter a name.');if(n!==oldName&&data.classes[n])return alert('That class already exists.');if(n!==oldName){data.classes[n]=data.classes[oldName];delete data.classes[oldName];data.history.forEach(h=>{if(h.className===oldName)h.className=n});if(data.lastPointAction?.className===oldName)data.lastPointAction.className=n;if(data.currentClass===oldName)data.currentClass=n}closeModal();renderAll()})}
+function deleteClass(name){if(Object.keys(data.classes).length===1)return alert('Keep at least one class.');if(!confirm(`Delete class "${name}" and its students?`))return;delete data.classes[name];data.history=data.history.filter(h=>h.className!==name);if(data.currentClass===name)data.currentClass=Object.keys(data.classes)[0];selectedIds=[];renderAll()}
+async function loadCloudMarketplace(){
+  if(!authSession)return;
+  const {data:rewardRows,error:rewardError}=await supabaseClient.from('marketplace_rewards').select('*').eq('teacher_id',authSession.user.id).eq('active',true).order('created_at',{ascending:true});
+  if(rewardError){const el=document.getElementById('marketItems');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Marketplace items could not be loaded.</strong><br>'+esc(rewardError.message)+'</div>';return;}
+  data.rewards=(rewardRows||[]).map(r=>({id:r.id,name:r.name,description:r.description||'',price:Number(r.price)||0,icon:r.icon||'🎁',active:r.active!==false,stock:r.stock}));
+  const {data:purchaseRows,error:purchaseError}=await supabaseClient.from('purchases').select('id,student_id,teacher_id,reward_id,reward_name,points_spent,created_at').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
+  if(purchaseError){const el=document.getElementById('purchaseList');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Purchase history could not be loaded.</strong><br>'+esc(purchaseError.message)+'</div>';data.purchases=[];}else{const allStudents=Object.values(data.classes||{}).flatMap(cls=>cls.students||[]);data.purchases=(purchaseRows||[]).map(p=>{const student=allStudents.find(s=>s.id===p.student_id);const className=Object.keys(data.classes||{}).find(name=>(data.classes[name].students||[]).some(s=>s.id===p.student_id))||'';return {id:p.id,date:p.created_at,className,studentId:p.student_id,student:student?.name||'Student',item:p.reward_name,cost:Number(p.points_spent)||0};});}
+  renderMarket();renderPurchases();
+}
+function openAddReward(){
+  if(!authSession)return showTab('account');
+  openModal('Create Marketplace Item',`<div class="formrow"><label>Item name</label><input id="rewardName" placeholder="e.g. Homework Pass"></div><div class="formrow"><label>Point price</label><input id="rewardPrice" type="number" min="1" value="20"></div><div class="formrow"><label>Icon</label><input id="rewardIcon" value="🎁"></div>`,async()=>{
+    const name=document.getElementById('rewardName').value.trim(),price=Math.floor(Number(document.getElementById('rewardPrice').value)),icon=document.getElementById('rewardIcon').value.trim()||'🎁';
+    if(!name||!Number.isFinite(price)||price<1)return alert('Enter a valid item name and price.');
+    const {error}=await supabaseClient.from('marketplace_rewards').insert({teacher_id:authSession.user.id,name,description:null,price,icon,active:true,stock:null});
+    if(error)return alert('Could not create marketplace item: '+error.message);
+    closeModal();await loadCloudMarketplace();alert('✓ Marketplace item "'+name+'" created successfully.');
+  });
+}
+function renderMarket(){
+  const el=document.getElementById('marketItems');if(!el)return;
+  if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to manage marketplace rewards.</div>';return;}
+  el.innerHTML=data.rewards.length?data.rewards.map(r=>`<div class="item"><div class="icon">${esc(r.icon)}</div><h3>${esc(r.name)}</h3><div class="price">${r.price} points</div><div style="margin-top:12px"><button class="btn primary" onclick="buyReward('${esc(r.id)}')">Buy for Student</button> <button class="btn negative" onclick="deleteReward('${esc(r.id)}')">Delete</button></div></div>`).join(''):'<div class="empty">No marketplace items yet. Create your first reward.</div>';
+}
+function buyReward(id){
+  const r=data.rewards.find(x=>String(x.id)===String(id)),cls=current(),students=cls?.students||[];
+  if(!r)return alert('Marketplace item not found.');if(!authSession)return showTab('account');if(!cls||!cls.id)return alert('Please select a cloud class first.');if(!students.length)return alert('Add a student first.');
+  openModal('Purchase: '+r.name,`<div class="formrow"><label>Select students</label><div class="scopebar"><button type="button" class="btn" onclick="selectPurchaseAll(true)">🌟 Select All</button><button type="button" class="btn" onclick="selectPurchaseAll(false)">Clear</button></div><div id="purchaseStudents" class="student-list" style="max-height:360px">${students.map(s=>`<label class="student-row"><input class="check purchase-check" type="checkbox" value="${esc(s.id)}"><span class="rank">#${students.slice().sort((a,b)=>b.points-a.points).findIndex(x=>x.id===s.id)+1}</span><span class="student-name">${esc(s.name)}</span><strong>${s.points} pts</strong></label>`).join('')}</div></div><div class="notice">Cost per student: <strong>${r.price} points</strong><br><span class="small">Multiple purchase is all-or-nothing: every selected student must have enough points.</span></div>`,async()=>{
+    const ids=[...document.querySelectorAll('.purchase-check:checked')].map(x=>x.value);if(!ids.length)return alert('Please select at least one student.');
+    const selected=students.filter(s=>ids.includes(s.id)),unable=selected.filter(s=>Number(s.points)<Number(r.price));if(unable.length)return alert('Purchase cannot proceed. These students need more points: '+unable.map(s=>`${s.name} (${s.points})`).join(', '));
+    const stamp=new Date().toISOString();
+    const pointRows=selected.map(s=>({student_id:s.id,teacher_id:authSession.user.id,points:-Number(r.price),action_name:'Marketplace Purchase: '+r.name,action_type:'marketplace_purchase',reason:'Marketplace Purchase: '+r.name,source:'teacher',created_at:stamp}));
+    const {data:savedPointRows,error:pointError}=await supabaseClient.from('point_transactions').insert(pointRows).select('id,student_id,points,action_name');
+    if(pointError)return alert('Purchase was not completed because the points transaction failed: '+pointError.message);
+    if(!savedPointRows||savedPointRows.length!==pointRows.length)return alert('Purchase stopped: Supabase did not confirm every point deduction. No purchase record was created. Please refresh the page and contact the administrator before trying again.');
+    const purchaseRows=selected.map(s=>({student_id:s.id,teacher_id:authSession.user.id,reward_id:r.id,reward_name:r.name,points_spent:Number(r.price),created_at:stamp}));
+    const {error:purchaseError}=await supabaseClient.from('purchases').insert(purchaseRows);
+    if(purchaseError){
+      const rollbackRows=selected.map(s=>({student_id:s.id,teacher_id:authSession.user.id,points:Number(r.price),action_name:'Marketplace Purchase Rollback: '+r.name,action_type:'marketplace_purchase_rollback',reason:'Marketplace purchase record failed; points restored',source:'system',created_at:new Date().toISOString()}));
+      const {error:rollbackError}=await supabaseClient.from('point_transactions').insert(rollbackRows);
+      if(rollbackError)return alert('Purchase record failed and the automatic point rollback also failed. Please stop testing this item and contact the administrator. Details: '+purchaseError.message);
+      await loadCloudClasses();return alert('Purchase could not be completed. The points were restored.');
+    }
+    closeModal();await loadCloudClasses();showTab('purchases');alert(r.name+': '+selected.length+' student'+(selected.length===1?'':'s')+' purchased successfully. '+Number(r.price)+' points deducted per student.');
+  },'Buy');
+}
+function selectPurchaseAll(flag){document.querySelectorAll('.purchase-check').forEach(c=>c.checked=flag)}
+async function deleteReward(id){
+  const r=data.rewards.find(x=>String(x.id)===String(id));if(!r)return;if(!confirm('Delete "'+r.name+'" from the Marketplace?'))return;
+  const {error}=await supabaseClient.from('marketplace_rewards').delete().eq('id',r.id).eq('teacher_id',authSession.user.id);
+  if(error)return alert('Could not delete marketplace item: '+error.message);
+  await loadCloudMarketplace();alert('✓ Marketplace item deleted.');
+}
+function renderPurchases(){
+  const el=document.getElementById('purchaseList');if(!el)return;if(!data.purchases.length){el.innerHTML='<div class="empty">No purchases recorded yet.</div>';return}
+  el.innerHTML='<table class="reward-table"><thead><tr><th>Date & Time</th><th>Class</th><th>Student</th><th>Item</th><th>Cost</th></tr></thead><tbody>'+data.purchases.map(p=>`<tr><td>${esc(p.date)}</td><td>${esc(p.className)}</td><td>${esc(p.student)}</td><td>${esc(p.item)}</td><td>${p.cost}</td></tr>`).join('')+'</tbody></table>';
+}
+function levelFor(points){return points>=200?'🏆 Champion':points>=150?'🥇 Gold':points>=100?'🥈 Silver':points>=50?'🥉 Bronze':'Starting'}
+function nextLevel(points){if(points<50)return {name:'Bronze',need:50};if(points<100)return {name:'Silver',need:100};if(points<150)return {name:'Gold',need:150};if(points<200)return {name:'Champion',need:200};return {name:'Completed',need:200}}
+function renderReports(){const cls=data.classes[document.getElementById('reportClass')?.value]||current();if(!cls)return;const sorted=[...cls.students].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name));const total=cls.students.reduce((a,s)=>a+s.points,0);const bronze=cls.students.filter(s=>s.points>=50).length,silver=cls.students.filter(s=>s.points>=100).length,gold=cls.students.filter(s=>s.points>=150).length,champ=cls.students.filter(s=>s.points>=200).length;document.getElementById('reportBody').innerHTML=`<div class="grid3"><div class="stat"><small>Total Points</small><strong>${total}</strong></div><div class="stat"><small>Average</small><strong>${cls.students.length?(total/cls.students.length).toFixed(1):'0'}</strong></div><div class="stat"><small>Top Student</small><strong style="font-size:20px">${sorted[0]?esc(sorted[0].name):'—'}</strong></div></div><div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px"><h3>🏅 Reward Level Progress</h3><p>🥉 Bronze (50+): <strong>${bronze}</strong> students</p><p>🥈 Silver (100+): <strong>${silver}</strong> students</p><p>🥇 Gold (150+): <strong>${gold}</strong> students</p><p>🏆 Champion (200+): <strong>${champ}</strong> students</p></div><div style="overflow:auto"><table><thead><tr><th>Rank</th><th>Student</th><th>Points</th><th>Level</th></tr></thead><tbody>${sorted.map((s,i)=>`<tr><td>${i+1}</td><td><button class="btn" onclick="openStudentHistory('${esc(s.id)}')">${esc(s.name)}</button></td><td class="points">${s.points}</td><td>${levelFor(s.points)}</td></tr>`).join('')}</tbody></table></div>`}
+function syncHistorySelectors(){const cls=data.classes[document.getElementById('historyClass')?.value]||current();const h=document.getElementById('historyStudent');if(!h||!cls)return;const previous=h.value;h.innerHTML=cls.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');h.value=cls.students.some(s=>s.id===previous)?previous:(cls.students[0]?.id||'');h.onchange=()=>renderStudentHistory();renderStudentHistory()}
+function openStudentHistory(id){const h=document.getElementById('historyClass');if(h)h.value=data.currentClass;syncHistorySelectors();const hs=document.getElementById('historyStudent');if(hs)hs.value=id;renderStudentHistory();showTab('history')}
+async function renderStudentHistory(){
+  const cls=data.classes[document.getElementById('historyClass')?.value]||current();
+  const sid=document.getElementById('historyStudent')?.value;
+  const s=cls?.students.find(x=>x.id===sid);
+  if(!s)return;
+
+  const profile=document.getElementById('studentProfile');
+  const list=document.getElementById('studentHistoryList');
+  const next=nextLevel(s.points);
+  const progress=Math.min(100,Math.round((s.points/200)*100));
+
+  profile.innerHTML=`
+    <div class="grid3">
+      <div class="stat"><small>Student</small><strong style="font-size:20px">${esc(s.name)}</strong></div>
+      <div class="stat"><small>Current Points</small><strong>${s.points}</strong></div>
+      <div class="stat"><small>Reward Level</small><strong style="font-size:20px">${levelFor(s.points)}</strong></div>
+    </div>
+    <div class="notice" style="margin-top:14px">
+      <strong>Reward Progress:</strong>
+      ${s.points>=200?'Champion achieved.':`${Math.max(0,next.need-s.points)} more points to ${next.name}.`}
+      <div style="margin-top:8px;height:12px;background:#edf0f5;border-radius:999px;overflow:hidden">
+        <div style="height:100%;width:${progress}%;background:#2457a6"></div>
+      </div>
+      <div class="small" style="margin-top:5px">${Math.min(s.points,200)} / 200 points</div>
+    </div>`;
+
+  if(list) list.innerHTML='<div class="notice">Loading cloud transaction history...</div>';
+
+  let entries=[];
+  let cloudLoaded=false;
+
+  if(authSession?.user?.id){
+    const {data:rows,error}=await supabaseClient
+      .from('point_transactions')
+      .select('created_at, action_name, action_type, points, reason')
+      .eq('student_id',s.id)
+      .eq('teacher_id',authSession.user.id)
+      .order('created_at',{ascending:false})
+      .limit(200);
+
+    if(!error){
+      cloudLoaded=true;
+      let running=Number(s.points)||0;
+      entries=(rows||[]).map(r=>{
+        const points=Number(r.points)||0;
+        const after=running;
+        running-=points;
+        return {
+          date:r.created_at,
+          action:r.action_name||r.reason||'Point Transaction',
+          type:r.action_type||'positive',
+          delta:points,
+          after
+        };
+      });
+    }
+  }
+
+  if(!cloudLoaded){
+    entries=data.activity
+      .filter(a=>a.className===Object.keys(data.classes).find(k=>data.classes[k]===cls)&&a.studentId===s.id)
+      .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  }
+
+  if(!list)return;
+
+  if(entries.length){
+    list.innerHTML=`
+      <table>
+        <thead>
+          <tr><th>Date & Time</th><th>Action</th><th>Type</th><th>Change</th><th>Balance</th></tr>
+        </thead>
+        <tbody>
+          ${entries.map(e=>{
+            const typeLabel=e.type==='purchase'?'🛒 Purchase':e.type==='activity_score'?'📘 Activity Score':'⭐ Points';
+            const delta=Number(e.delta)||0;
+            return `<tr>
+              <td>${esc(e.date||'')}</td>
+              <td>${esc(e.action||'')}</td>
+              <td>${typeLabel}</td>
+              <td class="${delta>=0?'tag plus':'tag minus'}">${delta>=0?'+':''}${delta}</td>
+              <td>${e.after===null||e.after===undefined?'—':e.after}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }else{
+    list.innerHTML='<div class="empty">No cloud point transactions recorded yet.</div>';
+  }
+}
+let studentPortalSession=null;
+let studentPortalActivities=[];
+let studentPortalHistory=[];
+let studentPortalGames=[];
+
+function syncPortalSelectors(){
+  renderPortal();
+}
+
+let studentPortalMessages=[];
+
+async function loadStudentMessages(){
+  const status=document.getElementById('studentMessageStatus');
+  const list=document.getElementById('studentMessageList');
+
+  if(!studentPortalSession){
+    studentPortalMessages=[];
+
+    if(status){
+      status.textContent='Enter your student access code first.';
+    }
+
+    if(list){
+      list.innerHTML='<div class="empty">Student access is required.</div>';
+    }
+
+    return;
+  }
+
+  if(status){
+    status.textContent='Loading your messages...';
+  }
+
+  if(list){
+    list.innerHTML='<div class="notice">Loading conversation...</div>';
+  }
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'get_student_messages',
+    {
+      p_access_code:studentPortalSession.accessCode
+    }
+  );
+
+  if(error){
+    console.error(error);
+
+    studentPortalMessages=[];
+
+    if(status){
+      status.textContent='Messages could not be loaded: '+error.message;
+      status.style.background='#fff0f0';
+      status.style.borderColor='#e6bcbc';
+    }
+
+    if(list){
+      list.innerHTML=
+        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
+          Unable to load messages.
+        </div>`;
+    }
+
+    return;
+  }
+
+  studentPortalMessages=rows||[];
+const {error:readError}=await supabaseClient.rpc(
+  'mark_student_messages_read',
+  {
+    p_access_code:studentPortalSession.accessCode
+  }
+);
+
+if(readError){
+  console.error(
+    'Unable to mark teacher messages as read:',
+    readError
+  );
+}
+  if(status){
+    status.textContent=
+      studentPortalMessages.length
+        ? `${studentPortalMessages.length} message${studentPortalMessages.length===1?'':'s'}`
+        : 'No messages yet.';
+    status.style.background='#eef7ff';
+    status.style.borderColor='#c8def4';
+  }
+
+  renderStudentMessages();
+}
+
+function renderStudentMessages(){
+  const list=document.getElementById('studentMessageList');
+
+  if(!list)return;
+
+  if(!studentPortalSession){
+    list.innerHTML=
+      '<div class="empty">Enter your student access code first.</div>';
+    return;
+  }
+
+  if(!studentPortalMessages.length){
+    list.innerHTML=
+      '<div class="empty">No messages from your teacher yet.</div>';
+    return;
+  }
+
+  const teacherName=
+    [
+      studentPortalMessages[0]?.teacher_first_name,
+      studentPortalMessages[0]?.teacher_last_name
+    ]
+    .filter(Boolean)
+    .join(' ')
+    .trim()||'Teacher';
+
+  list.innerHTML=`
+    <div
+      style="
+        max-height:360px;
+        overflow-y:auto;
+        padding:8px 4px;
+      "
+    >
+
+      ${studentPortalMessages.map(m=>{
+
+        const fromTeacher=m.sender_role==='teacher';
+
+        return `
+          <div
+            style="
+              margin-bottom:12px;
+              display:flex;
+              justify-content:${fromTeacher?'flex-start':'flex-end'};
+            "
+          >
+
+            <div
+              style="
+                max-width:78%;
+                padding:12px 14px;
+                border:1px solid #d9e2ef;
+                border-radius:12px;
+                background:${fromTeacher?'#eef4ff':'#fffaf0'};
+              "
+            >
+
+              <div
+                style="
+                  font-weight:800;
+                  margin-bottom:5px;
+                "
+              >
+                ${fromTeacher?'👩‍🏫 '+esc(teacherName):'You'}
+              </div>
+
+              <div style="white-space:pre-wrap">
+                ${esc(m.message)}
+              </div>
+
+              <div
+                class="small"
+                style="margin-top:6px"
+              >
+                ${esc(m.created_at||'')}
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join('')}
+
+    </div>
+  `;
+}
+
+async function sendStudentPortalMessage(){
+  const input=document.getElementById('studentMessageInput');
+
+  if(!input)return;
+
+  const message=input.value.trim();
+
+  if(!studentPortalSession){
+    alert('Please enter your student access code first.');
+    return;
+  }
+
+  if(!message){
+    alert('Please enter a message.');
+    return;
+  }
+
+  const {data:result,error}=await supabaseClient.rpc(
+    'send_student_message',
+    {
+      p_access_code:studentPortalSession.accessCode,
+      p_message:message
+    }
+  );
+
+  if(error){
+    alert(
+      'Unable to send message: '+error.message
+    );
+    return;
+  }
+
+  if(!result||!result.length){
+    alert('The message was not recorded.');
+    return;
+  }
+
+  input.value='';
+
+  await loadStudentMessages();
+}function renderPortal(){
+  const body=document.getElementById('studentPortalBody');
+  if(!body)return;
+  if(!studentPortalSession){
+    body.innerHTML='<div class="empty" style="margin-top:16px">Enter your student access code to continue.</div>';
+    return;
+  }
+  const s=studentPortalSession;
+  const fullName=[s.first_name,s.last_name].filter(Boolean).join(' ')||'Student';
+    const totalPoints=studentPortalHistory.reduce((sum,r)=>sum+(Number(r.points)||0),0);
+  const level=totalPoints>=200?'Champion':totalPoints>=150?'Gold':totalPoints>=100?'Silver':totalPoints>=50?'Bronze':'Starter';
+  const next=totalPoints>=200?200:totalPoints>=150?200:totalPoints>=100?150:totalPoints>=50?100:50;
+  const previous=level==='Champion'?200:level==='Gold'?150:level==='Silver'?100:level==='Bronze'?50:0;
+  const progress=level==='Champion'?100:Math.min(100,Math.max(0,((totalPoints-previous)/(next-previous))*100));
+   const todayKey=new Date().toISOString().slice(0,10);
+  const todayRows=studentPortalHistory.filter(r=>(r.created_at||'').slice(0,10)===todayKey);
+  const todayNet=todayRows.reduce((sum,r)=>sum+(Number(r.points)||0),0);
+  body.innerHTML=`
+   <div class="grid3" style="margin-top:16px">
+  <div class="stat">
+    <small>Current Points</small>
+    <strong>${totalPoints}</strong>
+  </div>
+
+  <div class="stat">
+    <small>Reward Level</small>
+    <strong style="font-size:22px">${level}</strong>
+  </div>
+
+  <div class="stat">
+    <small>Today's Points</small>
+    <strong>${todayNet>=0?'+':''}${todayNet}</strong>
+  </div>
+</div>
+<div style="margin-top:12px;margin-bottom:4px">
+  <h2 style="margin:0">Student Dashboard</h2>
+  <div class="small" style="margin-top:4px">
+    Welcome, <strong>${esc(fullName)}</strong> - your learning, rewards and progress at a glance.
+  </div>
+</div>
+<div class="notice" style="margin-top:14px;margin-bottom:0">
+  <strong>Reward Progress</strong><br>
+  ${level==='Champion'
+    ?'Champion achieved.'
+    :`${Math.max(0,next-totalPoints)} more points to ${next===200?'Champion':next===150?'Gold':next===100?'Silver':'Bronze'}.`
+  }
+
+  <div style="margin-top:8px;height:12px;background:#edf0f5;border-radius:999px;overflow:hidden">
+    <div style="height:100%;width:${progress}%;background:#2457a6"></div>
+  </div>
+
+  <div class="small" style="margin-top:5px">
+    ${Math.min(totalPoints,200)} / 200 points
+  </div>
+</div>
+<div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px">
+      <div class="summary-title"><div><h3>📚 My Live Activities</h3><div class="small">Activities currently available for your class.</div></div><button class="btn" onclick="loadStudentPortalActivities()">🔄 Refresh</button></div>
+      <div id="studentActivityList" style="margin-top:14px"></div>
+    </div>
+   <div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px">
+  <div class="summary-title">
+    <div>
+      <h3>🎮 Temmy Smart Games</h3>
+      <div class="small">Games assigned to you by your teacher.</div>
+    </div>
+    <button class="btn" onclick="loadStudentPortalGames()">🔄 Refresh</button>
+  </div>
+
+  <div id="studentPortalGamesList" style="margin-top:14px"></div>
+</div>
+<div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px">
+
+  <div class="summary-title">
+    <div>
+      <h3>💬 My Messages</h3>
+      <div class="small">
+        Private messages with your teacher.
+      </div>
+    </div>
+
+    <button
+      class="btn"
+      onclick="loadStudentMessages()"
+    >
+      🔄 Refresh
+    </button>
+  </div>
+
+  <div
+    id="studentMessageStatus"
+    class="notice"
+    style="margin-top:14px"
+  >
+    Loading your messages...
+  </div>
+
+  <div
+    id="studentMessageList"
+    style="margin-top:14px"
+  ></div>
+
+  <div style="margin-top:14px">
+
+    <textarea
+      id="studentMessageInput"
+      class="select"
+      rows="4"
+      maxlength="2000"
+      placeholder="Write a message to your teacher..."
+      style="width:100%;resize:vertical"
+    ></textarea>
+
+    <div style="margin-top:10px;text-align:right">
+
+      <button
+        type="button"
+        class="btn primary"
+        onclick="sendStudentPortalMessage()"
+      >
+        Send Message
+      </button>
+
+    </div>
+
+  </div>
+
+</div>    <div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px">
+  <div class="summary-title">
+       <div>
+      <h3>My History</h3>
+      <div class="small">Your complete points and activity history.</div>
+    </div>
+  </div>
+
+  <div id="studentPortalHistoryList" style="margin-top:14px"></div>
+</div>`;
+  renderStudentPortalActivities();
+  renderStudentPortalGames();
+  renderStudentPortalHistory();
+}
+async function loadStudentPortalHistory(){
+  if(!studentPortalSession){
+    studentPortalHistory=[];
+    renderPortal();
+    return;
+  }
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'get_student_point_history',
+    {p_access_code:studentPortalSession.accessCode}
+  );
+
+  if(error){
+    studentPortalHistory=[];
+    const body=document.getElementById('studentPortalBody');
+
+    if(body){
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
+          <strong>Student history could not be loaded.</strong><br>
+          ${esc(error.message)}
+        </div>`
+      );
+    }
+
+    return;
+  }
+
+  studentPortalHistory=rows||[];
+  renderPortal();
+}
+async function loadStudentPortalGames(){
+  if(!studentPortalSession){
+    studentPortalGames=[];
+    renderPortal();
+    return;
+  }
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'get_student_game_sessions',
+    {p_access_code:studentPortalSession.accessCode}
+  );
+
+  if(error){
+    studentPortalGames=[];
+    const body=document.getElementById('studentPortalBody');
+
+    if(body){
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
+          <strong>Smart Games could not be loaded.</strong><br>
+          ${esc(error.message)}
+        </div>`
+      );
+    }
+
+    return;
+  }
+
+  studentPortalGames=rows||[];
+  renderPortal();
+}
+
+function renderStudentPortalGames(){
+  const list=document.getElementById('studentPortalGamesList');
+  if(!list)return;
+
+  if(!studentPortalSession){
+    list.innerHTML='<div class="empty">Please enter your student access code first.</div>';
+    return;
+  }
+
+  if(!studentPortalGames.length){
+    list.innerHTML='<div class="empty">No Smart Games are currently assigned to you.</div>';
+    return;
+  }
+
+  list.innerHTML='<div class="group-grid">'+
+    studentPortalGames.map(g=>{
+      const gameName=
+        g.game_id==='grade3-temmy-number-challenge'
+          ?'Temmy Number Challenge'
+          :g.game_id;
+
+      const gameUrl=new URL(
+        'https://games.stgloriousschool.org/games/temmy-number-challenge.html'
+      );
+
+      gameUrl.searchParams.set('session',g.session_token);
+
+      return `
+        <div class="group-card">
+          <div class="summary-title">
+            <div>
+              <h3>${esc(gameName)}</h3>
+              <div class="small">Temmy Smart Games</div>
+            </div>
+            <span class="tag plus">READY</span>
+          </div>
+
+          <div class="small" style="margin-top:10px">
+            Assigned ${esc(g.created_at||'')}
+          </div>
+
+          <div class="small" style="margin-top:4px">
+            Session available until ${esc(g.expires_at||'')}
+          </div>
+
+          <div class="group-actions" style="margin-top:14px">
+            <a
+              class="btn primary"
+              href="${esc(gameUrl.toString())}"
+              target="_blank"
+              rel="noopener"
+            >
+              🎮 Open Game
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('')+
+  '</div>';
+}
+function renderStudentPortalHistory(){
+const list=document.getElementById('studentPortalHistoryList');
+  if(!list)return;
+  if(!studentPortalHistory.length){
+    list.innerHTML='<div class="empty">No point history recorded yet.</div>';
+    return;
+  }
+
+  let balance=studentPortalHistory.reduce(
+    (sum,r)=>sum+(Number(r.points)||0),
+    0
+  );
+
+  list.innerHTML=`
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Activity</th>
+            <th>Type</th>
+            <th>Points</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${studentPortalHistory.map(r=>`
+            <tr>
+              <td>${esc(r.created_at||'')}</td>
+              <td>${esc(r.action_name||'')}</td>
+              <td>${esc(r.action_type||'')}</td>
+              <td>
+                <strong>${Number(r.points)>0?'+':''}${Number(r.points)||0}</strong>
+              </td>
+              <td>${esc(r.reason||'')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+  async function studentPortalLogin(){
+  const input=document.getElementById('studentAccessCode');
+  const msg=document.getElementById('studentPortalLoginMsg');
+  const code=(input?.value||'').trim();
+  if(!code){if(msg)msg.textContent='Please enter your student access code.';return;}
+  if(msg)msg.textContent='Verifying access code...';
+  const {data:row,error}=await supabaseClient.rpc('student_portal_login',{p_access_code:code});
+  if(error){if(msg)msg.textContent='Could not verify the access code: '+error.message;return;}
+  if(!row||!row.length){if(msg)msg.textContent='Access code not found or inactive. Please check with your teacher.';return;}
+  const r=row[0];
+  studentPortalSession={accessCode:code,student_id:r.student_id,class_id:r.class_id,class_name:r.class_name,first_name:r.first_name,last_name:r.last_name};
+  if(msg)msg.textContent='Access verified successfully.';
+ renderPortal();
+await loadStudentPortalHistory();
+  await loadStudentPortalActivities();
+    await loadStudentPortalGames();
+}
+
+async function loadStudentPortalActivities(){
+  if(!studentPortalSession){renderPortal();return;}
+  const list=document.getElementById('studentActivityList');
+  if(list)list.innerHTML='<div class="notice">Loading your live activities...</div>';
+  const {data:rows,error}=await supabaseClient.rpc('get_student_live_activities',{p_access_code:studentPortalSession.accessCode});
+  if(error){studentPortalActivities=[];if(list)list.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>'+esc(error.message)+'</div>';return;}
+  studentPortalActivities=rows||[];
+  renderStudentPortalActivities();
+}
+
+function renderStudentPortalActivities(){
+  const list=document.getElementById('studentActivityList');
+  if(!list)return;
+  if(!studentPortalSession){list.innerHTML='<div class="empty">Please enter your access code first.</div>';return;}
+  if(!studentPortalActivities.length){list.innerHTML='<div class="empty">🎉 There are no live activities for your class right now.</div>';return;}
+  list.innerHTML='<div class="group-grid">'+studentPortalActivities.map(a=>{
+    const submitted=!!a.record_id||a.record_status==='submitted';
+    return `<div class="group-card"><div class="summary-title"><div><h3>${activityTypeLabel(a.type)}</h3><div class="small">${esc(a.title)}</div></div><span class="tag ${submitted?'plus':''}">${submitted?'SUBMITTED':'LIVE'}</span></div><div class="small" style="margin-top:10px">${esc(a.instructions||'No instructions provided.')}</div><div style="margin-top:10px"><strong>${Number(a.points)||0} points</strong> <span class="small">available</span></div><div class="group-actions" style="margin-top:14px"><button class="btn primary" onclick="openStudentActivity('${esc(a.id)}')">${submitted?'View Submission':'Open Activity'}</button></div></div>`;
+  }).join('')+'</div>';
+}
+
+function findStudentActivity(id){return studentPortalActivities.find(a=>a.id===id)}
+
+function openStudentActivity(id){
+  const a=findStudentActivity(id);
+  if(!a)return;
+
+  const submitted=!!a.record_id||a.record_status==='submitted'||a.record_status==='scored';
+  const scored=a.record_status==='scored'&&a.points_awarded!==null&&a.points_awarded!==undefined;
+
+  openModal(
+    submitted?'Your Submission':a.title,
+    `<div class="notice">
+      <strong>${activityTypeLabel(a.type)}</strong><br>
+      ${esc(a.instructions||'No instructions provided.')}<br><br>
+      <strong>Maximum points:</strong> ${Number(a.points)||0}
+    </div>
+    ${submitted?`
+      <div class="formrow">
+        <label>Your submitted response</label>
+        <textarea id="studentActivityAnswer" rows="7" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px" readonly>${esc(a.answer||'')}</textarea>
+      </div>
+
+      ${scored?`
+        <div class="notice">
+          <strong>Assessment Result</strong><br><br>
+          <strong>Score:</strong> ${Number(a.points_awarded)||0} / ${Number(a.points)||0}<br><br>
+          <strong>Teacher Feedback:</strong><br>
+          ${esc(a.notes||'No feedback provided.')}
+        </div>
+      `:`
+        <div class="notice">
+          Your response has been submitted. The teacher will review it before any classroom points are awarded.
+        </div>
+      `}
+    `:`
+      <div class="formrow">
+        <label>Your response</label>
+        <textarea id="studentActivityAnswer" rows="7" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px" placeholder="Type your answer here..."></textarea>
+      </div>
+
+      <div class="notice">
+        <strong>Important:</strong> submitting your response does not automatically award classroom points. Your teacher will review and score it first.
+      </div>
+    `}
+    `,
+    async()=>{
+      if(submitted){
+        closeModal();
+        return;
+      }
+
+      const answer=document.getElementById('studentActivityAnswer')?.value.trim();
+
+      if(!answer)return alert('Please enter your response before submitting.');
+
+      const {data:result,error}=await supabaseClient.rpc('submit_student_activity',{
+        p_access_code:studentPortalSession.accessCode,
+        p_activity_id:a.id,
+        p_answer:answer
+      });
+
+      if(error)return alert('Could not submit activity: '+error.message);
+
+      closeModal();
+      await loadStudentPortalActivities();
+      alert('✓ Your response was submitted successfully.');
+    },
+    submitted?'Close':'Submit Response'
+  );
+}
+function studentPortalLogout(){
+  studentPortalSession=null;studentPortalActivities=[];
+  const input=document.getElementById('studentAccessCode');if(input)input.value='';
+  const msg=document.getElementById('studentPortalLoginMsg');if(msg)msg.textContent='';
+  renderPortal();
+}
+
+function renderAwardLock(){awardLocked=!!data.awardLocked;const n=document.getElementById('awardLockNotice'),b=document.getElementById('awardLockBtn');if(!n||!b)return;b.textContent=awardLocked?'🔓 Unlock Award Points':'🔒 Lock Award Points';n.classList.toggle('hidden',!awardLocked);if(awardLocked){n.innerHTML='<strong>🔒 Award Points is locked.</strong> Students cannot select students or award points from this screen. Unlock with the teacher PIN to continue.';}document.querySelectorAll('#award .action,#award .custom input,#award .custom button,#award .scopebar button,#studentSearch,#awardStudents input').forEach(el=>{el.disabled=awardLocked});}
+function resetAwardAutoLock(){clearTimeout(awardAutoTimer);if(!data.awardLocked){awardAutoTimer=setTimeout(()=>{data.awardLocked=true;renderAwardLock();save();alert('Award Points has been automatically locked after 5 minutes of inactivity.');},AWARD_IDLE_MS)}}
+function toggleAwardLock(){
+ if(!data.awardPin){openModal('Set Teacher Award PIN',`<div class="notice">Choose a private 4–6 digit PIN. This PIN protects Award Points on the classroom screen.</div><div class="formrow"><label>Teacher PIN</label><input id="lockPin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></div>`,()=>{const pin=document.getElementById('lockPin').value.trim();if(!/^\d{4,6}$/.test(pin))return alert('Please enter a 4–6 digit PIN.');data.awardPin=pin;data.awardLocked=true;closeModal();renderAwardLock();save();});return}
+ if(data.awardLocked){openModal('Unlock Award Points',`<div class="notice">Only the teacher should enter this PIN.</div><div class="formrow"><label>Teacher PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter PIN"></div>`,()=>{const pin=document.getElementById('unlockPin').value.trim();if(pin!==data.awardPin)return alert('Incorrect PIN.');data.awardLocked=false;closeModal();renderAwardLock();save();resetAwardAutoLock();});}
+ else{data.awardLocked=true;renderAwardLock();save();clearTimeout(awardAutoTimer);}
+}
+function changeAwardPin(){if(!data.awardPin)return alert('Set the Award Point PIN first.');openModal('Change Teacher Award PIN',`<div class="formrow"><label>Current PIN</label><input id="oldPin" type="password" inputmode="numeric" maxlength="6"></div><div class="formrow"><label>New PIN</label><input id="newPin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></div><div class="formrow"><label>Confirm New PIN</label><input id="confirmPin" type="password" inputmode="numeric" maxlength="6"></div>`,()=>{const old=document.getElementById('oldPin').value.trim(),n=document.getElementById('newPin').value.trim(),c=document.getElementById('confirmPin').value.trim();if(old!==data.awardPin)return alert('Current PIN is incorrect.');if(!/^\d{4,6}$/.test(n))return alert('New PIN must contain 4–6 digits.');if(n!==c)return alert('New PIN entries do not match.');data.awardPin=n;data.awardLocked=true;closeModal();renderAwardLock();save();alert('Award Point PIN changed successfully. Award Points is now locked.');});}
+function showRecoveryPlan(){openModal('Account & PIN Recovery',`<div class="notice">Production account recovery: use the registered teacher email to recover your platform password.</div><p>The Award Point PIN can be recovered only after secure teacher-account verification.</p><p>If a PIN is exposed, the teacher can change it immediately from Teacher Account → Security & Account Controls.</p><p class="small">This prevents students from recovering or changing teacher security credentials.</p>`,null)}
+
+function syncAwardClass(){const a=document.getElementById('awardClassSelect');if(a)a.value=data.currentClass;renderAwardStudents()}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='temmy-smart-classroom-v4-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+renderAll();
+resetAwardAutoLock();
+['click','keydown','touchstart'].forEach(evt=>document.addEventListener(evt,()=>{if(!data.awardLocked&&document.getElementById('award')&&!document.getElementById('award').classList.contains('hidden'))resetAwardAutoLock();},{passive:true}));
+</script>
+
+<script>
+function authRequiredHTML(){return `<div class="notice"><strong>Teacher sign-in required.</strong><br>Sign in to manage your cloud classes and students.</div><div class="formrow"><label>Email</label><input id="authEmail" type="email" placeholder="Teacher email"></div><div class="formrow"><label>Password</label><input id="authPassword" type="password" placeholder="Password"></div><div class="controls"><button class="btn primary" onclick="signInTeacher()">Sign In</button><button class="btn" onclick="sendPasswordRecoveryFromLogin()">Forgot Password</button></div>`}
+function renderAccount(){const el=document.getElementById('authPanel');if(!el)return;if(!authSession){el.innerHTML=authRequiredHTML();return}el.innerHTML=`<div class="notice"><strong>Secure teacher session active.</strong><br>${esc(authSession.user.email||'')} • ${authSession.user.email_confirmed_at?'Email confirmed':'Email confirmation pending'}</div><div class="grid3"><div class="stat"><small>Registration</small><strong style="font-size:20px">Free</strong></div><div class="stat"><small>Signed-in Teacher</small><strong style="font-size:16px">${esc(authSession.user.email||'')}</strong></div><div class="stat"><small>Cloud</small><strong style="font-size:20px">Connected</strong></div></div><div class="card" style="box-shadow:none;border:1px solid #e1e6ee;margin-top:16px"><h3>Teacher Profile</h3><div class="grid2"><div><div class="formrow"><label>First name</label><input id="profileFirst" value=""></div><div class="formrow"><label>Last name</label><input id="profileLast" value=""></div><div class="formrow"><label>Country</label><input id="profileCountry" value=""></div></div><div><div class="formrow"><label>City / Location</label><input id="profileCity" value=""></div><div class="formrow"><label>School / Institution</label><input id="profileSchool" value=""></div><div class="formrow"><label>Subjects</label><input id="profileSubjects" value=""></div></div></div><button class="btn primary" onclick="saveTeacherProfileCloud()">Save Teacher Profile</button><div id="profileMsg" class="small" style="margin-top:8px"></div></div><div class="controls"><button class="btn gold" onclick="sendPasswordRecovery()">Password Recovery Email</button><button class="btn" onclick="signOutTeacher()">Sign Out</button></div>`;loadTeacherProfileCloud()}
+async function signInTeacher(){const email=document.getElementById('authEmail')?.value.trim(),password=document.getElementById('authPassword')?.value;if(!email||!password)return alert('Enter your teacher email and password.');const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)return alert(error.message);authSession=data.session;await initCloudTeacher()}
+async function sendPasswordRecoveryFromLogin(){const email=document.getElementById('authEmail')?.value.trim();if(!email)return alert('Enter your teacher email first.');const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:AUTH_REDIRECT_URL});if(error)return alert(error.message);alert('Password recovery email sent. Open the newest email and use its Reset your password link.')}
+async function sendPasswordRecovery(){if(!authSession?.user?.email)return;const {error}=await supabaseClient.auth.resetPasswordForEmail(authSession.user.email,{redirectTo:AUTH_REDIRECT_URL});if(error)return alert(error.message);alert('Password recovery email sent to '+authSession.user.email+'.')}
+async function signOutTeacher(){await supabaseClient.auth.signOut();authSession=null;cloudReady=false;cloudClasses=[];data.classes={};data.currentClass='';renderAccount();renderAll();showTab('students')}
+async function loadTeacherProfileCloud(){if(!authSession)return;const {data:row}=await supabaseClient.from('teacher_profiles').select('*').eq('id',authSession.user.id).maybeSingle();if(!row)return;for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school],['profileSubjects',row.subjects]]){const el=document.getElementById(id);if(el&&val!==null&&val!==undefined)el.value=val}}
+async function saveTeacherProfileCloud(){if(!authSession)return;const payload={id:authSession.user.id,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);if(error)return alert('Could not save teacher profile: '+error.message);document.getElementById('profileMsg').textContent='Cloud teacher profile saved.'}
+function showPasswordReset(){passwordFlowActive=true;openModal('Reset Your Teacher Password',`<div class="notice"><strong>Secure password setup</strong><br>Create a new private password for your teacher account.</div><div class="formrow"><label>New password</label><input id="newPassword" type="password" minlength="8" placeholder="At least 8 characters"></div><div class="formrow"><label>Confirm password</label><input id="confirmPassword" type="password" minlength="8" placeholder="Enter the password again"></div>`,async()=>{const a=document.getElementById('newPassword').value,b=document.getElementById('confirmPassword').value;if(a.length<8)return alert('Use at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const {error}=await supabaseClient.auth.updateUser({password:a});if(error)return alert('Could not set password: '+error.message);closeModal();passwordFlowActive=false;alert('Password reset successfully. Your teacher account is ready.')},'Save')}
+async function initCloudTeacher(){const {data:{session}}=await supabaseClient.auth.getSession();authSession=session;if(!session){renderAccount();return}renderAccount();await loadCloudClasses();}
+supabaseClient.auth.onAuthStateChange((event,session)=>{authSession=session;if(event==='PASSWORD_RECOVERY'&&session&&!passwordFlowActive){setTimeout(showPasswordReset,0);return}setTimeout(()=>{renderAccount();if(session)loadCloudClasses()},0)});
+window.addEventListener('DOMContentLoaded',()=>{initCloudTeacher();});
+</script>
+</body>
+</html>
