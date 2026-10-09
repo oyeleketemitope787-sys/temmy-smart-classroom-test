@@ -1620,18 +1620,29 @@ function renderMarket(){
   if(!authSession){el.innerHTML='<div class="notice">Sign in as a teacher to manage marketplace rewards.</div>';return;}
   el.innerHTML=data.rewards.length?data.rewards.map(r=>`<div class="item"><div class="icon">${esc(r.icon)}</div><h3>${esc(r.name)}</h3><div class="price">${r.price} points</div><div style="margin-top:12px"><button class="btn primary" onclick="buyReward('${esc(r.id)}')">Buy for Student</button> <button class="btn negative" onclick="deleteReward('${esc(r.id)}')">Delete</button></div></div>`).join(''):'<div class="empty">No marketplace items yet. Create your first reward.</div>';
 }
-function buyReward(id){
-  const r=data.rewards.find(x=>String(x.id)===String(id)),cls=current(),students=cls?.students||[];
+async function buyReward(id){
+  const r=data.rewards.find(x=>String(x.id)===String(id));
   if(!r)return alert('Marketplace item not found.');
   if(!authSession)return showTab('account');
+  if(!current()?.id)return alert('Please select a cloud class first.');
+  // Refresh ledger-derived balances immediately before displaying eligibility.
+  await loadCloudClasses();
+  const cls=current(),students=cls?.students||[];
   if(!cls||!cls.id)return alert('Please select a cloud class first.');
   if(!students.length)return alert('Add a student first.');
+  const eligible=students.filter(s=>Number(s.points)>=Number(r.price)).sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name));
+  const excluded=students.filter(s=>Number(s.points)<Number(r.price)).sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name));
+  if(!eligible.length){
+    return alert('No students in this class currently qualify for "'+r.name+'". Each student needs at least '+r.price+' points.');
+  }
   let requestSignature='',requestId='';
-  openModal('Purchase: '+r.name,`<div class="formrow"><label>Select students</label><div class="scopebar"><button type="button" class="btn" onclick="selectPurchaseAll(true)">🌟 Select All</button><button type="button" class="btn" onclick="selectPurchaseAll(false)">Clear</button></div><div id="purchaseStudents" class="student-list" style="max-height:360px">${students.map(s=>`<label class="student-row"><input class="check purchase-check" type="checkbox" value="${esc(s.id)}"><span class="rank">#${students.slice().sort((a,b)=>b.points-a.points).findIndex(x=>x.id===s.id)+1}</span><span class="student-name">${esc(s.name)}</span><strong>${s.points} pts</strong></label>`).join('')}</div></div><div class="notice">Cost per student: <strong>${r.price} points</strong><br><span class="small">Multiple purchase is all-or-nothing. Balances will be verified by Supabase before any deduction.</span></div>`,async()=>{
+  const eligibleRows=eligible.map((s,i)=>`<label class="student-row"><input class="check purchase-check" type="checkbox" value="${esc(s.id)}"><span class="rank">#${i+1}</span><span class="student-name">${esc(s.name)}</span><strong>${Number(s.points)} pts</strong></label>`).join('');
+  const excludedSection=excluded.length?`<details style="margin-top:12px"><summary style="cursor:pointer;color:#68758a;font-size:13px">${excluded.length} student${excluded.length===1?'':'s'} not yet eligible — view balances</summary><div class="student-list" style="max-height:180px;margin-top:8px">${excluded.map(s=>`<div class="student-row" style="opacity:.72"><span class="rank">—</span><span class="student-name">${esc(s.name)}</span><strong>${Number(s.points)} pts</strong></div>`).join('')}</div></details>`:'<div class="small" style="margin-top:8px;color:#16803d">All students in this class currently qualify.</div>';
+  openModal('Purchase: '+r.name,`<div class="formrow"><label>Eligible students</label><div class="scopebar"><button type="button" class="btn" onclick="selectPurchaseAll(true)">🌟 Select All Eligible</button><button type="button" class="btn" onclick="selectPurchaseAll(false)">Clear</button></div><div id="purchaseStudents" class="student-list" style="max-height:300px">${eligibleRows}</div>${excludedSection}</div><div class="notice">Cost per student: <strong>${Number(r.price)} points</strong><br><span class="small">Only students with enough points are selectable. Multi-student purchases remain all-or-nothing. Supabase will verify balances again before any deduction.</span></div>`,async()=>{
     const saveButton=document.getElementById('modalSave');
     if(saveButton?.disabled)return;
     const ids=[...new Set([...document.querySelectorAll('.purchase-check:checked')].map(x=>x.value))].sort();
-    if(!ids.length)return alert('Please select at least one student.');
+    if(!ids.length)return alert('Please select at least one eligible student.');
     const signature=JSON.stringify({rewardId:r.id,studentIds:ids});
     if(signature!==requestSignature){
       requestSignature=signature;
