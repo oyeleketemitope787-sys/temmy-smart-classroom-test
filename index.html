@@ -1154,7 +1154,48 @@ async function deleteGroup(id){
  if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return;
  alert(`✓ Group "${g.name}" deleted successfully.`);
 }
-function manageGroupMembers(id){const g=groupById(id);if(!g)return;const cls=cloudClasses.find(c=>c.id===g.classId);if(!cls)return;const body=`<div class="small" style="margin-bottom:10px">Select the students who belong to <strong>${esc(g.name)}</strong>. A student may belong to more than one group.</div><div class="member-check-list">${cls.students.map(s=>`<label class="member-check"><input type="checkbox" class="group-member-check" value="${esc(s.id)}" ${g.members.includes(s.id)?'checked':''}> <span>${esc(s.name)}</span></label>`).join('')}</div>`;openModal('Manage Group Members',body,async()=>{const ids=[...document.querySelectorAll('.group-member-check:checked')].map(x=>x.value);const {error:de}=await supabaseClient.from('group_members').delete().eq('group_id',g.id);if(de)return alert('Could not update group members: '+de.message);if(ids.length){const rows=ids.map(student_id=>({group_id:g.id,student_id}));const {error:ie}=await supabaseClient.from('group_members').insert(rows);if(ie)return alert('Could not save group members: '+ie.message);}closeModal();await loadCloudGroups();alert(`✓ ${ids.length} student${ids.length===1?'':'s'} assigned to "${g.name}".`);});}
+function manageGroupMembers(id){
+ const g=groupById(id);if(!g)return;
+ if(!authSession?.user?.id)return showTab('account');
+ const requestedTeacherId=authSession.user.id;
+ const requestedAuthRevision=authStateRevision;
+ const cls=cloudClasses.find(c=>c.id===g.classId);if(!cls)return;
+ const previousMemberIds=[...(g.members||[])];
+ const body=`<div class="small" style="margin-bottom:10px">Select the students who belong to <strong>${esc(g.name)}</strong>. A student may belong to more than one group.</div><div class="member-check-list">${cls.students.map(s=>`<label class="member-check"><input type="checkbox" class="group-member-check" value="${esc(s.id)}" ${previousMemberIds.includes(s.id)?'checked':''}> <span>${esc(s.name)}</span></label>`).join('')}</div>`;
+ openModal('Manage Group Members',body,async()=>{
+   const ids=[...document.querySelectorAll('.group-member-check:checked')].map(x=>x.value);
+   if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('Your teacher session changed. Please sign in again before saving group members.');
+   if(!cloudGroups.some(item=>item.id===g.id))return alert('This group is no longer available in the current session. Please refresh and try again.');
+   const {error:de}=await supabaseClient.from('group_members').delete().eq('group_id',g.id);
+   if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('The teacher session changed during the membership update. Please sign in again and verify the group members before retrying.');
+   if(de)return alert('Could not update group members: '+de.message);
+   if(ids.length){
+     const rows=ids.map(student_id=>({group_id:g.id,student_id}));
+     const {error:ie}=await supabaseClient.from('group_members').insert(rows);
+     if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('The teacher session changed while saving group members. The update may be incomplete. Sign in again and verify membership before retrying.');
+     if(ie){
+       // Best-effort restoration of the original memberships if the replacement insert fails.
+       const {error:restoreDeleteError}=await supabaseClient.from('group_members').delete().eq('group_id',g.id);
+       let restoreInsertError=null;
+       if(!restoreDeleteError&&previousMemberIds.length){
+         const restoreRows=previousMemberIds.map(student_id=>({group_id:g.id,student_id}));
+         const result=await supabaseClient.from('group_members').insert(restoreRows);
+         restoreInsertError=result.error;
+       }
+       if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('The teacher session changed during recovery. Please sign in again and check group membership.');
+       if(restoreDeleteError||restoreInsertError)return alert('Could not save the new members, and automatic restoration of the previous members also failed. Please stop editing this group and ask the administrator to review its membership.');
+       await loadCloudGroups();
+       if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return;
+       return alert('Could not save the new members. The previous membership list was restored.');
+     }
+   }
+   if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('The teacher session changed while saving group members. Sign in again and verify the result.');
+   closeModal();
+   await loadCloudGroups();
+   if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return;
+   alert(`✓ ${ids.length} student${ids.length===1?'':'s'} assigned to "${g.name}".`);
+ });
+}
 
 async function loadCloudActivities(){
  const requestedUserId=authSession?.user?.id;
