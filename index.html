@@ -2604,7 +2604,17 @@ async function signOutTeacher(){
    return alert('Sign-out could not be confirmed: '+error.message);
  }
 }
-async function loadTeacherProfileCloud(){if(!authSession)return;const {data:row}=await supabaseClient.from('teacher_profiles').select('*').eq('id',authSession.user.id).maybeSingle();if(!row)return;for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school],['profileSubjects',row.subjects]]){const el=document.getElementById(id);if(el&&val!==null&&val!==undefined)el.value=val}}
+async function loadTeacherProfileCloud(){
+ const requestedUserId=authSession?.user?.id;
+ if(!requestedUserId)return;
+ const {data:row}=await supabaseClient.from('teacher_profiles').select('*').eq('id',requestedUserId).maybeSingle();
+ if(authSession?.user?.id!==requestedUserId||!row)return;
+ for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school],['profileSubjects',row.subjects]]){
+   if(authSession?.user?.id!==requestedUserId)return;
+   const el=document.getElementById(id);
+   if(el&&val!==null&&val!==undefined)el.value=val;
+ }
+}
 async function saveTeacherProfileCloud(){if(!authSession)return;const payload={id:authSession.user.id,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);if(error)return alert('Could not save teacher profile: '+error.message);document.getElementById('profileMsg').textContent='Cloud teacher profile saved.'}
 function showPasswordReset(){passwordFlowActive=true;openModal('Reset Your Teacher Password',`<div class="notice"><strong>Secure password setup</strong><br>Create a new private password for your teacher account.</div><div class="formrow"><label>New password</label><input id="newPassword" type="password" minlength="8" placeholder="At least 8 characters"></div><div class="formrow"><label>Confirm password</label><input id="confirmPassword" type="password" minlength="8" placeholder="Enter the password again"></div>`,async()=>{const a=document.getElementById('newPassword').value,b=document.getElementById('confirmPassword').value;if(a.length<8)return alert('Use at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const {error}=await supabaseClient.auth.updateUser({password:a});if(error)return alert('Could not set password: '+error.message);closeModal();passwordFlowActive=false;alert('Password reset successfully. Your teacher account is ready.')},'Save')}
 async function initCloudTeacher(){const {data:{session}}=await supabaseClient.auth.getSession();authSession=session;if(!session){renderAccount();return}renderAccount();await loadCloudClasses();}
