@@ -2524,6 +2524,14 @@ async function openStudentActivity(id) {
         return;
       }
 
+      // The modal may remain open while the student logs out or another student signs in.
+      // Never submit with a different student's access code.
+      if (!isCurrentStudentRequest(version, session)) {
+        closeModal();
+        alert('Your student session changed. Please sign in again before submitting.');
+        return;
+      }
+
       const answer =
         document.getElementById('studentActivityAnswer')?.value.trim();
 
@@ -2535,11 +2543,16 @@ async function openStudentActivity(id) {
       const { error: submitError } = await supabaseClient.rpc(
         'submit_student_activity',
         {
-          p_access_code: studentPortalSession.accessCode,
+          p_access_code: session.accessCode,
           p_activity_id: a.id,
           p_answer: answer
         }
       );
+
+      if (!isCurrentStudentRequest(version, session)) {
+        closeModal();
+        return;
+      }
 
       if (submitError) {
         alert('Could not submit activity: ' + submitError.message);
@@ -2548,6 +2561,7 @@ async function openStudentActivity(id) {
 
       closeModal();
       await loadStudentPortalActivities();
+      if (!isCurrentStudentRequest(version, session)) return;
       alert('✓ Your response was submitted successfully.');
     },
     submitted ? 'Close' : 'Submit Response'
