@@ -703,104 +703,35 @@ function renderStudents(){
       : '0';
 }
 async function editStudent(id){
-  const cls=current();
-
-  if(!cls)return;
-
-  const student=cls.students.find(
-    s=>s.id===id
-  );
-
-  if(!student)return;
-
-  openModal(
-    'Edit Student',
-    `<div class="formrow">
-      <label>First name</label>
-      <input
-        id="editStudentFirstName"
-        value="${esc(student.first_name||student.name.split(' ')[0]||'')}"
-        autofocus
-      >
-    </div>
-
-    <div class="formrow">
-      <label>Last name</label>
-      <input
-        id="editStudentLastName"
-        value="${esc(student.last_name||student.name.split(' ').slice(1).join(' ')||'')}"
-      >
-    </div>`,
-    async()=>{
-      const first=document
-        .getElementById('editStudentFirstName')
-        .value
-        .trim();
-
-      const last=document
-        .getElementById('editStudentLastName')
-        .value
-        .trim();
-
-      if(!first){
-        return alert('Please enter the student first name.');
-      }
-
-      const {error}=await supabaseClient
-        .from('students')
-        .update({
-          first_name:first,
-          last_name:last
-        })
-        .eq('id',id);
-
-      if(error){
-        return alert(
-          'Could not update student: '+error.message
-        );
-      }
-
-      closeModal();
-      await loadCloudClasses();
-      showTab('students');
-    },
-    'Save Changes'
-  );
+ const cls=current(),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!cls||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ const student=cls.students.find(s=>s.id===id);
+ if(!student)return;
+ openModal('Edit Student',`<div class="formrow"><label>First name</label><input id="editStudentFirstName" value="${esc(student.first_name||student.name.split(' ')[0]||'')}" autofocus></div><div class="formrow"><label>Last name</label><input id="editStudentLastName" value="${esc(student.last_name||student.name.split(' ').slice(1).join(' ')||'')}"></div>`,async()=>{
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed. Sign in again before editing this student.');}
+  const first=document.getElementById('editStudentFirstName').value.trim();
+  const last=document.getElementById('editStudentLastName').value.trim();
+  if(!first)return alert('Please enter the student first name.');
+  const {error}=await supabaseClient.from('students').update({first_name:first,last_name:last}).eq('id',id).eq('class_id',cls.id);
+  if(!isCurrentTeacherSession()){closeModal();return;}
+  if(error)return alert('Could not update student: '+error.message);
+  closeModal();await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
+ },'Save Changes');
 }
 async function deactivateStudent(id){
-  const cls=current();
-
-  if(!cls)return;
-
-  const student=cls.students.find(
-    s=>s.id===id
-  );
-
-  if(!student)return;
-
-  if(!confirm(
-    `Deactivate ${student.name}? This will remove the student from the active class list, but their points, history, messages and records will be preserved.`
-  )){
-    return;
-  }
-
-  const {error}=await supabaseClient
-    .from('students')
-    .update({
-      active:false
-    })
-    .eq('id',id);
-
-  if(error){
-    return alert(
-      'Could not deactivate student: '+error.message
-    );
-  }
-
-  await loadCloudClasses();
-  showTab('students');
+ const cls=current(),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!cls||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ const student=cls.students.find(s=>s.id===id);
+ if(!student)return;
+ if(!confirm(`Deactivate ${student.name}? This will remove the student from the active class list, but their points, history, messages and records will be preserved.`)||!isCurrentTeacherSession())return;
+ const {error}=await supabaseClient.from('students').update({active:false}).eq('id',id).eq('class_id',cls.id);
+ if(!isCurrentTeacherSession())return;
+ if(error)return alert('Could not deactivate student: '+error.message);
+ await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
 }
-  async function openStudentCode(id){
+ async function openStudentCode(id){
   const cls=current();
 
   if(!cls)return;
