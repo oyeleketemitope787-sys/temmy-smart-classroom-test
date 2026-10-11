@@ -2856,7 +2856,7 @@ async function saveTeacherProfileCloud(){
  if(!requestedTeacherId)return;
  const payload={id:requestedTeacherId,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};
  const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);
- if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return;
+ if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('Your teacher session changed while saving the profile. The update may have succeeded; sign in again and verify your profile before retrying.');
  if(error)return alert('Could not save teacher profile: '+error.message);
  const msg=document.getElementById('profileMsg');
  if(msg)msg.textContent='Cloud teacher profile saved.';
