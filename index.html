@@ -1856,6 +1856,10 @@ function renderReports(){const cls=data.classes[document.getElementById('reportC
 function syncHistorySelectors(){const cls=data.classes[document.getElementById('historyClass')?.value]||current();const h=document.getElementById('historyStudent');if(!h||!cls)return;const previous=h.value;h.innerHTML=cls.students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');h.value=cls.students.some(s=>s.id===previous)?previous:(cls.students[0]?.id||'');h.onchange=()=>renderStudentHistory();renderStudentHistory()}
 function openStudentHistory(id){const h=document.getElementById('historyClass');if(h)h.value=data.currentClass;syncHistorySelectors();const hs=document.getElementById('historyStudent');if(hs)hs.value=id;renderStudentHistory();showTab('history')}
 async function renderStudentHistory(){
+  const requestedTeacherId=authSession?.user?.id||null;
+  const requestedAuthRevision=authStateRevision;
+  const isCurrentHistorySession=()=>authStateRevision===requestedAuthRevision&&
+    (authSession?.user?.id||null)===requestedTeacherId;
   const cls=data.classes[document.getElementById('historyClass')?.value]||current();
   const sid=document.getElementById('historyStudent')?.value;
   const s=cls?.students.find(x=>x.id===sid);
@@ -1886,14 +1890,16 @@ async function renderStudentHistory(){
   let entries=[];
   let cloudLoaded=false;
 
-  if(authSession?.user?.id){
+  if(requestedTeacherId){
     const {data:rows,error}=await supabaseClient
       .from('point_transactions')
       .select('created_at, action_name, action_type, points, reason')
       .eq('student_id',s.id)
-      .eq('teacher_id',authSession.user.id)
+      .eq('teacher_id',requestedTeacherId)
       .order('created_at',{ascending:false})
       .limit(200);
+
+    if(!isCurrentHistorySession())return;
 
     if(!error){
       cloudLoaded=true;
