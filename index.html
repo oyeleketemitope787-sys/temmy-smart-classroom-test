@@ -1524,6 +1524,10 @@ async function reviewActivitySubmission(recordId,activityId){
      alert('The score update returned after your teacher session changed. No point transaction was attempted. Please do not resubmit this score until the record has been checked.');
      return;
    }
+   if(updateError){
+     alert('The score update could not be confirmed: '+updateError.message+'. Please refresh and verify the submission before trying again.');
+     return;
+   }
    if(delta!==0){
      const tx={student_id:r.student_id,teacher_id:requestedTeacherId,points:delta,action_name:'Activity Score: '+a.title,action_type:'activity_score',reason:'Activity Score: '+a.title,source:'teacher',created_at:nowStamp};
      const {error:txError}=await supabaseClient.from('point_transactions').insert(tx);
