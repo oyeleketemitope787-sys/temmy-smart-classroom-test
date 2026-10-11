@@ -1528,8 +1528,17 @@ async function reviewActivitySubmission(recordId,activityId){
      const tx={student_id:r.student_id,teacher_id:requestedTeacherId,points:delta,action_name:'Activity Score: '+a.title,action_type:'activity_score',reason:'Activity Score: '+a.title,source:'teacher',created_at:nowStamp};
      const {error:txError}=await supabaseClient.from('point_transactions').insert(tx);
      if(txError){
-       // Existing separate writes are not atomic. Keep the known warning explicit; do not claim rollback succeeded.
+       // The score update and point insert are separate writes, not an atomic transaction.
+       // Do not issue a compensating write if the teacher session changed during the failed insert.
+       if(!isCurrentTeacherSession()){
+         closeModal();
+         return alert('The point transaction failed after the teacher session changed. The score record may already have been updated, and no restoration was attempted under the changed session. Sign in again and verify the submission and point history before retrying. Details: '+txError.message);
+       }
        const {error:rollbackError}=await supabaseClient.from('student_activity_records').update({status:r.status||'submitted',points_awarded:currentScore,notes:r.notes||null,completed_at:r.completed_at||null}).eq('id',r.id).eq('teacher_id',requestedTeacherId);
+       if(!isCurrentTeacherSession()){
+         closeModal();
+         return alert('The score restoration request returned after the teacher session changed. Verify the submission and point history before retrying.'+(rollbackError?' Restoration error: '+rollbackError.message:''));
+       }
        return alert('Score was not finalized because the point transaction failed: '+txError.message+(rollbackError?('\nThe attempted restoration also failed: '+rollbackError.message):'\nThe score record restoration was requested. Verify the record before retrying.'));
      }
    }
