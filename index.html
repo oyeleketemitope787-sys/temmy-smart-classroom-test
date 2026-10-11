@@ -1604,12 +1604,20 @@ async function openAddStudent(){
 function renameClass(oldName){openModal('Rename Class',`<div class="formrow"><label>New class name</label><input id="renameClass" value="${esc(oldName)}"></div>`,()=>{const n=document.getElementById('renameClass').value.trim();if(!n)return alert('Please enter a name.');if(n!==oldName&&data.classes[n])return alert('That class already exists.');if(n!==oldName){data.classes[n]=data.classes[oldName];delete data.classes[oldName];data.history.forEach(h=>{if(h.className===oldName)h.className=n});if(data.lastPointAction?.className===oldName)data.lastPointAction.className=n;if(data.currentClass===oldName)data.currentClass=n}closeModal();renderAll()})}
 function deleteClass(name){if(Object.keys(data.classes).length===1)return alert('Keep at least one class.');if(!confirm(`Delete class "${name}" and its students?`))return;delete data.classes[name];data.history=data.history.filter(h=>h.className!==name);if(data.currentClass===name)data.currentClass=Object.keys(data.classes)[0];selectedIds=[];renderAll()}
 async function loadCloudMarketplace(){
-  if(!authSession)return;
-  const {data:rewardRows,error:rewardError}=await supabaseClient.from('marketplace_rewards').select('*').eq('teacher_id',authSession.user.id).eq('active',true).order('created_at',{ascending:true});
+  const requestedUserId=authSession?.user?.id;
+  if(!requestedUserId)return;
+  const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
+  const {data:rewardRows,error:rewardError}=await supabaseClient.from('marketplace_rewards').select('*').eq('teacher_id',requestedUserId).eq('active',true).order('created_at',{ascending:true});
+  if(!isCurrentSession())return;
   if(rewardError){const el=document.getElementById('marketItems');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Marketplace items could not be loaded.</strong><br>'+esc(rewardError.message)+'</div>';return;}
-  data.rewards=(rewardRows||[]).map(r=>({id:r.id,name:r.name,description:r.description||'',price:Number(r.price)||0,icon:r.icon||'🎁',active:r.active!==false,stock:r.stock}));
-  const {data:purchaseRows,error:purchaseError}=await supabaseClient.from('purchases').select('id,student_id,teacher_id,reward_id,reward_name,points_spent,created_at').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
-  if(purchaseError){const el=document.getElementById('purchaseList');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Purchase history could not be loaded.</strong><br>'+esc(purchaseError.message)+'</div>';data.purchases=[];}else{const allStudents=Object.values(data.classes||{}).flatMap(cls=>cls.students||[]);data.purchases=(purchaseRows||[]).map(p=>{const student=allStudents.find(s=>s.id===p.student_id);const className=Object.keys(data.classes||{}).find(name=>(data.classes[name].students||[]).some(s=>s.id===p.student_id))||'';return {id:p.id,date:p.created_at,className,studentId:p.student_id,student:student?.name||'Student',item:p.reward_name,cost:Number(p.points_spent)||0};});}
+  const rewards=(rewardRows||[]).map(r=>({id:r.id,name:r.name,description:r.description||'',price:Number(r.price)||0,icon:r.icon||'🎁',active:r.active!==false,stock:r.stock}));
+  const {data:purchaseRows,error:purchaseError}=await supabaseClient.from('purchases').select('id,student_id,teacher_id,reward_id,reward_name,points_spent,created_at').eq('teacher_id',requestedUserId).order('created_at',{ascending:false});
+  if(!isCurrentSession())return;
+  let purchases=[];
+  if(purchaseError){const el=document.getElementById('purchaseList');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Purchase history could not be loaded.</strong><br>'+esc(purchaseError.message)+'</div>';}else{const allStudents=Object.values(data.classes||{}).flatMap(cls=>cls.students||[]);purchases=(purchaseRows||[]).map(p=>{const student=allStudents.find(s=>s.id===p.student_id);const className=Object.keys(data.classes||{}).find(name=>(data.classes[name].students||[]).some(s=>s.id===p.student_id))||'';return {id:p.id,date:p.created_at,className,studentId:p.student_id,student:student?.name||'Student',item:p.reward_name,cost:Number(p.points_spent)||0};});}
+  if(!isCurrentSession())return;
+  data.rewards=rewards;
+  data.purchases=purchases;
   renderMarket();renderPurchases();
 }
 function openAddReward(){
