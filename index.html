@@ -1509,13 +1509,15 @@ async function loadCloudClasses(){
 }
 function showCloudStatus(msg,isError){const el=document.getElementById('cloudStatus');if(!el)return;el.style.display='block';el.textContent=msg;el.style.background=isError?'#fff0f0':'#eef7ff';el.style.borderColor=isError?'#e6bcbc':'#c8def4';}
 async function openAddStudent(){
-  if(!authSession)return showTab('account');
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+  if(!requestedTeacherId)return showTab('account');
 
   const cls=current();
-
-  if(!cls||!cls.id){
-    return alert('Create or select a cloud class first.');
-  }
+  if(!cls||!cls.id)return alert('Create or select a cloud class first.');
+  const requestedClassId=cls.id;
+  const requestedClassName=cls.name;
 
   openModal(
     'Add Student',
@@ -1523,36 +1525,30 @@ async function openAddStudent(){
       <label>First name</label>
       <input id="studentFirstName" placeholder="First name" autofocus>
     </div>
-
     <div class="formrow">
       <label>Last name</label>
       <input id="studentLastName" placeholder="Last name">
     </div>
-
     <div class="notice">
       A secure Student Access Code will be generated automatically after the student is added.
     </div>`,
     async()=>{
-      const first=document.getElementById('studentFirstName').value.trim();
-      const last=document.getElementById('studentLastName').value.trim();
-      const name=[first,last].filter(Boolean).join(' ');
-
-      if(!first){
-        return alert('Please enter the student first name.');
+      if(!isRequestedSession()){
+        return alert('Your teacher session has changed. Please sign in again before adding a student.');
       }
+      const first=document.getElementById('studentFirstName')?.value.trim()||'';
+      const last=document.getElementById('studentLastName')?.value.trim()||'';
+      const name=[first,last].filter(Boolean).join(' ');
+      if(!first)return alert('Please enter the student first name.');
 
-      if(
-        cls.students.some(
-          s=>s.name.toLowerCase()===name.toLowerCase()
-        )
-      ){
+      if(cls.students.some(s=>s.name.toLowerCase()===name.toLowerCase())){
         return alert('That student is already in this class.');
       }
 
       const {data:student,error}=await supabaseClient
         .from('students')
         .insert({
-          class_id:cls.id,
+          class_id:requestedClassId,
           first_name:first,
           last_name:last,
           active:true
@@ -1561,7 +1557,13 @@ async function openAddStudent(){
         .single();
 
       if(error){
-        return alert('Could not add student: '+error.message);
+        if(isRequestedSession())alert('Could not add student: '+error.message);
+        return;
+      }
+
+      if(!isRequestedSession()){
+        alert('The student was created, but the teacher session changed before an access code could be generated. Sign in again and verify the class; do not add the student again.');
+        return;
       }
 
       const {data:codeResult,error:codeError}=await supabaseClient.rpc(
@@ -1569,42 +1571,41 @@ async function openAddStudent(){
         {p_student_id:student.id}
       );
 
+      if(!isRequestedSession()){
+        alert('The student may have been added and an access code may have been generated, but the teacher session changed before completion. Sign in again and verify the student before retrying.');
+        return;
+      }
+
       if(codeError){
-        return alert(
-          'Student was added, but the access code could not be generated: '+
-          codeError.message
-        );
+        alert('Student was added, but the access code could not be generated: '+codeError.message);
+        return;
       }
 
       const accessCode=codeResult?.[0]?.student_code;
-
       if(!accessCode){
-        return alert(
-          'Student was added, but no access code was returned.'
-        );
+        alert('Student was added, but no access code was returned. Verify the student before retrying.');
+        return;
       }
 
       closeModal();
-
       await loadCloudClasses();
+      if(!isRequestedSession())return;
       showTab('students');
 
       openModal(
         'Student Added Successfully',
         `<div class="notice">
-<strong>${esc(name)}</strong> has been added to <strong>${esc(data.currentClass)}</strong>.        </div>
-
+          <strong>${esc(name)}</strong> has been added to <strong>${esc(requestedClassName)}</strong>.
+        </div>
         <div style="margin-top:16px;padding:20px;border:2px dashed #c99700;border-radius:12px;text-align:center;background:#fffaf0">
           <div class="small">Student Access Code</div>
-          <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">
-            ${esc(accessCode)}
-          </div>
+          <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">${esc(accessCode)}</div>
         </div>
-
-        <div class="footer-note" style="margin-top:14px">
-          Give this code to the student. Keep it private.
-        </div>`,
-()=>closeModal(),'Done',true      );
+        <div class="footer-note" style="margin-top:14px">Give this code to the student. Keep it private.</div>`,
+        ()=>closeModal(),
+        'Done',
+        true
+      );
     }
   );
 }
