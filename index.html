@@ -1436,43 +1436,48 @@ function renderClasses(){
 }
 function selectClass(name){data.currentClass=name;selectedIds=[];renderAll();showTab('students')}
 async function loadCloudClasses(){
- if(!authSession)return;
+ const requestedUserId=authSession?.user?.id;
+ if(!requestedUserId)return;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
  cloudLoading=true;renderClasses();
 
- const {data:rows,error}=await supabaseClient.from('classes').select('*').eq('teacher_id',authSession.user.id).eq('active',true).order('name');
+ const {data:rows,error}=await supabaseClient.from('classes').select('*').eq('teacher_id',requestedUserId).eq('active',true).order('name');
+ if(!isCurrentSession())return;
  if(error){cloudLoading=false;showCloudStatus('Cloud classes could not be loaded: '+error.message,true);return;}
 
- const {data:txRows,error:txError}=await supabaseClient.from('point_transactions').select('student_id,points,created_at,action_name,action_type,reason,source').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
+ const {data:txRows,error:txError}=await supabaseClient.from('point_transactions').select('student_id,points,created_at,action_name,action_type,reason,source').eq('teacher_id',requestedUserId).order('created_at',{ascending:false});
+ if(!isCurrentSession())return;
  if(txError){cloudLoading=false;showCloudStatus('Classes loaded, but cloud points could not be loaded: '+txError.message,true);return;}
 
  const totals={};
- (txRows||[]).forEach(t=>{
-   totals[t.student_id]=(totals[t.student_id]||0)+(Number(t.points)||0);
- });
+ (txRows||[]).forEach(t=>{totals[t.student_id]=(totals[t.student_id]||0)+(Number(t.points)||0);});
 
  const mapped=[];
  for(const c of (rows||[])){
+  if(!isCurrentSession())return;
   const {data:students,error:se}=await supabaseClient.from('students').select('*').eq('class_id',c.id).order('first_name');
+  if(!isCurrentSession())return;
   if(se){cloudLoading=false;showCloudStatus('Class loaded, but students could not be loaded: '+se.message,true);return;}
   mapped.push({
    id:c.id,
    name:c.name,
    description:c.description||'',
    students:(students||[]).filter(x=>x.active!==false).map(x=>({
-     id:x.id,
-     name:[x.first_name,x.last_name].filter(Boolean).join(' ').trim()||'Unnamed',
-     first_name:x.first_name||'',
-     last_name:x.last_name||'',
-     student_code_hint:x.student_code_hint||'',
-     points:Math.max(0,totals[x.id]||0),
-     cloud:true
+    id:x.id,
+    name:[x.first_name,x.last_name].filter(Boolean).join(' ').trim()||'Unnamed',
+    first_name:x.first_name||'',
+    last_name:x.last_name||'',
+    student_code_hint:x.student_code_hint||'',
+    points:Math.max(0,totals[x.id]||0),
+    cloud:true
    }))
   });
  }
 
+ if(!isCurrentSession())return;
  cloudClasses=mapped;
  data.classes={};
- mapped.forEach(c=>{data.classes[c.name]={id:c.id,students:c.students}});
+ mapped.forEach(c=>{data.classes[c.name]={id:c.id,students:c.students};});
  if(!mapped.length)data.currentClass='';
  else if(!data.classes[data.currentClass])data.currentClass=mapped[0].name;
 
@@ -1480,8 +1485,11 @@ async function loadCloudClasses(){
  cloudReady=true;
  showCloudStatus('Cloud classes and point balances connected. Points are loaded from Supabase.',false);
  renderAll();
+ if(!isCurrentSession())return;
  await loadCloudGroups();
+ if(!isCurrentSession())return;
  await loadCloudActivities();
+ if(!isCurrentSession())return;
  await loadCloudMarketplace();
 }
 function showCloudStatus(msg,isError){const el=document.getElementById('cloudStatus');if(!el)return;el.style.display='block';el.textContent=msg;el.style.background=isError?'#fff0f0':'#eef7ff';el.style.borderColor=isError?'#e6bcbc':'#c8def4';}
