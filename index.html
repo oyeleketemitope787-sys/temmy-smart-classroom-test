@@ -166,7 +166,7 @@ let passwordFlowActive=false;
 </div>
 </section>
 
-<section id="classes" class="hidden"><div class="card"><h2>🏫 My Classes</h2><div class="notice">Create and manage your classes. Your classes and student data are loaded from the production cloud database.</div><button class="btn primary" onclick="openCreateClass()">➕ Create New Class</button><div id="classCards"></div></div></section>
+<section id="classes" class="hidden"><div class="card"><h2>🏫 My Classes</h2><div class="notice">Create and manage your classes. Your classes and student data are loaded from the connected cloud database.</div><button class="btn primary" onclick="openCreateClass()">➕ Create New Class</button><div id="classCards"></div></div></section>
 
 <section id="market" class="hidden"><div class="controls"><button class="btn primary" onclick="openAddReward()">➕ Create Marketplace Item</button></div><div class="card"><h2>🛒 Marketplace</h2><div class="small">Students spend points earned in the selected class.</div><div id="marketItems" class="market" style="margin-top:16px"></div></div></section>
 
@@ -1122,20 +1122,25 @@ async function undoLastPointAction(){
 }
 
 async function loadCloudGroups(){
- if(!authSession)return;
+ const requestedUserId=authSession?.user?.id;
+ if(!requestedUserId)return;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
  const selectedClassId=document.getElementById('groupClassSelect')?.value||current()?.id||'';
  let groupQuery=supabaseClient.from('groups').select('*').order('created_at',{ascending:true});
  if(selectedClassId) groupQuery=groupQuery.eq('class_id',selectedClassId);
  const {data:rows,error}=await groupQuery;
+ if(!isCurrentSession())return;
  if(error){showCloudStatus('Groups could not be loaded: '+error.message,true);return;}
  const ids=(rows||[]).map(g=>g.id); let memberships=[];
  if(ids.length){
    const {data:mr,error:me}=await supabaseClient.from('group_members').select('*').in('group_id',ids);
+   if(!isCurrentSession())return;
    if(me){
      // Group records are still valid even if membership permissions are not ready yet.
      showCloudStatus('Groups loaded. Group membership access still needs configuration: '+me.message,true);
    } else memberships=mr||[];
  }
+ if(!isCurrentSession())return;
  cloudGroups=(rows||[]).map(g=>({id:g.id,classId:g.class_id,name:g.name,description:g.description||'',members:memberships.filter(m=>m.group_id===g.id).map(m=>m.student_id),createdAt:g.created_at}));
  renderGroups();
 }
@@ -1149,11 +1154,14 @@ async function deleteGroup(id){const g=groupById(id);if(!g)return;if(!confirm(`D
 function manageGroupMembers(id){const g=groupById(id);if(!g)return;const cls=cloudClasses.find(c=>c.id===g.classId);if(!cls)return;const body=`<div class="small" style="margin-bottom:10px">Select the students who belong to <strong>${esc(g.name)}</strong>. A student may belong to more than one group.</div><div class="member-check-list">${cls.students.map(s=>`<label class="member-check"><input type="checkbox" class="group-member-check" value="${esc(s.id)}" ${g.members.includes(s.id)?'checked':''}> <span>${esc(s.name)}</span></label>`).join('')}</div>`;openModal('Manage Group Members',body,async()=>{const ids=[...document.querySelectorAll('.group-member-check:checked')].map(x=>x.value);const {error:de}=await supabaseClient.from('group_members').delete().eq('group_id',g.id);if(de)return alert('Could not update group members: '+de.message);if(ids.length){const rows=ids.map(student_id=>({group_id:g.id,student_id}));const {error:ie}=await supabaseClient.from('group_members').insert(rows);if(ie)return alert('Could not save group members: '+ie.message);}closeModal();await loadCloudGroups();alert(`✓ ${ids.length} student${ids.length===1?'':'s'} assigned to "${g.name}".`);});}
 
 async function loadCloudActivities(){
- if(!authSession)return;
+ const requestedUserId=authSession?.user?.id;
+ if(!requestedUserId)return;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
  const classId=document.getElementById('activityClassSelect')?.value||current()?.id||'';
- let q=supabaseClient.from('class_activities').select('*').eq('teacher_id',authSession.user.id).order('created_at',{ascending:false});
+ let q=supabaseClient.from('class_activities').select('*').eq('teacher_id',requestedUserId).order('created_at',{ascending:false});
  if(classId)q=q.eq('class_id',classId);
  const {data:rows,error}=await q;
+ if(!isCurrentSession())return;
  if(error){
    const el=document.getElementById('activitiesList');
    if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>'+esc(error.message)+'</div>';
