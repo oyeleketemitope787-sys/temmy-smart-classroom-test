@@ -452,6 +452,10 @@ function renderTeacherMessageInbox(){
 }
 
 async function openTeacherConversation(studentId){
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  if(!requestedTeacherId)return showTab('account');
+  const isCurrentTeacherMessageSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
   selectedTeacherStudentId=studentId;
 
   const {error}=await supabaseClient.rpc(
@@ -461,6 +465,7 @@ async function openTeacherConversation(studentId){
     }
   );
 
+  if(!isCurrentTeacherMessageSession())return;
   if(error){
     console.error(
       'Unable to mark messages as read:',
@@ -571,6 +576,10 @@ function renderTeacherConversation(studentId){
 }
 
 async function sendTeacherReply(studentId){
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  if(!requestedTeacherId)return showTab('account');
+  const isCurrentTeacherMessageSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
   const input=document.getElementById('teacherReplyMessage');
 
   if(!input)return;
@@ -587,6 +596,7 @@ async function sendTeacherReply(studentId){
     return;
   }
 
+  if(!isCurrentTeacherMessageSession())return alert('Your teacher session changed. Sign in again before sending this reply.');
   const {data:result,error}=await supabaseClient.rpc(
     'send_teacher_message',
     {
@@ -595,6 +605,7 @@ async function sendTeacherReply(studentId){
     }
   );
 
+  if(!isCurrentTeacherMessageSession())return alert('Your teacher session changed while the reply was processing. The message may have been sent. Sign in again and check the conversation before retrying.');
   if(error){
     alert(
       'Unable to send reply: '+error.message
@@ -611,6 +622,7 @@ async function sendTeacherReply(studentId){
 
   await loadTeacherMessages();
 
+  if(!isCurrentTeacherMessageSession())return;
   renderTeacherConversation(studentId);
 }
   function renderAll(){
