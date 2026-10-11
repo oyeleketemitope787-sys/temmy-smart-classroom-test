@@ -2809,12 +2809,18 @@ async function signOutTeacher(){
  showTab('account');
  const {error}=await supabaseClient.auth.signOut();
  if(error){
+   // If another auth event occurs while session verification is pending, let that newer event win.
+   const revisionBeforeVerify=authStateRevision;
    const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+   if(revisionBeforeVerify!==authStateRevision){
+     return alert('Sign-out could not be confirmed: '+error.message+' The authentication state changed during verification, so the newer session state was left untouched. Please check the account screen.');
+   }
    // Restore only a session Supabase confirms is still active; never revive a stale cached session.
    authSession=session||null;
    if(authSession){
      renderAccount();
      await loadCloudClasses();
+     if(revisionBeforeVerify!==authStateRevision)return;
    }else{
      cloudReady=false;
      cloudLoading=false;
