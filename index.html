@@ -1572,7 +1572,7 @@ function openCreateClass(){
   if(!name)return alert('Please enter a class name.');
   if(cloudClasses.some(c=>c.name.toLowerCase()===name.toLowerCase()))return alert('That class already exists.');
   const {data:row,error}=await supabaseClient.from('classes').insert({teacher_id:requestedTeacherId,name,description:description||null,active:true}).select().single();
-  if(!isCurrentTeacherSession()){closeModal();return;}
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed while creating the class. It may have been created; sign in again and verify the class list before retrying.');}
   if(error)return alert('Could not create class: '+error.message);
   closeModal();
   await loadCloudClasses();
