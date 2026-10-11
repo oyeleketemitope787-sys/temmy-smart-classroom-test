@@ -1752,9 +1752,13 @@ async function buyReward(id){
   const r=data.rewards.find(x=>String(x.id)===String(id));
   if(!r)return alert('Marketplace item not found.');
   if(!authSession)return showTab('account');
-  if(!current()?.id)return alert('Please select a cloud class first.');
+  const requestedTeacherId=authSession.user.id,requestedAuthRevision=authStateRevision,requestedClassId=current()?.id;
+  const isCurrentPurchaseSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+  if(!requestedClassId)return alert('Please select a cloud class first.');
   // Refresh ledger-derived balances immediately before displaying eligibility.
   await loadCloudClasses();
+  if(!isCurrentPurchaseSession())return alert('Your teacher session changed while refreshing balances. Sign in again and check the class before starting a purchase.');
+  if(current()?.id!==requestedClassId)return alert('The selected class changed while refreshing balances. Please select the intended class and try again.');
   const cls=current(),students=cls?.students||[];
   if(!cls||!cls.id)return alert('Please select a cloud class first.');
   if(!students.length)return alert('Add a student first.');
@@ -1771,6 +1775,8 @@ async function buyReward(id){
     if(saveButton?.disabled)return;
     const ids=[...new Set([...document.querySelectorAll('.purchase-check:checked')].map(x=>x.value))].sort();
     if(!ids.length)return alert('Please select at least one eligible student.');
+    if(!isCurrentPurchaseSession())return alert('Your teacher session changed. Sign in again and verify the class before retrying this purchase.');
+    if(current()?.id!==requestedClassId)return alert('The selected class changed. Please reopen the purchase for the intended class.');
     const signature=JSON.stringify({rewardId:r.id,studentIds:ids});
     if(signature!==requestSignature){
       requestSignature=signature;
@@ -1784,6 +1790,7 @@ async function buyReward(id){
         p_reward_id:r.id,
         p_student_ids:ids
       });
+      if(!isCurrentPurchaseSession())return alert('Your teacher session changed while the purchase was processing. The purchase may have succeeded. Sign in again and check purchase history before retrying; reuse the same request ID if retrying this exact selection.');
       if(error){
         alert('Marketplace purchase was not confirmed: '+error.message+'. You may retry with the same selection; the request ID will be reused.');
         return;
@@ -1794,13 +1801,16 @@ async function buyReward(id){
       }
       closeModal();
       await loadCloudClasses();
+      if(!isCurrentPurchaseSession())return alert('The purchase was confirmed, but your teacher session changed during the balance refresh. Sign in again and verify purchase history and balances.');
       await loadCloudMarketplace();
+      if(!isCurrentPurchaseSession())return alert('The purchase was confirmed, but your teacher session changed during the Marketplace refresh. Sign in again and verify purchase history.');
       showTab('purchases');
       alert(result.reward_name+': '+result.student_count+' student'+(result.student_count===1?'':'s')+' purchased successfully. '+result.points_spent_per_student+' points deducted per student.');
     }catch(err){
+      if(!isCurrentPurchaseSession())return alert('Your teacher session changed while checking the purchase response. The purchase may have succeeded. Sign in again and verify purchase history before retrying; reuse the same request ID for this exact selection.');
       alert('The purchase response could not be confirmed: '+(err?.message||String(err))+'. Retry with the same selection to safely check the original request.');
     }finally{
-      if(saveButton)saveButton.disabled=false;
+      if(saveButton&&isCurrentPurchaseSession())saveButton.disabled=false;
     }
   },'Buy');
 }
