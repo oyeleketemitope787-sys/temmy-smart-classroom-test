@@ -835,7 +835,7 @@ function selectPunctualityStatus(status,points){
     selected.style.outlineOffset='2px';
   }
 }
-async function applyPunctuality(){
+async async function applyPunctuality(){
   if(awardLocked){
     alert('Award Points is locked. Unlock it first.');
     return;
@@ -845,6 +845,9 @@ async function applyPunctuality(){
     alert('Please sign in as the teacher first.');
     return;
   }
+  const requestedTeacherId=authSession.user.id;
+  const requestedAuthRevision=authStateRevision;
+  const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
 
   const cls=current();
   if(!cls||!cls.id){
@@ -874,6 +877,10 @@ const {error}=await supabaseClient.rpc('record_student_punctuality',{
 });
 
 if(error)throw error;
+    if(!isRequestedSession()){
+      alert('Punctuality was recorded, but the teacher session changed before the screen could refresh. Please sign in again and reload the class to verify the result.');
+      return;
+    }
     alert(`Punctuality recorded for ${targets.length} student${targets.length===1?'':'s'}.`);
     renderAwardStudents();
   }catch(error){
@@ -889,6 +896,9 @@ async function applyAward(amount,reason){
  if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
  if(awardBusy)return;
  if(!authSession){alert('Please sign in as the teacher first.');return;}
+ const requestedTeacherId=authSession.user.id;
+ const requestedAuthRevision=authStateRevision;
+ const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  const cls=current();
  if(!cls||!cls.id){alert('Please select a cloud class first.');return;}
 
@@ -916,7 +926,7 @@ async function applyAward(amount,reason){
    const stamp=new Date().toISOString();
    const rows=deltas.map(d=>({
      student_id:d.studentId,
-     teacher_id:authSession.user.id,
+     teacher_id:requestedTeacherId,
      points:d.delta,
      action_name:reason,
      action_type:amount>0?'positive':'negative',
@@ -927,6 +937,10 @@ async function applyAward(amount,reason){
 
    const {error}=await supabaseClient.from('point_transactions').insert(rows);
    if(error){alert('Could not save points to Supabase: '+error.message);return;}
+   if(!isRequestedSession()){
+     alert('The points were saved, but the teacher session changed before the screen could refresh. Please sign in again and reload the class to verify the balances.');
+     return;
+   }
 
    deltas.forEach(d=>{
      const s=cls.students.find(x=>x.id===d.studentId);
@@ -945,6 +959,7 @@ async function applyAward(amount,reason){
    // Refresh cloud balances in the background, but keep the current student selection.
    const keepSelection=[...selectedIds];
    await loadCloudClasses();
+   if(!isRequestedSession())return;
    selectedIds=keepSelection.filter(id=>current()?.students.some(s=>s.id===id));
    renderAwardStudents();
  }finally{
@@ -985,6 +1000,9 @@ async function undoLastPointAction(){
  if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
  if(awardBusy)return;
  if(!authSession){alert('Please sign in as the teacher first.');return;}
+ const requestedTeacherId=authSession.user.id;
+ const requestedAuthRevision=authStateRevision;
+ const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
 
  const a=data.lastPointAction;
  if(!a)return alert('There is no point action to undo.');
@@ -1000,7 +1018,7 @@ async function undoLastPointAction(){
  const stamp=new Date().toISOString();
  const rows=reversible.map(d=>({
    student_id:d.studentId,
-   teacher_id:authSession.user.id,
+   teacher_id:requestedTeacherId,
    points:-Number(d.delta),
    action_name:'Undo: '+a.reason,
    action_type:'undo',
@@ -1012,6 +1030,10 @@ async function undoLastPointAction(){
  try{
    const {error}=await supabaseClient.from('point_transactions').insert(rows);
    if(error){alert('Could not save the undo to Supabase: '+error.message);return;}
+   if(!isRequestedSession()){
+     alert('The undo was saved, but the teacher session changed before the screen could refresh. Please sign in again and reload the class to verify the balances.');
+     return;
+   }
 
    // Update the visible UI immediately from the confirmed cloud write.
    reversible.forEach(d=>{
