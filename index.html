@@ -1550,8 +1550,9 @@ function renderClasses(){
 function selectClass(name){data.currentClass=name;selectedIds=[];renderAll();showTab('students')}
 async function loadCloudClasses(){
  const requestedUserId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
  if(!requestedUserId)return;
- const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
  cloudLoading=true;renderClasses();
 
  const {data:rows,error}=await supabaseClient.from('classes').select('*').eq('teacher_id',requestedUserId).eq('active',true).order('name');
