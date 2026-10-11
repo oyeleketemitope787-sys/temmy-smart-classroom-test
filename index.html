@@ -311,11 +311,14 @@ let teacherMessageRows=[];
 let selectedTeacherStudentId='';
 
 async function loadTeacherMessages(){
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  const isCurrentTeacherMessageSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
   const status=document.getElementById('teacherMessageStatus');
   const inbox=document.getElementById('teacherMessageInbox');
   const conversation=document.getElementById('teacherConversation');
 
-  if(!authSession){
+  if(!requestedTeacherId){
     if(status)status.textContent='Please sign in as a teacher to view messages.';
     if(inbox)inbox.innerHTML='<div class="empty">Teacher sign-in required.</div>';
     if(conversation)conversation.innerHTML='<div class="empty">Sign in to view conversations.</div>';
@@ -329,6 +332,7 @@ async function loadTeacherMessages(){
     'get_teacher_messages'
   );
 
+  if(!isCurrentTeacherMessageSession())return;
   if(error){
     console.error(error);
 
