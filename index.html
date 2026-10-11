@@ -2742,6 +2742,7 @@ async function openStudentActivity(id) {
 
       if (!isCurrentStudentRequest(version, session)) {
         closeModal();
+        alert('Your student session changed while the submission was being processed. The response may have been submitted. Please sign in again and check your activity history before trying again.');
         return;
       }
 
