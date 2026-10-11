@@ -1711,8 +1711,9 @@ function renameClass(oldName){openModal('Rename Class',`<div class="formrow"><la
 function deleteClass(name){if(Object.keys(data.classes).length===1)return alert('Keep at least one class.');if(!confirm(`Delete class "${name}" and its students?`))return;delete data.classes[name];data.history=data.history.filter(h=>h.className!==name);if(data.currentClass===name)data.currentClass=Object.keys(data.classes)[0];selectedIds=[];renderAll()}
 async function loadCloudMarketplace(){
   const requestedUserId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
   if(!requestedUserId)return;
-  const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
+  const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
   const {data:rewardRows,error:rewardError}=await supabaseClient.from('marketplace_rewards').select('*').eq('teacher_id',requestedUserId).eq('active',true).order('created_at',{ascending:true});
   if(!isCurrentSession())return;
   if(rewardError){const el=document.getElementById('marketItems');if(el)el.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Marketplace items could not be loaded.</strong><br>'+esc(rewardError.message)+'</div>';return;}
