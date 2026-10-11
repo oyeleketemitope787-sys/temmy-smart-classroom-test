@@ -17,6 +17,7 @@ The TEST website currently points to Supabase project ref `askhdgmjqezvwavfhqzj`
 - [x] Teacher submission monitoring displays saved feedback.
 - [x] Student logout/login flow now clears student-specific in-memory caches and uses a session-generation guard to ignore stale asynchronous responses.
 - [x] TEST localStorage cleanup that could remove Production-origin keys was removed; TEST reads/writes only the unique `temmySmartClassroomTestV1` key. Source inspection verified no old cleanup script or legacy storage reads/writes remain.
+- [x] TEST `loadCloudClasses()` now captures the initiating teacher user ID and discards class/point/student query results if the authenticated user changes while requests are pending. This is a source-level stale-response guard; browser runtime testing remains required.
 - [x] GitHub Pages deployment workflow completed successfully for the storage-isolation documentation commit (`b0dfc2b845589838d16d6f6391e63b4b3db3c59e`). The subsequent TEST `index.html` storage correction commit is `0f8101b95c12cf530d1fa5039c874d541f12d640`; source was fetched back and inspected.
 - [x] Grade 3 game page removes the session query parameter after reading it, when the History API is available.
 - [x] Grade 3 game page declares a `no-referrer` policy.
@@ -72,6 +73,7 @@ The TEST website currently points to Supabase project ref `askhdgmjqezvwavfhqzj`
 ## C. P1 — User workflow and accessibility
 
 - [ ] In a disposable browser profile, verify TEST creates/updates only `temmySmartClassroomTestV1` and leaves any Production-origin keys unchanged. Confirm the updated TEST page is served after deployment.
+- [ ] Verify teacher A → sign out → teacher B switching with deliberately delayed class/point/student responses; ensure no stale data from the previous teacher appears.
 - [ ] Verify normal student login, logout, refresh, back navigation, and Student A → logout → Student B switching.
 - [ ] Verify delayed history/game/activity/message responses cannot update the UI after logout or account switching.
 - [ ] Verify messages, history, activities, and games render correctly after normal login and after recoverable RPC errors.
@@ -103,4 +105,4 @@ The TEST website currently points to Supabase project ref `askhdgmjqezvwavfhqzj`
 
 ## Next action under current constraints
 
-Continue with read-only source review and browser checks in a disposable profile. Do not write to the database currently labelled PRODUCTION, execute SQL, or claim database controls have passed. The TEST storage correction is source-verified; browser acceptance remains pending. If a genuinely isolated TEST environment is unavailable under the user's constraints, keep database-dependent release gates explicitly blocked and preserve the current system unchanged.
+Continue with read-only source review and browser checks in a disposable profile. Do not write to the database currently labelled PRODUCTION, execute SQL, or claim database controls have passed. The TEST storage correction and teacher class-load session guard are source-verified; browser acceptance remains pending. If a genuinely isolated TEST environment is unavailable under the user's constraints, keep database-dependent release gates explicitly blocked and preserve the current system unchanged.
