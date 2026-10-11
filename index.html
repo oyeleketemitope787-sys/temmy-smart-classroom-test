@@ -1383,32 +1383,54 @@ async function monitorActivity(id){
 
 async function reviewActivitySubmission(recordId,activityId){
  const a=findActivity(activityId);
- if(!a||!authSession)return;
- const {data:r,error}=await supabaseClient.from('student_activity_records').select('id,student_id,status,answer,points_awarded,completed_at,notes').eq('id',recordId).eq('activity_id',activityId).eq('teacher_id',authSession.user.id).maybeSingle();
+ const requestedTeacherId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
+ if(!a||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ const {data:r,error}=await supabaseClient.from('student_activity_records').select('id,student_id,status,answer,points_awarded,completed_at,notes').eq('id',recordId).eq('activity_id',activityId).eq('teacher_id',requestedTeacherId).maybeSingle();
+ if(!isCurrentTeacherSession())return;
  if(error||!r){alert('Could not load the submission: '+(error?.message||'Submission not found.'));return;}
  const cls=cloudClasses.find(c=>c.id===a.classId);
  const student=cls?.students.find(s=>s.id===r.student_id);
  const currentScore=Number(r.points_awarded)||0;
  const body='<div class="notice"><strong>Student:</strong> '+esc(student?.name||'Student')+'<br><strong>Activity:</strong> '+esc(a.title)+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Student response</label><div style="white-space:pre-wrap;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:8px;padding:12px;min-height:80px">'+esc(r.answer||'No response text stored.')+'</div></div><div class="formrow"><label>Score (0–'+a.points+')</label><input id="activityScore" type="number" min="0" max="'+a.points+'" step="1" value="'+currentScore+'"></div><div class="formrow"><label>Teacher feedback / notes (optional)</label><textarea id="activityNotes" rows="3" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px">'+esc(r.notes||'')+'</textarea></div><div class="notice"><strong>Point rule:</strong> Only the difference between the new score and the previous score will be added or deducted from the student\'s classroom points.</div>';
  openModal('📝 Review Submission',body,async()=>{
+   if(!isCurrentTeacherSession()){
+     closeModal();
+     alert('Your teacher session changed. Please sign in again before reviewing this submission.');
+     return;
+   }
    const scoreInput=document.getElementById('activityScore').value.trim();
    const score=Number(scoreInput);
    const notes=document.getElementById('activityNotes').value.trim();
    if(scoreInput===''||!Number.isFinite(score)||!Number.isInteger(score)||score<0||score>a.points)return alert('Enter a whole-number score from 0 to '+a.points+'.');
    const delta=score-currentScore;
    const nowStamp=new Date().toISOString();
-   const {error:updateError}=await supabaseClient.from('student_activity_records').update({status:'scored',points_awarded:score,completed_at:r.completed_at||nowStamp,notes:notes||null}).eq('id',r.id).eq('teacher_id',authSession.user.id);
+   const {error:updateError}=await supabaseClient.from('student_activity_records').update({status:'scored',points_awarded:score,completed_at:r.completed_at||nowStamp,notes:notes||null}).eq('id',r.id).eq('teacher_id',requestedTeacherId);
    if(updateError)return alert('Could not save the score: '+updateError.message);
+   // Never create a point transaction under a different teacher after an account switch.
+   if(!isCurrentTeacherSession()){
+     closeModal();
+     alert('The score update returned after your teacher session changed. No point transaction was attempted. Please do not resubmit this score until the record has been checked.');
+     return;
+   }
    if(delta!==0){
-     const tx={student_id:r.student_id,teacher_id:authSession.user.id,points:delta,action_name:'Activity Score: '+a.title,action_type:'activity_score',reason:'Activity Score: '+a.title,source:'teacher',created_at:nowStamp};
+     const tx={student_id:r.student_id,teacher_id:requestedTeacherId,points:delta,action_name:'Activity Score: '+a.title,action_type:'activity_score',reason:'Activity Score: '+a.title,source:'teacher',created_at:nowStamp};
      const {error:txError}=await supabaseClient.from('point_transactions').insert(tx);
      if(txError){
-       await supabaseClient.from('student_activity_records').update({status:r.status||'submitted',points_awarded:currentScore,notes:r.notes||null}).eq('id',r.id).eq('teacher_id',authSession.user.id);
-       return alert('Score was not finalized because the point transaction failed: '+txError.message);
+       // Existing separate writes are not atomic. Keep the known warning explicit; do not claim rollback succeeded.
+       const {error:rollbackError}=await supabaseClient.from('student_activity_records').update({status:r.status||'submitted',points_awarded:currentScore,notes:r.notes||null,completed_at:r.completed_at||null}).eq('id',r.id).eq('teacher_id',requestedTeacherId);
+       return alert('Score was not finalized because the point transaction failed: '+txError.message+(rollbackError?('\nThe attempted restoration also failed: '+rollbackError.message):'\nThe score record restoration was requested. Verify the record before retrying.'));
      }
+   }
+   if(!isCurrentTeacherSession()){
+     closeModal();
+     alert('The score and point transaction requests completed, but your teacher session changed before refresh. Sign in again and verify the result before making another change.');
+     return;
    }
    closeModal();
    await loadCloudClasses();
+   if(!isCurrentTeacherSession())return;
    alert('✓ '+(student?.name||'Student')+' scored '+score+'/'+a.points+'.'+(delta!==0?' Classroom points updated by '+(delta>0?'+':'')+delta+'.':''));
    await monitorActivity(activityId);
  },'Save Score');
