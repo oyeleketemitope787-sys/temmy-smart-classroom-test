@@ -1406,16 +1406,21 @@ function toggleMenu(id){const target=document.getElementById(id);if(!target)retu
 document.addEventListener('click',e=>{if(!e.target.closest('.menu-wrap'))closeAllMenus()});
 
 function openCreateClass(){
- if(!authSession)return showTab('account');
+ const requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!requestedTeacherId)return showTab('account');
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  openModal('Create New Class',`<div class="formrow"><label>Class name</label><input id="newClass" placeholder="e.g. 8A_1" autofocus></div><div class="formrow"><label>Description (optional)</label><input id="newClassDescription" placeholder="e.g. Mathematics Class"></div>`,async()=>{
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed. Sign in again before creating a class.');}
   const name=document.getElementById('newClass').value.trim();
   const description=document.getElementById('newClassDescription').value.trim();
   if(!name)return alert('Please enter a class name.');
   if(cloudClasses.some(c=>c.name.toLowerCase()===name.toLowerCase()))return alert('That class already exists.');
-  const {data:row,error}=await supabaseClient.from('classes').insert({teacher_id:authSession.user.id,name,description:description||null,active:true}).select().single();
+  const {data:row,error}=await supabaseClient.from('classes').insert({teacher_id:requestedTeacherId,name,description:description||null,active:true}).select().single();
+  if(!isCurrentTeacherSession()){closeModal();return;}
   if(error)return alert('Could not create class: '+error.message);
   closeModal();
   await loadCloudClasses();
+  if(!isCurrentTeacherSession())return;
   data.currentClass=name;
   renderAll();
   showTab('students');
