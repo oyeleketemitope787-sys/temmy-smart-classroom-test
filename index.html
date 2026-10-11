@@ -1367,10 +1367,14 @@ function viewActivityDetails(id){const a=findActivity(id);if(!a)return;const cls
 
 async function monitorActivity(id){
  const a=findActivity(id);
- if(!a||!authSession)return;
+ const requestedTeacherId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
+ if(!a||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  const cls=cloudClasses.find(c=>c.id===a.classId);
  const students=cls?.students||[];
- const {data:records,error}=await supabaseClient.from('student_activity_records').select('id,activity_id,student_id,teacher_id,status,answer,points_awarded,completed_at,notes').eq('activity_id',a.id).eq('teacher_id',authSession.user.id).order('completed_at',{ascending:true});
+ const {data:records,error}=await supabaseClient.from('student_activity_records').select('id,activity_id,student_id,teacher_id,status,answer,points_awarded,completed_at,notes').eq('activity_id',a.id).eq('teacher_id',requestedTeacherId).order('completed_at',{ascending:true});
+ if(!isCurrentTeacherSession())return;
  if(error){alert('Could not load activity submissions: '+error.message);return;}
  const byStudent={};
  (records||[]).forEach(r=>{byStudent[r.student_id]=r;});
@@ -2660,7 +2664,17 @@ async function loadTeacherProfileCloud(){
    if(el&&val!==null&&val!==undefined)el.value=val;
  }
 }
-async function saveTeacherProfileCloud(){if(!authSession)return;const payload={id:authSession.user.id,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);if(error)return alert('Could not save teacher profile: '+error.message);document.getElementById('profileMsg').textContent='Cloud teacher profile saved.'}
+async function saveTeacherProfileCloud(){
+ const requestedTeacherId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
+ if(!requestedTeacherId)return;
+ const payload={id:requestedTeacherId,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};
+ const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);
+ if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return;
+ if(error)return alert('Could not save teacher profile: '+error.message);
+ const msg=document.getElementById('profileMsg');
+ if(msg)msg.textContent='Cloud teacher profile saved.';
+}
 function showPasswordReset(){passwordFlowActive=true;openModal('Reset Your Teacher Password',`<div class="notice"><strong>Secure password setup</strong><br>Create a new private password for your teacher account.</div><div class="formrow"><label>New password</label><input id="newPassword" type="password" minlength="8" placeholder="At least 8 characters"></div><div class="formrow"><label>Confirm password</label><input id="confirmPassword" type="password" minlength="8" placeholder="Enter the password again"></div>`,async()=>{const a=document.getElementById('newPassword').value,b=document.getElementById('confirmPassword').value;if(a.length<8)return alert('Use at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const {error}=await supabaseClient.auth.updateUser({password:a});if(error)return alert('Could not set password: '+error.message);closeModal();passwordFlowActive=false;alert('Password reset successfully. Your teacher account is ready.')},'Save')}
 async function initCloudTeacher(){
  // Do not let a delayed initial session lookup overwrite a newer auth event.
