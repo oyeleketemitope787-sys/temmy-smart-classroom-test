@@ -2114,8 +2114,10 @@ async function sendStudentPortalMessage(){
   if(!input)return;
 
   const message=input.value.trim();
+  const session=studentPortalSession;
+  const version=studentPortalSessionVersion;
 
-  if(!studentPortalSession){
+  if(!session?.accessCode){
     alert('Please enter your student access code first.');
     return;
   }
@@ -2125,13 +2127,23 @@ async function sendStudentPortalMessage(){
     return;
   }
 
+  if(!isCurrentStudentRequest(version,session)){
+    alert('Your student session changed. Please sign in again before sending.');
+    return;
+  }
+
   const {data:result,error}=await supabaseClient.rpc(
     'send_student_message',
     {
-      p_access_code:studentPortalSession.accessCode,
+      p_access_code:session.accessCode,
       p_message:message
     }
   );
+
+  if(!isCurrentStudentRequest(version,session)){
+    alert('Your student session changed while sending. The message may have been sent. Please sign in again and check the conversation before retrying.');
+    return;
+  }
 
   if(error){
     alert(
