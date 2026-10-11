@@ -731,15 +731,15 @@ async function deactivateStudent(id){
  if(error)return alert('Could not deactivate student: '+error.message);
  await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
 }
- async function openStudentCode(id){
+ async async function openStudentCode(id){
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+  if(!requestedTeacherId)return showTab('account');
+
   const cls=current();
-
-  if(!cls)return;
-
-  const student=cls.students.find(
-    s=>s.id===id
-  );
-
+  if(!cls||!cls.id)return;
+  const student=cls.students.find(s=>s.id===id);
   if(!student)return;
 
   const {data:rows,error}=await supabaseClient.rpc(
@@ -748,47 +748,41 @@ async function deactivateStudent(id){
   );
 
   if(error){
-    alert(
-      'Unable to generate the student access code: '+
-      error.message
-    );
+    if(isRequestedSession())alert('Unable to generate the student access code: '+error.message);
+    return;
+  }
+
+  // The RPC may have rotated the code. Never display it in a different teacher session.
+  if(!isRequestedSession()){
+    alert('The student access code may have been regenerated, but the teacher session changed before it could be shown. Sign in again and verify the student before generating another code.');
     return;
   }
 
   const accessCode=rows?.[0]?.student_code;
-
   if(!accessCode){
-    alert(
-      'No student access code was returned.'
-    );
+    alert('No student access code was returned.');
     return;
   }
 
   openModal(
     'Student Access Code',
-    `<div class="notice">
-      <strong>${esc(student.name)}</strong>
+    \`<div class="notice">
+      <strong>\${esc(student.name)}</strong>
       <br><br>
       A new access code has been generated.
       The previous code is no longer valid.
     </div>
-
     <div style="margin-top:16px;padding:20px;border:2px dashed #c99700;border-radius:12px;text-align:center;background:#fffaf0">
       <div class="small">Student Access Code</div>
-
-      <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">
-        ${esc(accessCode)}
-      </div>
+      <div style="font-size:32px;font-weight:800;letter-spacing:4px;margin-top:8px">\${esc(accessCode)}</div>
     </div>
-
-    <div class="footer-note" style="margin-top:14px">
-      Give this code to the student. Keep it private.
-    </div>`,
+    <div class="footer-note" style="margin-top:14px">Give this code to the student. Keep it private.</div>\`,
     closeModal,
-'Done',
-true
+    'Done',
+    true
   );
-}function setScope(next){scope=next;selectedIds=[];['Individual','Multiple','All'].forEach(x=>{const id='scope'+x;document.getElementById(id).classList.toggle('active',x.toLowerCase()===next)});renderAwardStudents()}
+}
+function setScope(next){scope=next;selectedIds=[];['Individual','Multiple','All'].forEach(x=>{const id='scope'+x;document.getElementById(id).classList.toggle('active',x.toLowerCase()===next)});renderAwardStudents()}
 function renderAwardStudents(){const cls=current();if(!cls)return;let arr=[...cls.students];const q=(document.getElementById('studentSearch')?.value||'').toLowerCase();if(q)arr=arr.filter(s=>s.name.toLowerCase().includes(q));const allIds=cls.students.map(s=>s.id);if(scope==='all')selectedIds=[...allIds];if(scope==='individual'&&selectedIds.length>1)selectedIds=[selectedIds[0]];document.getElementById('selectionInfo').textContent=scope==='all'?`All ${cls.students.length} students selected`:scope==='individual'?`${selectedIds.length?1:0} student selected`:`${selectedIds.length} students selected`;document.getElementById('awardStudents').innerHTML=arr.length?arr.map(s=>`<label class="student-row"><input class="check" data-student-id="${esc(s.id)}" type="checkbox" ${selectedIds.includes(s.id)?'checked':''} ${scope==='all'?'disabled':''} onchange="toggleStudent('${s.id}')"><span class="rank">#${cls.students.slice().sort((a,b)=>b.points-a.points).findIndex(x=>x.id===s.id)+1}</span><span class="student-name">${esc(s.name)}</span><strong>${s.points}</strong></label>`).join(''):`<div class="empty">No matching students.</div>`}
 function setPunctualityScope(next){
   scope=next;
