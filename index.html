@@ -1729,12 +1729,18 @@ async function loadCloudMarketplace(){
 }
 function openAddReward(){
   if(!authSession)return showTab('account');
+  const requestedTeacherId=authSession.user.id,requestedAuthRevision=authStateRevision;
+  const isCurrentRewardSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
   openModal('Create Marketplace Item',`<div class="formrow"><label>Item name</label><input id="rewardName" placeholder="e.g. Homework Pass"></div><div class="formrow"><label>Point price</label><input id="rewardPrice" type="number" min="1" value="20"></div><div class="formrow"><label>Icon</label><input id="rewardIcon" value="🎁"></div>`,async()=>{
     const name=document.getElementById('rewardName').value.trim(),price=Math.floor(Number(document.getElementById('rewardPrice').value)),icon=document.getElementById('rewardIcon').value.trim()||'🎁';
     if(!name||!Number.isFinite(price)||price<1)return alert('Enter a valid item name and price.');
-    const {error}=await supabaseClient.from('marketplace_rewards').insert({teacher_id:authSession.user.id,name,description:null,price,icon,active:true,stock:null});
+    if(!isCurrentRewardSession())return alert('Your teacher session changed. Sign in again and verify the Marketplace before retrying.');
+    const {error}=await supabaseClient.from('marketplace_rewards').insert({teacher_id:requestedTeacherId,name,description:null,price,icon,active:true,stock:null});
+    if(!isCurrentRewardSession())return alert('The teacher session changed while creating this item. The request may have succeeded. Sign in again and check the Marketplace before trying again.');
     if(error)return alert('Could not create marketplace item: '+error.message);
-    closeModal();await loadCloudMarketplace();alert('✓ Marketplace item "'+name+'" created successfully.');
+    closeModal();await loadCloudMarketplace();
+    if(!isCurrentRewardSession())return alert('The item may have been created, but your session changed before the refresh finished. Sign in again and verify the Marketplace.');
+    alert('✓ Marketplace item "'+name+'" created successfully.');
   });
 }
 function renderMarket(){
@@ -1800,10 +1806,18 @@ async function buyReward(id){
 }
 function selectPurchaseAll(flag){document.querySelectorAll('.purchase-check').forEach(c=>c.checked=flag)}
 async function deleteReward(id){
-  const r=data.rewards.find(x=>String(x.id)===String(id));if(!r)return;if(!confirm('Delete "'+r.name+'" from the Marketplace?'))return;
-  const {error}=await supabaseClient.from('marketplace_rewards').delete().eq('id',r.id).eq('teacher_id',authSession.user.id);
+  const r=data.rewards.find(x=>String(x.id)===String(id));if(!r)return;
+  if(!authSession)return showTab('account');
+  if(!confirm('Delete "'+r.name+'" from the Marketplace?'))return;
+  const requestedTeacherId=authSession.user.id,requestedAuthRevision=authStateRevision;
+  const isCurrentRewardSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+  if(!isCurrentRewardSession())return alert('Your teacher session changed. Sign in again and verify the Marketplace before retrying.');
+  const {error}=await supabaseClient.from('marketplace_rewards').delete().eq('id',r.id).eq('teacher_id',requestedTeacherId);
+  if(!isCurrentRewardSession())return alert('The teacher session changed while deleting this item. The request may have succeeded. Sign in again and check the Marketplace before trying again.');
   if(error)return alert('Could not delete marketplace item: '+error.message);
-  await loadCloudMarketplace();alert('✓ Marketplace item deleted.');
+  await loadCloudMarketplace();
+  if(!isCurrentRewardSession())return alert('The item may have been deleted, but your session changed before the refresh finished. Sign in again and verify the Marketplace.');
+  alert('✓ Marketplace item deleted.');
 }
 function renderPurchases(){
   const el=document.getElementById('purchaseList');if(!el)return;if(!data.purchases.length){el.innerHTML='<div class="empty">No purchases recorded yet.</div>';return}
