@@ -731,7 +731,7 @@ async function deactivateStudent(id){
  if(error)return alert('Could not deactivate student: '+error.message);
  await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
 }
- async async function openStudentCode(id){
+ async function openStudentCode(id){
   const requestedTeacherId=authSession?.user?.id;
   const requestedAuthRevision=authStateRevision;
   const isRequestedSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
