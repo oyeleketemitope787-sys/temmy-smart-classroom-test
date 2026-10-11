@@ -1392,9 +1392,10 @@ async function reviewActivitySubmission(recordId,activityId){
  const currentScore=Number(r.points_awarded)||0;
  const body='<div class="notice"><strong>Student:</strong> '+esc(student?.name||'Student')+'<br><strong>Activity:</strong> '+esc(a.title)+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Student response</label><div style="white-space:pre-wrap;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:8px;padding:12px;min-height:80px">'+esc(r.answer||'No response text stored.')+'</div></div><div class="formrow"><label>Score (0–'+a.points+')</label><input id="activityScore" type="number" min="0" max="'+a.points+'" step="1" value="'+currentScore+'"></div><div class="formrow"><label>Teacher feedback / notes (optional)</label><textarea id="activityNotes" rows="3" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px">'+esc(r.notes||'')+'</textarea></div><div class="notice"><strong>Point rule:</strong> Only the difference between the new score and the previous score will be added or deducted from the student\'s classroom points.</div>';
  openModal('📝 Review Submission',body,async()=>{
-   const score=Math.floor(Number(document.getElementById('activityScore').value));
+   const scoreInput=document.getElementById('activityScore').value.trim();
+   const score=Number(scoreInput);
    const notes=document.getElementById('activityNotes').value.trim();
-   if(!Number.isFinite(score)||score<0||score>a.points)return alert('Score must be between 0 and '+a.points+'.');
+   if(scoreInput===''||!Number.isFinite(score)||!Number.isInteger(score)||score<0||score>a.points)return alert('Enter a whole-number score from 0 to '+a.points+'.');
    const delta=score-currentScore;
    const nowStamp=new Date().toISOString();
    const {error:updateError}=await supabaseClient.from('student_activity_records').update({status:'scored',points_awarded:score,completed_at:r.completed_at||nowStamp,notes:notes||null}).eq('id',r.id).eq('teacher_id',authSession.user.id);
@@ -2363,8 +2364,11 @@ function renderStudentPortalActivities(){
   if(!studentPortalSession){list.innerHTML='<div class="empty">Please enter your access code first.</div>';return;}
   if(!studentPortalActivities.length){list.innerHTML='<div class="empty">🎉 There are no live activities for your class right now.</div>';return;}
   list.innerHTML='<div class="group-grid">'+studentPortalActivities.map(a=>{
-    const submitted=!!a.record_id||a.record_status==='submitted';
-    return `<div class="group-card"><div class="summary-title"><div><h3>${activityTypeLabel(a.type)}</h3><div class="small">${esc(a.title)}</div></div><span class="tag ${submitted?'plus':''}">${submitted?'SUBMITTED':'LIVE'}</span></div><div class="small" style="margin-top:10px">${esc(a.instructions||'No instructions provided.')}</div><div style="margin-top:10px"><strong>${Number(a.points)||0} points</strong> <span class="small">available</span></div><div class="group-actions" style="margin-top:14px"><button class="btn primary" onclick="openStudentActivity('${esc(a.id)}')">${submitted?'View Submission':'Open Activity'}</button></div></div>`;
+    const scored=a.record_status==='scored'&&a.points_awarded!==null&&a.points_awarded!==undefined;
+    const submitted=!!a.record_id||a.record_status==='submitted'||a.record_status==='scored';
+    const statusLabel=scored?'SCORED':submitted?'SUBMITTED':'LIVE';
+    const statusClass=(scored||submitted)?'plus':'';
+    return `<div class="group-card"><div class="summary-title"><div><h3>${activityTypeLabel(a.type)}</h3><div class="small">${esc(a.title)}</div></div><span class="tag ${statusClass}">${statusLabel}</span></div><div class="small" style="margin-top:10px">${esc(a.instructions||'No instructions provided.')}</div><div style="margin-top:10px"><strong>${Number(a.points)||0} points</strong> <span class="small">available</span>${scored?'<div class="small" style="margin-top:5px"><strong>Your score:</strong> '+Number(a.points_awarded)+'/'+(Number(a.points)||0)+'</div>':''}</div><div class="group-actions" style="margin-top:14px"><button class="btn primary" onclick="openStudentActivity('${esc(a.id)}')">${submitted?'View Submission':'Open Activity'}</button></div></div>`;
   }).join('')+'</div>';
 }
 
