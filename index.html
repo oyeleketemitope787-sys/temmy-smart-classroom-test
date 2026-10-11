@@ -730,7 +730,7 @@ async function editStudent(id){
   const last=document.getElementById('editStudentLastName').value.trim();
   if(!first)return alert('Please enter the student first name.');
   const {error}=await supabaseClient.from('students').update({first_name:first,last_name:last}).eq('id',id).eq('class_id',cls.id);
-  if(!isCurrentTeacherSession()){closeModal();return;}
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed while saving. The student name may have been updated; sign in again and verify the student record before retrying.');}
   if(error)return alert('Could not update student: '+error.message);
   closeModal();await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
  },'Save Changes');
@@ -743,7 +743,7 @@ async function deactivateStudent(id){
  if(!student)return;
  if(!confirm(`Deactivate ${student.name}? This will remove the student from the active class list, but their points, history, messages and records will be preserved.`)||!isCurrentTeacherSession())return;
  const {error}=await supabaseClient.from('students').update({active:false}).eq('id',id).eq('class_id',cls.id);
- if(!isCurrentTeacherSession())return;
+ if(!isCurrentTeacherSession())return alert('Your teacher session changed while deactivating the student. The change may have succeeded; sign in again and verify the active student list before retrying.');
  if(error)return alert('Could not deactivate student: '+error.message);
  await loadCloudClasses();if(!isCurrentTeacherSession())return;showTab('students');
 }
