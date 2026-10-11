@@ -1346,23 +1346,51 @@ onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked
   );
 }
   function openCreateActivity(){
- if(!authSession)return showTab('account');
+ const requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!requestedTeacherId)return showTab('account');
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  const classId=document.getElementById('activityClassSelect')?.value||current()?.id;
  const cls=cloudClasses.find(c=>c.id===classId);if(!cls)return alert('Please select a class first.');
  openModal('Create Learning Activity','<div class="formrow"><label>Class</label><input value="'+esc(cls.name)+'" disabled></div><div class="formrow"><label>Activity type</label><select id="activityType"><option value="live_task">📝 Live Task</select></div><div class="formrow"><label>Title</label><input id="activityTitle" placeholder="e.g. Factors Challenge" autofocus></div><div class="formrow"><label>Instructions</label><textarea id="activityInstructions" rows="4" style="width:100%;border:1px solid #ccd5e2;border-radius:8px;padding:10px" placeholder="Tell students what they need to do."></textarea></div><div class="formrow"><label>Maximum points</label><input id="activityPoints" type="number" min="1" value="5"></div><div class="notice"><strong>Important:</strong> submitting an activity will not automatically award classroom points. The teacher will review and score the activity first.</div>',async()=>{
-   const type=document.getElementById('activityType').value,title=document.getElementById('activityTitle').value.trim(),instructions=document.getElementById('activityInstructions').value.trim(),points=Math.floor(Number(document.getElementById('activityPoints').value));
-   if(!title)return alert('Please enter an activity title.');
-   if(!Number.isFinite(points)||points<1)return alert('Maximum points must be at least 1.');
-   const payload={class_id:classId,activity_type:type,title,description:instructions||null,points,status:'draft',teacher_id:authSession.user.id};
-   const {error}=await supabaseClient.from('class_activities').insert(payload);
-   if(error)return alert('Could not create activity: '+error.message);
-   closeModal();await loadCloudActivities();alert('✓ Activity "'+title+'" created successfully.');
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed. Sign in again before creating this activity.');}
+  const type=document.getElementById('activityType').value,title=document.getElementById('activityTitle').value.trim(),instructions=document.getElementById('activityInstructions').value.trim(),points=Math.floor(Number(document.getElementById('activityPoints').value));
+  if(!title)return alert('Please enter an activity title.');
+  if(!Number.isFinite(points)||points<1)return alert('Maximum points must be at least 1.');
+  const payload={class_id:classId,activity_type:type,title,description:instructions||null,points,status:'draft',teacher_id:requestedTeacherId};
+  const {error}=await supabaseClient.from('class_activities').insert(payload);
+  if(!isCurrentTeacherSession()){closeModal();return;}
+  if(error)return alert('Could not create activity: '+error.message);
+  closeModal();await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ Activity "'+title+'" created successfully.');
  });
 }
 function findActivity(id){return cloudActivities.find(a=>a.id===id)||null}
-async function launchActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Launch "'+a.title+'"? Students will be able to receive the activity when the student portal is connected.'))return;const {error}=await supabaseClient.from('class_activities').update({status:'live'}).eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not launch activity: '+error.message);await loadCloudActivities();alert('✓ "'+a.title+'" is now LIVE.')}
-async function closeActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Close "'+a.title+'"?'))return;const {error}=await supabaseClient.from('class_activities').update({status:'closed'}).eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not close activity: '+error.message);await loadCloudActivities();alert('✓ "'+a.title+'" is now closed.')}
-async function deleteActivity(id){const a=findActivity(id);if(!a)return;if(!confirm('Delete "'+a.title+'"? This removes the draft activity from the cloud.'))return;const {error}=await supabaseClient.from('class_activities').delete().eq('id',a.id).eq('teacher_id',authSession.user.id);if(error)return alert('Could not delete activity: '+error.message);await loadCloudActivities();alert('✓ Activity deleted.')}
+async function launchActivity(id){
+ const a=findActivity(id),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!a||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ if(!confirm('Launch "'+a.title+'"? Students will be able to receive the activity when the student portal is connected.')||!isCurrentTeacherSession())return;
+ const {error}=await supabaseClient.from('class_activities').update({status:'live'}).eq('id',a.id).eq('teacher_id',requestedTeacherId);
+ if(!isCurrentTeacherSession())return;if(error)return alert('Could not launch activity: '+error.message);
+ await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ "'+a.title+'" is now LIVE.');
+}
+async function closeActivity(id){
+ const a=findActivity(id),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!a||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ if(!confirm('Close "'+a.title+'"?')||!isCurrentTeacherSession())return;
+ const {error}=await supabaseClient.from('class_activities').update({status:'closed'}).eq('id',a.id).eq('teacher_id',requestedTeacherId);
+ if(!isCurrentTeacherSession())return;if(error)return alert('Could not close activity: '+error.message);
+ await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ "'+a.title+'" is now closed.');
+}
+async function deleteActivity(id){
+ const a=findActivity(id),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
+ if(!a||!requestedTeacherId)return;
+ const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+ if(!confirm('Delete "'+a.title+'"? This removes the draft activity from the cloud.')||!isCurrentTeacherSession())return;
+ const {error}=await supabaseClient.from('class_activities').delete().eq('id',a.id).eq('teacher_id',requestedTeacherId);
+ if(!isCurrentTeacherSession())return;if(error)return alert('Could not delete activity: '+error.message);
+ await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ Activity deleted.');
+}
 function viewActivityDetails(id){const a=findActivity(id);if(!a)return;const cls=cloudClasses.find(c=>c.id===a.classId);openModal(activityTypeLabel(a.type)+' — '+a.title,'<div class="notice"><strong>Status:</strong> '+activityStatusLabel(a.status)+'<br><strong>Class:</strong> '+esc(cls?.name||'')+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Instructions</label><div class="card" style="box-shadow:none;border:1px solid #e1e6ee">'+esc(a.instructions||'No instructions provided.')+'</div></div><div class="small">Created: '+esc(a.createdAt||'')+'</div>',closeModal,'Close')}
 
 async function monitorActivity(id){
