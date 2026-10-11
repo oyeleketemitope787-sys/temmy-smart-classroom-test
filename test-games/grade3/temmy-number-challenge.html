@@ -76,10 +76,18 @@ let i=0,score=0,lives=3,streak=0,bestStreak=0,mode='practice',locked=false,corre
 const $=x=>document.getElementById(x);
 
 
+// Read the short-lived session token once, then remove it from the visible URL
+// to reduce accidental exposure through copying, screenshots, and later navigation.
+// The token remains in memory only for this page's result submission.
 const classroomGameSession = {
   token: new URLSearchParams(location.search).get('session'),
   gameId: 'grade3-temmy-number-challenge'
 };
+if (classroomGameSession.token && window.history && typeof window.history.replaceState === 'function') {
+  const cleanUrl = new URL(window.location.href);
+  cleanUrl.searchParams.delete('session');
+  window.history.replaceState(null, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+}
 let submissionStarted = false;
 let gameEnded = false;
 
