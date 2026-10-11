@@ -1436,7 +1436,7 @@ onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked
   if(!Number.isFinite(points)||points<1)return alert('Maximum points must be at least 1.');
   const payload={class_id:classId,activity_type:type,title,description:instructions||null,points,status:'draft',teacher_id:requestedTeacherId};
   const {error}=await supabaseClient.from('class_activities').insert(payload);
-  if(!isCurrentTeacherSession()){closeModal();return;}
+  if(!isCurrentTeacherSession()){closeModal();return alert('Your teacher session changed while creating the activity. It may have been created; sign in again and verify the Activities list before retrying.');}
   if(error)return alert('Could not create activity: '+error.message);
   closeModal();await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ Activity "'+title+'" created successfully.');
  });
@@ -1448,7 +1448,7 @@ async function launchActivity(id){
  const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  if(!confirm('Launch "'+a.title+'"? Students will be able to receive the activity when the student portal is connected.')||!isCurrentTeacherSession())return;
  const {error}=await supabaseClient.from('class_activities').update({status:'live'}).eq('id',a.id).eq('teacher_id',requestedTeacherId);
- if(!isCurrentTeacherSession())return;if(error)return alert('Could not launch activity: '+error.message);
+ if(!isCurrentTeacherSession())return alert('Your teacher session changed while launching this activity. It may now be live; sign in again and verify its status before retrying.');if(error)return alert('Could not launch activity: '+error.message);
  await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ "'+a.title+'" is now LIVE.');
 }
 async function closeActivity(id){
@@ -1457,7 +1457,7 @@ async function closeActivity(id){
  const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  if(!confirm('Close "'+a.title+'"?')||!isCurrentTeacherSession())return;
  const {error}=await supabaseClient.from('class_activities').update({status:'closed'}).eq('id',a.id).eq('teacher_id',requestedTeacherId);
- if(!isCurrentTeacherSession())return;if(error)return alert('Could not close activity: '+error.message);
+ if(!isCurrentTeacherSession())return alert('Your teacher session changed while closing this activity. It may now be closed; sign in again and verify its status before retrying.');if(error)return alert('Could not close activity: '+error.message);
  await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ "'+a.title+'" is now closed.');
 }
 async function deleteActivity(id){
@@ -1466,7 +1466,7 @@ async function deleteActivity(id){
  const isCurrentTeacherSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
  if(!confirm('Delete "'+a.title+'"? This removes the draft activity from the cloud.')||!isCurrentTeacherSession())return;
  const {error}=await supabaseClient.from('class_activities').delete().eq('id',a.id).eq('teacher_id',requestedTeacherId);
- if(!isCurrentTeacherSession())return;if(error)return alert('Could not delete activity: '+error.message);
+ if(!isCurrentTeacherSession())return alert('Your teacher session changed while deleting this activity. It may have been deleted; sign in again and verify the Activities list before retrying.');if(error)return alert('Could not delete activity: '+error.message);
  await loadCloudActivities();if(!isCurrentTeacherSession())return;alert('✓ Activity deleted.');
 }
 function viewActivityDetails(id){const a=findActivity(id);if(!a)return;const cls=cloudClasses.find(c=>c.id===a.classId);openModal(activityTypeLabel(a.type)+' — '+a.title,'<div class="notice"><strong>Status:</strong> '+activityStatusLabel(a.status)+'<br><strong>Class:</strong> '+esc(cls?.name||'')+'<br><strong>Maximum points:</strong> '+a.points+'</div><div class="formrow"><label>Instructions</label><div class="card" style="box-shadow:none;border:1px solid #e1e6ee">'+esc(a.instructions||'No instructions provided.')+'</div></div><div class="small">Created: '+esc(a.createdAt||'')+'</div>',closeModal,'Close')}
