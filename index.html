@@ -1256,7 +1256,10 @@ function renderActivities(){
 }
 function refreshActivities(){loadCloudActivities()}
 function openGameLauncher(){
-  if(!authSession)return showTab('account');
+  const requestedTeacherId=authSession?.user?.id;
+  const requestedAuthRevision=authStateRevision;
+  const isCurrentGameSession=()=>authSession?.user?.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
+  if(!requestedTeacherId)return showTab('account');
 
   const classId=document.getElementById('activityClassSelect')?.value||current()?.id;
   const cls=cloudClasses.find(c=>c.id===classId);
@@ -1320,15 +1323,24 @@ onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked
        Each selected student receives a secure 30-minute game session.
      </div>`,
     async()=>{
+      if(!isCurrentGameSession()){
+        closeModal();
+        return alert('Your teacher session changed. Sign in again and verify the class before starting game sessions.');
+      }
       const gameId=document.getElementById('gameSelect')?.value;
       const ids=[...document.querySelectorAll('.game-student-check:checked')].map(el=>el.value);
 
       if(!ids.length)return alert('Please select at least one student.');
+      if(!cloudClasses.some(c=>c.id===classId))return alert('The selected class is no longer available. Refresh your classes before trying again.');
 
       const selected=cls.students.filter(s=>ids.includes(s.id));
       const results=[];
 
       for(const student of selected){
+        if(!isCurrentGameSession()){
+          closeModal();
+          return alert('Your teacher session changed while preparing game sessions. Some sessions may already have been created. Sign in again and verify the game-session list before retrying.');
+        }
         const {data,error}=await supabaseClient.rpc(
           'start_teacher_game_session',
           {
@@ -1336,6 +1348,11 @@ onclick="document.querySelectorAll('.game-student-check').forEach(el=>el.checked
             p_game_id:gameId
           }
         );
+
+        if(!isCurrentGameSession()){
+          closeModal();
+          return alert('Your teacher session changed while a game session was being created. The request may have succeeded. Sign in again and verify existing sessions before retrying.');
+        }
 
         if(error){
           results.push({name:student.name,error:error.message});
