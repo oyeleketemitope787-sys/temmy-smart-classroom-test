@@ -2,16 +2,7 @@
 <!-- Temmy Smart Classroom V8.9.2 — Teacher Activity Monitoring • Clean Build -->
 <html lang="en">
 <head>
-<script>
-(function(){
-  try {
-    if (!localStorage.getItem('temmyProductionCleanV1')) {
-      ['temmySmartClassroomV2','temmySmartClassroomV3','temmySmartClassroomV4','temmySmartClassroomV4_1','temmySmartClassroomV4_2','temmySmartClassroomV4_3','temmySmartClassroomFinal','temmySmartClassroomV5','temmyCleanMasterV1'].forEach(function(k){localStorage.removeItem(k);});
-      localStorage.setItem('temmyProductionCleanV1','1');
-    }
-  } catch(e) {}
-})();
-</script>
+<!-- TEST isolation: do not clear or read legacy shared-origin browser storage. -->
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -265,8 +256,7 @@ let passwordFlowActive=false;
 <div id="modal" class="modal hidden"><div class="modalbox"><h2 id="modalTitle"></h2><div id="modalBody"></div><div class="formactions"><button class="btn" onclick="closeModal()">Cancel</button><button id="modalSave" class="btn primary">Save</button></div></div></div>
 
 <script>
-const OLD_KEY='temmySmartClassroomV2', V3_KEY='temmySmartClassroomV3', KEY='temmySmartClassroomV4';
-const FINAL_KEY='temmySmartClassroomV5';
+const TEST_STORAGE_KEY='temmySmartClassroomTestV1';
 let awardAutoTimer=null;
 const AWARD_IDLE_MS=5*60*1000;
 let scope='individual', selectedIds=[];
@@ -295,11 +285,11 @@ function normalize(raw){
  }
  return Object.keys(out.classes).length?out:null;
 }
-function load(){try{const v5=normalize(JSON.parse(localStorage.getItem(FINAL_KEY)||'null'));if(v5)return v5;const v4=normalize(JSON.parse(localStorage.getItem(KEY)||'null'));if(v4)return v4;const v3=normalize(JSON.parse(localStorage.getItem(V3_KEY)||'null'));if(v3)return v3;const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');const m=normalize(old);if(m)return m}catch(e){}return structuredClone(defaultData)}
+function load(){try{const saved=normalize(JSON.parse(localStorage.getItem(TEST_STORAGE_KEY)||'null'));if(saved)return saved}catch(e){}return structuredClone(defaultData)}
 let data=load();
 awardLocked=!!data.awardLocked;
 if(!data.classes[data.currentClass])data.currentClass=Object.keys(data.classes)[0];
-function save(){localStorage.setItem(FINAL_KEY,JSON.stringify(data));localStorage.setItem(KEY,JSON.stringify(data))}
+function save(){localStorage.setItem(TEST_STORAGE_KEY,JSON.stringify(data))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
 function current(){return data.classes[data.currentClass]||null}
 function now(){return new Date().toLocaleString()}
