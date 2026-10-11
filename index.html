@@ -2374,7 +2374,11 @@ async function openStudentActivity(id) {
   let a = findStudentActivity(id);
   if (!a) return;
 
-  if (!studentPortalSession?.accessCode) {
+  // Capture the exact session before the asynchronous refresh. If the student
+  // logs out or another login starts while this request is pending, discard it.
+  const session = studentPortalSession;
+  const version = studentPortalSessionVersion;
+  if (!session?.accessCode) {
     alert('Please sign in to the student portal again.');
     return;
   }
@@ -2382,8 +2386,11 @@ async function openStudentActivity(id) {
   // Retrieve the latest live activity and submission data.
   const { data: rows, error } = await supabaseClient.rpc(
     'get_student_live_activities',
-    { p_access_code: studentPortalSession.accessCode }
+    { p_access_code: session.accessCode }
   );
+
+  // Never let an older student's request update the current portal or open a modal.
+  if (!isCurrentStudentRequest(version, session)) return;
 
   if (error) {
     alert(
