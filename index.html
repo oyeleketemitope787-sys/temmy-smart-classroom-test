@@ -1787,6 +1787,20 @@ let studentPortalActivities=[];
 let studentPortalHistory=[];
 let studentPortalGames=[];
 
+// Invalidates responses started by an older login/session.
+let studentPortalSessionVersion=0;
+function clearStudentPortalCaches(){
+  studentPortalActivities=[];
+  studentPortalHistory=[];
+  studentPortalGames=[];
+  studentPortalMessages=[];
+}
+function isCurrentStudentRequest(version, session){
+  return version===studentPortalSessionVersion &&
+    !!studentPortalSession &&
+    studentPortalSession===session;
+}
+
 function syncPortalSelectors(){
   renderPortal();
 }
@@ -1794,82 +1808,51 @@ function syncPortalSelectors(){
 let studentPortalMessages=[];
 
 async function loadStudentMessages(){
+  const session=studentPortalSession;
+  const version=studentPortalSessionVersion;
   const status=document.getElementById('studentMessageStatus');
   const list=document.getElementById('studentMessageList');
 
-  if(!studentPortalSession){
+  if(!session){
     studentPortalMessages=[];
-
-    if(status){
-      status.textContent='Enter your student access code first.';
-    }
-
-    if(list){
-      list.innerHTML='<div class="empty">Student access is required.</div>';
-    }
-
+    if(status)status.textContent='Enter your student access code first.';
+    if(list)list.innerHTML='<div class="empty">Student access is required.</div>';
     return;
   }
 
-  if(status){
-    status.textContent='Loading your messages...';
-  }
+  if(status)status.textContent='Loading your messages...';
+  if(list)list.innerHTML='<div class="notice">Loading conversation...</div>';
 
-  if(list){
-    list.innerHTML='<div class="notice">Loading conversation...</div>';
-  }
-
-  const {data:rows,error}=await supabaseClient.rpc(
-    'get_student_messages',
-    {
-      p_access_code:studentPortalSession.accessCode
-    }
-  );
+  const {data:rows,error}=await supabaseClient.rpc('get_student_messages',{
+    p_access_code:session.accessCode
+  });
+  if(!isCurrentStudentRequest(version,session))return;
 
   if(error){
-    console.error(error);
-
     studentPortalMessages=[];
-
     if(status){
-      status.textContent='Messages could not be loaded: '+error.message;
+      status.textContent='Messages could not be loaded.';
       status.style.background='#fff0f0';
       status.style.borderColor='#e6bcbc';
     }
-
-    if(list){
-      list.innerHTML=
-        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
-          Unable to load messages.
-        </div>`;
-    }
-
+    if(list)list.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">Unable to load messages. Please try again.</div>';
     return;
   }
 
   studentPortalMessages=rows||[];
-const {error:readError}=await supabaseClient.rpc(
-  'mark_student_messages_read',
-  {
-    p_access_code:studentPortalSession.accessCode
-  }
-);
+  const {error:readError}=await supabaseClient.rpc('mark_student_messages_read',{
+    p_access_code:session.accessCode
+  });
+  if(!isCurrentStudentRequest(version,session))return;
 
-if(readError){
-  console.error(
-    'Unable to mark teacher messages as read:',
-    readError
-  );
-}
+  if(readError)console.error('Unable to mark teacher messages as read:',readError);
   if(status){
-    status.textContent=
-      studentPortalMessages.length
-        ? `${studentPortalMessages.length} message${studentPortalMessages.length===1?'':'s'}`
-        : 'No messages yet.';
+    status.textContent=studentPortalMessages.length
+      ? `${studentPortalMessages.length} message${studentPortalMessages.length===1?'':'s'}`
+      : 'No messages yet.';
     status.style.background='#eef7ff';
     status.style.borderColor='#c8def4';
   }
-
   renderStudentMessages();
 }
 
@@ -2154,66 +2137,49 @@ async function sendStudentPortalMessage(){
   renderStudentPortalHistory();
 }
 async function loadStudentPortalHistory(){
-  if(!studentPortalSession){
-    studentPortalHistory=[];
-    renderPortal();
-    return;
-  }
+  const session=studentPortalSession;
+  const version=studentPortalSessionVersion;
+  if(!session){studentPortalHistory=[];renderPortal();return;}
 
   const {data:rows,error}=await supabaseClient.rpc(
     'get_student_point_history',
-    {p_access_code:studentPortalSession.accessCode}
+    {p_access_code:session.accessCode}
   );
+  if(!isCurrentStudentRequest(version,session))return;
 
   if(error){
     studentPortalHistory=[];
     const body=document.getElementById('studentPortalBody');
-
     if(body){
-      body.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
-          <strong>Student history could not be loaded.</strong><br>
-          ${esc(error.message)}
-        </div>`
-      );
+      body.insertAdjacentHTML('afterbegin',
+        '<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Student history could not be loaded.</strong><br>Please try again.</div>');
     }
-
     return;
   }
-
   studentPortalHistory=rows||[];
   renderPortal();
 }
+
 async function loadStudentPortalGames(){
-  if(!studentPortalSession){
-    studentPortalGames=[];
-    renderPortal();
-    return;
-  }
+  const session=studentPortalSession;
+  const version=studentPortalSessionVersion;
+  if(!session){studentPortalGames=[];renderPortal();return;}
 
   const {data:rows,error}=await supabaseClient.rpc(
     'get_student_game_sessions',
-    {p_access_code:studentPortalSession.accessCode}
+    {p_access_code:session.accessCode}
   );
+  if(!isCurrentStudentRequest(version,session))return;
 
   if(error){
     studentPortalGames=[];
     const body=document.getElementById('studentPortalBody');
-
     if(body){
-      body.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="notice" style="background:#fff0f0;border-color:#e6bcbc">
-          <strong>Smart Games could not be loaded.</strong><br>
-          ${esc(error.message)}
-        </div>`
-      );
+      body.insertAdjacentHTML('afterbegin',
+        '<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Smart Games could not be loaded.</strong><br>Please try again.</div>');
     }
-
     return;
   }
-
   studentPortalGames=rows||[];
   renderPortal();
 }
@@ -2325,25 +2291,68 @@ const list=document.getElementById('studentPortalHistoryList');
   const msg=document.getElementById('studentPortalLoginMsg');
   const code=(input?.value||'').trim();
   if(!code){if(msg)msg.textContent='Please enter your student access code.';return;}
+
+  // Starting a new login invalidates all earlier requests and clears the
+  // previous student's data before another identity is verified.
+  const version=++studentPortalSessionVersion;
+  studentPortalSession=null;
+  clearStudentPortalCaches();
+  renderPortal();
   if(msg)msg.textContent='Verifying access code...';
-  const {data:row,error}=await supabaseClient.rpc('student_portal_login',{p_access_code:code});
-  if(error){if(msg)msg.textContent='Could not verify the access code: '+error.message;return;}
-  if(!row||!row.length){if(msg)msg.textContent='Access code not found or inactive. Please check with your teacher.';return;}
+
+  const {data:row,error}=await supabaseClient.rpc(
+    'student_portal_login',{p_access_code:code}
+  );
+  if(version!==studentPortalSessionVersion)return;
+
+  if(error){
+    if(msg)msg.textContent='Could not verify the access code. Please try again.';
+    renderPortal();
+    return;
+  }
+  if(!row||!row.length){
+    if(msg)msg.textContent='Access code not found or inactive. Please check with your teacher.';
+    renderPortal();
+    return;
+  }
+
   const r=row[0];
-  studentPortalSession={accessCode:code,student_id:r.student_id,class_id:r.class_id,class_name:r.class_name,first_name:r.first_name,last_name:r.last_name};
+  studentPortalSession={
+    accessCode:code,
+    student_id:r.student_id,
+    class_id:r.class_id,
+    class_name:r.class_name,
+    first_name:r.first_name,
+    last_name:r.last_name
+  };
   if(msg)msg.textContent='Access verified successfully.';
- renderPortal();
-await loadStudentPortalHistory();
+  renderPortal();
+
+  await loadStudentPortalHistory();
+  if(!isCurrentStudentRequest(version,studentPortalSession))return;
   await loadStudentPortalActivities();
-    await loadStudentPortalGames();
+  if(!isCurrentStudentRequest(version,studentPortalSession))return;
+  await loadStudentPortalGames();
 }
 
 async function loadStudentPortalActivities(){
-  if(!studentPortalSession){renderPortal();return;}
+  const session=studentPortalSession;
+  const version=studentPortalSessionVersion;
+  if(!session){studentPortalActivities=[];renderStudentPortalActivities();return;}
+
   const list=document.getElementById('studentActivityList');
   if(list)list.innerHTML='<div class="notice">Loading your live activities...</div>';
-  const {data:rows,error}=await supabaseClient.rpc('get_student_live_activities',{p_access_code:studentPortalSession.accessCode});
-  if(error){studentPortalActivities=[];if(list)list.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>'+esc(error.message)+'</div>';return;}
+
+  const {data:rows,error}=await supabaseClient.rpc(
+    'get_student_live_activities',{p_access_code:session.accessCode}
+  );
+  if(!isCurrentStudentRequest(version,session))return;
+
+  if(error){
+    studentPortalActivities=[];
+    if(list)list.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>Please try again.</div>';
+    return;
+  }
   studentPortalActivities=rows||[];
   renderStudentPortalActivities();
 }
@@ -2520,7 +2529,10 @@ async function openStudentActivity(id) {
 }
 
 function studentPortalLogout(){
-  studentPortalSession=null;studentPortalActivities=[];
+  // Invalidate any in-flight request before clearing the previous student's data.
+  studentPortalSessionVersion++;
+  studentPortalSession=null;
+  clearStudentPortalCaches();
   const input=document.getElementById('studentAccessCode');if(input)input.value='';
   const msg=document.getElementById('studentPortalLoginMsg');if(msg)msg.textContent='';
   renderPortal();
