@@ -1517,15 +1517,14 @@ async function reviewActivitySubmission(recordId,activityId){
    const delta=score-currentScore;
    const nowStamp=new Date().toISOString();
    const {error:updateError}=await supabaseClient.from('student_activity_records').update({status:'scored',points_awarded:score,completed_at:r.completed_at||nowStamp,notes:notes||null}).eq('id',r.id).eq('teacher_id',requestedTeacherId);
-   if(updateError)return alert('Could not save the score: '+updateError.message);
-   // Never create a point transaction under a different teacher after an account switch.
+   // The score update may have completed even if the teacher session changed while it was in flight.
    if(!isCurrentTeacherSession()){
      closeModal();
-     alert('The score update returned after your teacher session changed. No point transaction was attempted. Please do not resubmit this score until the record has been checked.');
+     alert('The score update returned after your teacher session changed. The submission may have been updated. No point transaction was attempted. Sign in again and verify the submission before retrying.');
      return;
    }
    if(updateError){
-     alert('The score update could not be confirmed: '+updateError.message+'. Please refresh and verify the submission before trying again.');
+     alert('Could not save the score: '+updateError.message+'. Please refresh and verify the submission before trying again.');
      return;
    }
    if(delta!==0){
