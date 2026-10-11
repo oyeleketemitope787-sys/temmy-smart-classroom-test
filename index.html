@@ -17,6 +17,7 @@ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_EKVC5DHPb6oZu63ulxj-pQ_hEwd4bZv';
 const AUTH_REDIRECT_URL='https://oyeleketemitope787-sys.github.io/temmy-smart-classroom-test/';
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let authSession=null;
+let authStateRevision=0;
 let cloudReady=false;
 let cloudGroups=[];
 let cloudClasses=[];
@@ -2625,8 +2626,30 @@ async function loadTeacherProfileCloud(){
 }
 async function saveTeacherProfileCloud(){if(!authSession)return;const payload={id:authSession.user.id,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);if(error)return alert('Could not save teacher profile: '+error.message);document.getElementById('profileMsg').textContent='Cloud teacher profile saved.'}
 function showPasswordReset(){passwordFlowActive=true;openModal('Reset Your Teacher Password',`<div class="notice"><strong>Secure password setup</strong><br>Create a new private password for your teacher account.</div><div class="formrow"><label>New password</label><input id="newPassword" type="password" minlength="8" placeholder="At least 8 characters"></div><div class="formrow"><label>Confirm password</label><input id="confirmPassword" type="password" minlength="8" placeholder="Enter the password again"></div>`,async()=>{const a=document.getElementById('newPassword').value,b=document.getElementById('confirmPassword').value;if(a.length<8)return alert('Use at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const {error}=await supabaseClient.auth.updateUser({password:a});if(error)return alert('Could not set password: '+error.message);closeModal();passwordFlowActive=false;alert('Password reset successfully. Your teacher account is ready.')},'Save')}
-async function initCloudTeacher(){const {data:{session}}=await supabaseClient.auth.getSession();authSession=session;if(!session){renderAccount();return}renderAccount();await loadCloudClasses();}
-supabaseClient.auth.onAuthStateChange((event,session)=>{authSession=session;if(event==='PASSWORD_RECOVERY'&&session&&!passwordFlowActive){setTimeout(showPasswordReset,0);return}setTimeout(()=>{renderAccount();if(session)loadCloudClasses()},0)});
+async function initCloudTeacher(){
+ // Do not let a delayed initial session lookup overwrite a newer auth event.
+ const revisionAtStart=authStateRevision;
+ const {data:{session}}=await supabaseClient.auth.getSession();
+ if(revisionAtStart!==authStateRevision)return;
+ authSession=session;
+ if(!session){renderAccount();return;}
+ renderAccount();
+ await loadCloudClasses();
+}
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+ authStateRevision++;
+ authSession=session;
+ if(event==='PASSWORD_RECOVERY'&&session&&!passwordFlowActive){
+   const recoveryUserId=session.user?.id;
+   setTimeout(()=>{if(authSession?.user?.id===recoveryUserId)showPasswordReset();},0);
+   return;
+ }
+ setTimeout(()=>{
+   const currentSession=authSession;
+   renderAccount();
+   if(currentSession)loadCloudClasses();
+ },0);
+});
 window.addEventListener('DOMContentLoaded',()=>{initCloudTeacher();});
 </script>
 </body>
