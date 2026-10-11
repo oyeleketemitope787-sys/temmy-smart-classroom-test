@@ -1071,8 +1071,9 @@ async function undoLastPointAction(){
 
 async function loadCloudGroups(){
  const requestedUserId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
  if(!requestedUserId)return;
- const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
  const selectedClassId=document.getElementById('groupClassSelect')?.value||current()?.id||'';
  let groupQuery=supabaseClient.from('groups').select('*').order('created_at',{ascending:true});
  if(selectedClassId) groupQuery=groupQuery.eq('class_id',selectedClassId);
@@ -1199,8 +1200,9 @@ function manageGroupMembers(id){
 
 async function loadCloudActivities(){
  const requestedUserId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
  if(!requestedUserId)return;
- const isCurrentSession=()=>authSession?.user?.id===requestedUserId;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
  const classId=document.getElementById('activityClassSelect')?.value||current()?.id||'';
  let q=supabaseClient.from('class_activities').select('*').eq('teacher_id',requestedUserId).order('created_at',{ascending:false});
  if(classId)q=q.eq('class_id',classId);
@@ -2732,11 +2734,13 @@ async function signOutTeacher(){
 }
 async function loadTeacherProfileCloud(){
  const requestedUserId=authSession?.user?.id;
+ const requestedAuthRevision=authStateRevision;
  if(!requestedUserId)return;
+ const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
  const {data:row}=await supabaseClient.from('teacher_profiles').select('*').eq('id',requestedUserId).maybeSingle();
- if(authSession?.user?.id!==requestedUserId||!row)return;
+ if(!isCurrentSession()||!row)return;
  for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school],['profileSubjects',row.subjects]]){
-   if(authSession?.user?.id!==requestedUserId)return;
+   if(!isCurrentSession())return;
    const el=document.getElementById(id);
    if(el&&val!==null&&val!==undefined)el.value=val;
  }
