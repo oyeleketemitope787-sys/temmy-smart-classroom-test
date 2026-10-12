@@ -2848,7 +2848,7 @@ async function loadTeacherProfileCloud(){
  const isCurrentSession=()=>authSession?.user?.id===requestedUserId&&authStateRevision===requestedAuthRevision;
  const {data:row}=await supabaseClient.from('teacher_profiles').select('*').eq('id',requestedUserId).maybeSingle();
  if(!isCurrentSession()||!row)return;
- for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school],['profileSubjects',row.subjects]]){
+ for(const [id,val] of [['profileFirst',row.first_name],['profileLast',row.last_name],['profileCountry',row.country],['profileCity',row.city],['profileSchool',row.school_name],['profileSubjects',Array.isArray(row.subjects)?row.subjects.join(', '):(row.subjects||'')]]){
    if(!isCurrentSession())return;
    const el=document.getElementById(id);
    if(el&&val!==null&&val!==undefined)el.value=val;
@@ -2858,7 +2858,8 @@ async function saveTeacherProfileCloud(){
  const requestedTeacherId=authSession?.user?.id;
  const requestedAuthRevision=authStateRevision;
  if(!requestedTeacherId)return;
- const payload={id:requestedTeacherId,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school:document.getElementById('profileSchool')?.value.trim()||null,subjects:document.getElementById('profileSubjects')?.value.trim()||null};
+ const subjectsText=document.getElementById('profileSubjects')?.value.trim()||'';
+ const payload={id:requestedTeacherId,first_name:document.getElementById('profileFirst')?.value.trim()||null,last_name:document.getElementById('profileLast')?.value.trim()||null,country:document.getElementById('profileCountry')?.value.trim()||null,city:document.getElementById('profileCity')?.value.trim()||null,school_name:document.getElementById('profileSchool')?.value.trim()||null,subjects:subjectsText?subjectsText.split(',').map(s=>s.trim()).filter(Boolean):null};
  const {error}=await supabaseClient.from('teacher_profiles').upsert(payload);
  if(authSession?.user?.id!==requestedTeacherId||authStateRevision!==requestedAuthRevision)return alert('Your teacher session changed while saving the profile. The update may have succeeded; sign in again and verify your profile before retrying.');
  if(error)return alert('Could not save teacher profile: '+error.message);
