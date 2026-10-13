@@ -1006,6 +1006,38 @@ function recordPointAction(reason,deltas,stamp){
  data.lastPointAction=action;
 }
 
+function syncCloudPointHistory(txRows,classes){
+ const studentInfo=new Map();
+ (classes||[]).forEach(cls=>(cls.students||[]).forEach(s=>studentInfo.set(s.id,{name:s.name,className:cls.name,points:Number(s.points)||0})));
+ const candidates=[];
+ const sorted=[...(txRows||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ for(const t of sorted){
+   const points=Number(t.points)||0;
+   if(t.action_type==='undo'&&String(t.action_name||'').startsWith('Undo: ')){
+     const originalName=String(t.action_name).slice(6);
+     for(let i=candidates.length-1;i>=0;i--){
+       const c=candidates[i];
+       if(!c.undone&&c.student_id===t.student_id&&c.action_name===originalName&&Math.abs(Number(c.points)||0)===Math.abs(points)&&new Date(c.created_at)<=new Date(t.created_at)){
+         c.undone=true;
+         break;
+       }
+     }
+   }else if(t.source==='teacher'&&(t.action_type==='positive'||t.action_type==='negative')&&points!==0){
+     candidates.push({...t,undone:false});
+   }
+ }
+ const active=candidates.filter(t=>!t.undone&&studentInfo.has(t.student_id));
+ const groups=new Map();
+ active.forEach(t=>{
+   const key=[t.created_at,t.action_name,t.action_type].join('|');
+   if(!groups.has(key))groups.set(key,{id:'cloud_'+key,date:t.created_at,className:studentInfo.get(t.student_id).className,reason:t.action_name,deltas:[]});
+   const action=groups.get(key),student=studentInfo.get(t.student_id),delta=Number(t.points)||0;
+   action.deltas.push({studentId:t.student_id,name:student.name,delta,before:student.points-delta,after:student.points});
+ });
+ data.history=[...groups.values()].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,200);
+ data.lastPointAction=data.history.find(a=>a.className===data.currentClass)||null;
+}
+
 async function undoLastPointAction(){
  if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
  if(awardBusy)return;
@@ -1048,7 +1080,9 @@ async function undoLastPointAction(){
    // Update the visible UI immediately from the confirmed cloud write.
    reversible.forEach(d=>{
      const s=cls.students.find(x=>x.id===d.studentId);
-     if(s)s.points=d.before;
+     const before=Number(s?.points)||0;
+     const after=Math.max(0,before-Number(d.delta));
+     if(s)s.points=after;
      data.activity.unshift({
        id:'a_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),
        date:stamp,
@@ -1058,8 +1092,8 @@ async function undoLastPointAction(){
        type:'points',
        action:'Undo: '+a.reason,
        delta:-Number(d.delta),
-       before:d.after,
-       after:d.before
+       before,
+       after
      });
    });
 
@@ -1634,6 +1668,7 @@ async function loadCloudClasses(){
  }
 
  if(!isCurrentSession())return;
+ syncCloudPointHistory(txRows,mapped);
  cloudClasses=mapped;
  data.classes={};
  mapped.forEach(c=>{data.classes[c.name]={id:c.id,students:c.students};});
