@@ -358,6 +358,11 @@ async function loadTeacherMessages(){
 
   teacherMessageRows=rows||[];
 
+  // Restore the selected conversation after a page reload, if it still exists.
+  if(!selectedTeacherStudentId){
+    try{selectedTeacherStudentId=sessionStorage.getItem('temmyTeacherSelectedStudentId')||'';}catch(e){}
+  }
+
   if(status){
     status.textContent=
       teacherMessageRows.length
@@ -376,6 +381,7 @@ async function loadTeacherMessages(){
     renderTeacherConversation(selectedTeacherStudentId);
   }else{
     selectedTeacherStudentId='';
+    try{sessionStorage.removeItem('temmyTeacherSelectedStudentId');}catch(e){}
     if(conversation){
       conversation.innerHTML=
         '<div class="empty">Select a student from the inbox.</div>';
@@ -459,6 +465,7 @@ async function openTeacherConversation(studentId){
   if(!requestedTeacherId)return showTab('account');
   const isCurrentTeacherMessageSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
   selectedTeacherStudentId=studentId;
+  try{sessionStorage.setItem('temmyTeacherSelectedStudentId',studentId);}catch(e){}
 
   const {error}=await supabaseClient.rpc(
     'mark_teacher_messages_read',
