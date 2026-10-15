@@ -2075,6 +2075,21 @@ let studentPortalGames=[];
 
 // Invalidates responses started by an older login/session.
 let studentPortalSessionVersion=0;
+let studentMessageRefreshTimer=null;
+function startStudentMessageAutoRefresh(){
+  if(studentMessageRefreshTimer!==null)return;
+  studentMessageRefreshTimer=setInterval(()=>{
+    if(studentPortalSession&&document.visibilityState==='visible'){
+      loadStudentMessages({silent:true});
+    }
+  },15000);
+}
+function stopStudentMessageAutoRefresh(){
+  if(studentMessageRefreshTimer!==null){
+    clearInterval(studentMessageRefreshTimer);
+    studentMessageRefreshTimer=null;
+  }
+}
 function clearStudentPortalCaches(){
   studentPortalActivities=[];
   studentPortalHistory=[];
@@ -2093,7 +2108,8 @@ function syncPortalSelectors(){
 
 let studentPortalMessages=[];
 
-async function loadStudentMessages(){
+async function loadStudentMessages(options={}){
+  const silent=options.silent===true;
   const session=studentPortalSession;
   const version=studentPortalSessionVersion;
   const status=document.getElementById('studentMessageStatus');
@@ -2106,8 +2122,10 @@ async function loadStudentMessages(){
     return;
   }
 
-  if(status)status.textContent='Loading your messages...';
-  if(list)list.innerHTML='<div class="notice">Loading conversation...</div>';
+  if(!silent){
+    if(status)status.textContent='Loading your messages...';
+    if(list)list.innerHTML='<div class="notice">Loading conversation...</div>';
+  }
 
   const {data:rows,error}=await supabaseClient.rpc('get_student_messages',{
     p_access_code:session.accessCode
@@ -2125,7 +2143,9 @@ async function loadStudentMessages(){
     return;
   }
 
-  studentPortalMessages=rows||[];
+  const nextMessages=rows||[];
+  if(silent&&JSON.stringify(studentPortalMessages)===JSON.stringify(nextMessages))return;
+  studentPortalMessages=nextMessages;
   const {error:readError}=await supabaseClient.rpc('mark_student_messages_read',{
     p_access_code:session.accessCode
   });
@@ -2597,6 +2617,7 @@ const list=document.getElementById('studentPortalHistoryList');
 
   // Starting a new login invalidates all earlier requests and clears the
   // previous student's data before another identity is verified.
+  stopStudentMessageAutoRefresh();
   const version=++studentPortalSessionVersion;
   studentPortalSession=null;
   clearStudentPortalCaches();
@@ -2641,6 +2662,7 @@ const list=document.getElementById('studentPortalHistoryList');
   // The games loader calls renderPortal(), so messages are fetched after that
   // final render to prevent the loading placeholder from replacing the results.
   await loadStudentMessages();
+  startStudentMessageAutoRefresh();
 }
 
 async function loadStudentPortalActivities(){
@@ -2862,6 +2884,8 @@ async function openStudentActivity(id) {
 }
 
 function studentPortalLogout(){
+  // Stop background message checks before clearing the previous student's session.
+  stopStudentMessageAutoRefresh();
   // Invalidate any in-flight request before clearing the previous student's data.
   studentPortalSessionVersion++;
   studentPortalSession=null;
