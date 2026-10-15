@@ -2142,6 +2142,7 @@ function renderStudentMessages(){
 
   list.innerHTML=`
     <div
+      id="studentConversationScroll"
       style="
         max-height:360px;
         overflow-y:auto;
@@ -2201,6 +2202,10 @@ function renderStudentMessages(){
 
     </div>
   `;
+
+  // Keep the latest student/teacher messages visible after each render.
+  const messageScroller=document.getElementById('studentConversationScroll');
+  if(messageScroller)messageScroller.scrollTop=messageScroller.scrollHeight;
 }
 
 async function sendStudentPortalMessage(){
