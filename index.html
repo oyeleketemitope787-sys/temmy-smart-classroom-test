@@ -2144,7 +2144,10 @@ async function loadStudentMessages(options={}){
   }
 
   const nextMessages=rows||[];
-  if(silent&&JSON.stringify(studentPortalMessages)===JSON.stringify(nextMessages))return;
+  // Navigating away and back rebuilds the portal DOM, so the message list can be empty
+  // even when the cached message data is unchanged. Re-render whenever the list is blank.
+  const listNeedsRender=!list||!list.innerHTML.trim();
+  if(silent&&!listNeedsRender&&JSON.stringify(studentPortalMessages)===JSON.stringify(nextMessages))return;
   studentPortalMessages=nextMessages;
   const {error:readError}=await supabaseClient.rpc('mark_student_messages_read',{
     p_access_code:session.accessCode
