@@ -306,13 +306,35 @@ if(tab==='activities')loadCloudActivities();
 if(tab==='reports')renderReports();
 if(tab==='history')syncHistorySelectors();
 if(tab==='portal')syncPortalSelectors();
-if(tab==='messages')loadTeacherMessages();
+if(tab==='messages'){
+  loadTeacherMessages();
+  startTeacherMessageAutoRefresh();
+}else{
+  stopTeacherMessageAutoRefresh();
+}
 }
 let teacherMessageRows=[];
 let selectedTeacherStudentId='';
 let teacherReplyInFlight=false;
+let teacherMessageRefreshTimer=null;
+function startTeacherMessageAutoRefresh(){
+  if(teacherMessageRefreshTimer!==null)return;
+  // Refresh the inbox periodically while the teacher is viewing Messages.
+  teacherMessageRefreshTimer=setInterval(()=>{
+    if(document.visibilityState==='visible'&&!document.getElementById('messages')?.classList.contains('hidden')){
+      loadTeacherMessages({silent:true});
+    }
+  },15000);
+}
+function stopTeacherMessageAutoRefresh(){
+  if(teacherMessageRefreshTimer!==null){
+    clearInterval(teacherMessageRefreshTimer);
+    teacherMessageRefreshTimer=null;
+  }
+}
 
-async function loadTeacherMessages(){
+async function loadTeacherMessages(options={}){
+  const silent=options.silent===true;
   const requestedTeacherId=authSession?.user?.id;
   const requestedAuthRevision=authStateRevision;
   const isCurrentTeacherMessageSession=()=>!!authSession&&authSession.user.id===requestedTeacherId&&authStateRevision===requestedAuthRevision;
@@ -327,8 +349,10 @@ async function loadTeacherMessages(){
     return;
   }
 
-  if(status)status.textContent='Loading messages...';
-  if(inbox)inbox.innerHTML='<div class="notice">Loading your messages...</div>';
+  if(!silent){
+    if(status)status.textContent='Loading messages...';
+    if(inbox)inbox.innerHTML='<div class="notice">Loading your messages...</div>';
+  }
 
   const {data:rows,error}=await supabaseClient.rpc(
     'get_teacher_messages'
@@ -356,7 +380,11 @@ async function loadTeacherMessages(){
     return;
   }
 
-  teacherMessageRows=rows||[];
+  const nextMessageRows=rows||[];
+  const previousSnapshot=JSON.stringify(teacherMessageRows);
+  const nextSnapshot=JSON.stringify(nextMessageRows);
+  if(silent&&previousSnapshot===nextSnapshot)return;
+  teacherMessageRows=nextMessageRows;
 
   // Restore the selected conversation after a page reload, if it still exists.
   if(!selectedTeacherStudentId){
