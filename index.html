@@ -2578,6 +2578,11 @@ const list=document.getElementById('studentPortalHistoryList');
   await loadStudentPortalActivities();
   if(!isCurrentStudentRequest(version,studentPortalSession))return;
   await loadStudentPortalGames();
+  if(!isCurrentStudentRequest(version,studentPortalSession))return;
+  // Load the conversation automatically after portal rendering is complete.
+  // The games loader calls renderPortal(), so messages are fetched after that
+  // final render to prevent the loading placeholder from replacing the results.
+  await loadStudentMessages();
 }
 
 async function loadStudentPortalActivities(){
