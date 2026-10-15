@@ -2076,6 +2076,12 @@ let studentPortalGames=[];
 // Invalidates responses started by an older login/session.
 let studentPortalSessionVersion=0;
 let studentMessageRefreshTimer=null;
+let studentActivityRefreshTimer=null;
+function startStudentActivityAutoRefresh(){
+  if(studentActivityRefreshTimer!==null)return;
+  studentActivityRefreshTimer=setInterval(()=>{if(studentPortalSession&&document.visibilityState==='visible')loadStudentPortalActivities({silent:true});},15000);
+}
+function stopStudentActivityAutoRefresh(){if(studentActivityRefreshTimer!==null){clearInterval(studentActivityRefreshTimer);studentActivityRefreshTimer=null;}}
 function startStudentMessageAutoRefresh(){
   if(studentMessageRefreshTimer!==null)return;
   studentMessageRefreshTimer=setInterval(()=>{
@@ -2659,6 +2665,7 @@ const list=document.getElementById('studentPortalHistoryList');
   if(!isCurrentStudentRequest(version,studentPortalSession))return;
   await loadStudentPortalActivities();
   if(!isCurrentStudentRequest(version,studentPortalSession))return;
+  startStudentActivityAutoRefresh();
   await loadStudentPortalGames();
   if(!isCurrentStudentRequest(version,studentPortalSession))return;
   // Load the conversation automatically after portal rendering is complete.
@@ -2668,13 +2675,14 @@ const list=document.getElementById('studentPortalHistoryList');
   startStudentMessageAutoRefresh();
 }
 
-async function loadStudentPortalActivities(){
+async function loadStudentPortalActivities(options={}){
+  const silent=options.silent===true;
   const session=studentPortalSession;
   const version=studentPortalSessionVersion;
   if(!session){studentPortalActivities=[];renderStudentPortalActivities();return;}
 
   const list=document.getElementById('studentActivityList');
-  if(list)list.innerHTML='<div class="notice">Loading your live activities...</div>';
+  if(!silent&&list)list.innerHTML='<div class="notice">Loading your live activities...</div>';
 
   const {data:rows,error}=await supabaseClient.rpc(
     'get_student_live_activities',{p_access_code:session.accessCode}
@@ -2686,7 +2694,9 @@ async function loadStudentPortalActivities(){
     if(list)list.innerHTML='<div class="notice" style="background:#fff0f0;border-color:#e6bcbc"><strong>Activities could not be loaded.</strong><br>Please try again.</div>';
     return;
   }
-  studentPortalActivities=rows||[];
+  const nextActivities=rows||[];
+  if(silent&&list&&list.innerHTML.trim()&&JSON.stringify(studentPortalActivities)===JSON.stringify(nextActivities))return;
+  studentPortalActivities=nextActivities;
   renderStudentPortalActivities();
 }
 
@@ -2889,6 +2899,7 @@ async function openStudentActivity(id) {
 function studentPortalLogout(){
   // Stop background message checks before clearing the previous student's session.
   stopStudentMessageAutoRefresh();
+  stopStudentActivityAutoRefresh();
   // Invalidate any in-flight request before clearing the previous student's data.
   studentPortalSessionVersion++;
   studentPortalSession=null;
