@@ -310,6 +310,7 @@ if(tab==='messages')loadTeacherMessages();
 }
 let teacherMessageRows=[];
 let selectedTeacherStudentId='';
+let teacherReplyInFlight=false;
 
 async function loadTeacherMessages(){
   const requestedTeacherId=authSession?.user?.id;
@@ -566,6 +567,7 @@ function renderTeacherConversation(studentId){
         <button
           type="button"
           class="btn primary"
+          id="teacherReplySendButton"
           onclick="sendTeacherReply('${esc(studentId)}')"
         >
           Send Reply
@@ -577,6 +579,7 @@ function renderTeacherConversation(studentId){
 }
 
 async function sendTeacherReply(studentId){
+  if(teacherReplyInFlight)return;
   const requestedTeacherId=authSession?.user?.id;
   const requestedAuthRevision=authStateRevision;
   if(!requestedTeacherId)return showTab('account');
@@ -592,39 +595,49 @@ async function sendTeacherReply(studentId){
     return;
   }
 
-  if(!authSession){
-    alert('Please sign in as a teacher.');
-    return;
-  }
-
   if(!isCurrentTeacherMessageSession())return alert('Your teacher session changed. Sign in again before sending this reply.');
-  const {data:result,error}=await supabaseClient.rpc(
-    'send_teacher_message',
-    {
-      p_student_id:studentId,
-      p_message:message
-    }
-  );
 
-  if(!isCurrentTeacherMessageSession())return alert('Your teacher session changed while the reply was processing. The message may have been sent. Sign in again and check the conversation before retrying.');
-  if(error){
-    alert(
-      'Unable to send reply: '+error.message
+  // Guard against double-clicks or repeated submissions while the RPC is pending.
+  teacherReplyInFlight=true;
+  const sendButton=document.getElementById('teacherReplySendButton');
+  if(sendButton){
+    sendButton.disabled=true;
+    sendButton.textContent='Sending...';
+  }
+
+  try{
+    const {data:result,error}=await supabaseClient.rpc(
+      'send_teacher_message',
+      {
+        p_student_id:studentId,
+        p_message:message
+      }
     );
-    return;
+
+    if(!isCurrentTeacherMessageSession())return alert('Your teacher session changed while the reply was processing. The message may have been sent. Sign in again and check the conversation before retrying.');
+    if(error){
+      alert('Unable to send reply: '+error.message);
+      return;
+    }
+
+    if(!result||!result.length){
+      alert('The reply was not recorded.');
+      return;
+    }
+
+    input.value='';
+    await loadTeacherMessages();
+
+    if(!isCurrentTeacherMessageSession())return;
+    renderTeacherConversation(studentId);
+  }finally{
+    teacherReplyInFlight=false;
+    const currentButton=document.getElementById('teacherReplySendButton');
+    if(currentButton){
+      currentButton.disabled=false;
+      currentButton.textContent='Send Reply';
+    }
   }
-
-  if(!result||!result.length){
-    alert('The reply was not recorded.');
-    return;
-  }
-
-  input.value='';
-
-  await loadTeacherMessages();
-
-  if(!isCurrentTeacherMessageSession())return;
-  renderTeacherConversation(studentId);
 }
   function renderAll(){
 renderClassSelects();renderStudents();renderClasses();renderGroups();renderActivities();renderAwardStudents();renderAwardLock();renderHistory();renderMarket();renderPurchases();renderReports();syncHistorySelectors();syncPortalSelectors();save();
