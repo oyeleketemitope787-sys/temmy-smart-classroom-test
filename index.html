@@ -932,7 +932,7 @@ async function applyPunctuality(confirmed=false){
     openModal(
       'Confirm Punctuality',
       `<p>Are you sure you want to record punctuality for the selected students?</p>
-       <p><strong>Class:</strong> ${esc(cls.name)}</p>
+       <p><strong>Class:</strong> ${esc(data.currentClass||document.getElementById('awardClassSelect')?.selectedOptions?.[0]?.textContent||'Selected class')}</p>
        <p><strong>Status:</strong> ${esc(status.status)}</p>
        <p><strong>Students:</strong> ${targets.length} • <strong>Points per student:</strong> ${Number(status.points)||0} • <strong>Total points:</strong> +${totalPoints}</p>
        <ul style="margin:10px 0;padding-left:22px;max-height:220px;overflow:auto">${studentLines}</ul>
