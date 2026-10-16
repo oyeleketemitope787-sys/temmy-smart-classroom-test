@@ -3067,6 +3067,11 @@ async function initCloudTeacher(){
  await loadCloudClasses();
 }
 supabaseClient.auth.onAuthStateChange((event,session)=>{
+  console.log('[TEST AUTH EVENT]', {
+  event,
+  userId: session?.user?.id ?? null,
+  revisionBefore: authStateRevision
+});
  authStateRevision++;
  authSession=session;
  if(event==='PASSWORD_RECOVERY'&&session&&!passwordFlowActive){
