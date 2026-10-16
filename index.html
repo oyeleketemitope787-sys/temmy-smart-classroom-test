@@ -955,7 +955,7 @@ if(error)throw error;
 }
 function toggleStudent(id){if(scope==='all')return;if(scope==='individual')selectedIds=[id];else selectedIds=selectedIds.includes(id)?selectedIds.filter(x=>x!==id):[...selectedIds,id];renderAwardStudents();const info=document.getElementById('punctualitySelectionInfo');if(info){const cls=current();info.textContent=scope==='all'?`All ${cls.students.length} students selected`:selectedIds.length?`${selectedIds.length} student${selectedIds.length===1?'':'s'} selected`:'Select students';}}
 function getSelected(){const cls=current();if(!cls)return[];const domIds=[...document.querySelectorAll('#awardStudents input.check:checked')].map(el=>el.dataset.studentId).filter(Boolean);if(domIds.length){selectedIds=[...new Set(domIds)];if(scope==='all')selectedIds=[...cls.students.map(s=>s.id)];}return cls.students.filter(s=>selectedIds.includes(s.id))}
-async function applyAward(amount,reason){
+async function applyAward(amount,reason,confirmed=false){
  if(awardLocked){alert('Award Points is locked. Unlock it first.');return;}
  if(awardBusy)return;
  if(!authSession){alert('Please sign in as the teacher first.');return;}
@@ -980,6 +980,24 @@ async function applyAward(amount,reason){
  })).filter(d=>d.delta!==0);
 
  if(!deltas.length)return alert('No points were changed. The selected students are already at 0 points.');
+
+ if(!confirmed){
+   const isAward=amount>0;
+   const total=Math.abs(deltas.reduce((sum,d)=>sum+d.delta,0));
+   const totalStudents=deltas.length;
+   const studentLines=deltas.map(d=>`<li><strong>${esc(d.name)}</strong>: ${d.before} → ${d.after} points (${d.delta>0?'+':''}${d.delta})</li>`).join('');
+   openModal(
+     isAward?'Confirm Point Award':'Confirm Point Deduction',
+     `<p>Are you sure you want to ${isAward?'award':'deduct'} points for the selected student${totalStudents===1?'':'s'}?</p>
+      <p><strong>Action:</strong> ${esc(reason)}</p>
+      <p><strong>Students:</strong> ${totalStudents} • <strong>Total change:</strong> ${isAward?'+':'−'}${total} point${total===1?'':'s'}</p>
+      <ul style="margin:10px 0;padding-left:22px;max-height:220px;overflow:auto">${studentLines}</ul>
+      <p class="small">Choose Cancel to make no changes, or confirm to continue.</p>`,
+     ()=>{closeModal();applyAward(amount,reason,true);},
+     isAward?'Yes, Award Points':'Yes, Deduct Points'
+   );
+   return;
+ }
 
  awardBusy=true;
  const buttons=[...document.querySelectorAll('.action')];
