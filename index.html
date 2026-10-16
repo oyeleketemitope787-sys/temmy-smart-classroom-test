@@ -3077,14 +3077,6 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     !!session?.access_token &&
     session.access_token !== previousSession?.access_token;
 
-  console.log('[TEST AUTH EVENT]', {
-    event,
-    userId: nextUserId,
-    revisionBefore: authStateRevision,
-    identityChanged,
-    signedInSessionChanged
-  });
-
   if (
     identityChanged ||
     event === 'SIGNED_OUT' ||
