@@ -961,8 +961,13 @@ if(error)throw error;
       alert('Punctuality was recorded, but the teacher session changed before the screen could refresh. Please sign in again and reload the class to verify the result.');
       return;
     }
-    alert(`Punctuality recorded for ${targets.length} student${targets.length===1?'':'s'}.`);
+    // Reload cloud classes and point transactions so any punctuality points written by the RPC
+    // are reflected immediately in student balances, reports, and history.
+    await loadCloudClasses();
+    if(!isRequestedSession())return;
     renderAwardStudents();
+    renderAll();
+    alert(`Punctuality recorded for ${targets.length} student${targets.length===1?'':'s'}.`);
   }catch(error){
     console.error(error);
     alert('Unable to record punctuality: '+(error.message||error));
