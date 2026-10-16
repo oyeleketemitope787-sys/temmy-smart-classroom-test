@@ -1949,7 +1949,20 @@ async function buyReward(id){
     if(saveButton?.disabled)return;
     const ids=[...new Set([...document.querySelectorAll('.purchase-check:checked')].map(x=>x.value))].sort();
     if(!ids.length)return alert('Please select at least one eligible student.');
-    if(!isCurrentPurchaseSession())return alert('Your teacher session changed. Sign in again and verify the class before retrying this purchase.');
+
+if(!isCurrentPurchaseSession()){
+  console.warn('[TEST Marketplace Diagnostic]', {
+    requestedTeacherId,
+    currentTeacherId: authSession?.user?.id ?? null,
+    requestedAuthRevision,
+    currentAuthRevision: authStateRevision,
+    requestedClassId,
+    currentClassId: current()?.id ?? null,
+    teacherIdMatches: authSession?.user?.id === requestedTeacherId,
+    authRevisionMatches: authStateRevision === requestedAuthRevision
+  });
+  return alert('Your teacher session changed. Sign in again and verify the class before retrying this purchase.');
+}
     if(current()?.id!==requestedClassId)return alert('The selected class changed. Please reopen the purchase for the intended class.');
     const signature=JSON.stringify({rewardId:r.id,studentIds:ids});
     if(signature!==requestSignature){
