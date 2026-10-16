@@ -898,7 +898,7 @@ function selectPunctualityStatus(status,points){
     selected.style.outlineOffset='2px';
   }
 }
-async function applyPunctuality(){
+async function applyPunctuality(confirmed=false){
   if(awardLocked){
     alert('Award Points is locked. Unlock it first.');
     return;
@@ -925,6 +925,23 @@ async function applyPunctuality(){
   }
 
   const status=window.punctualityStatus||{status:'On Time',points:2};
+
+  if(!confirmed){
+    const totalPoints=Math.max(0,Number(status.points)||0)*targets.length;
+    const studentLines=targets.map(s=>`<li><strong>${esc(s.name)}</strong></li>`).join('');
+    openModal(
+      'Confirm Punctuality',
+      `<p>Are you sure you want to record punctuality for the selected students?</p>
+       <p><strong>Class:</strong> ${esc(cls.name)}</p>
+       <p><strong>Status:</strong> ${esc(status.status)}</p>
+       <p><strong>Students:</strong> ${targets.length} • <strong>Points per student:</strong> ${Number(status.points)||0} • <strong>Total points:</strong> +${totalPoints}</p>
+       <ul style="margin:10px 0;padding-left:22px;max-height:220px;overflow:auto">${studentLines}</ul>
+       <p class="small">Choose Cancel to make no changes, or confirm to record punctuality.</p>`,
+      ()=>{closeModal();applyPunctuality(true);},
+      'Yes, Record Punctuality'
+    );
+    return;
+  }
 
   try{
     awardBusy=true;
