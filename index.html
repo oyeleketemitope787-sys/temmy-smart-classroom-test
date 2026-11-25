@@ -3342,7 +3342,8 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     if (currentSession) loadCloudClasses();
   }, 0);
 });
-window.addEventListener('DOMContentLoaded',()=>{initCloudTeacher();});
+renderAccount();
+initCloudTeacher().catch(error=>{console.error('Teacher session initialization failed:',error);renderAccount();const panel=document.getElementById('authPanel');if(panel){const note=document.createElement('div');note.className='notice';note.textContent='We could not verify the existing session. You can still sign in below. If you are already signed in, refresh and try again.';panel.prepend(note);}});
 </script>
 <script>
 (function(){
