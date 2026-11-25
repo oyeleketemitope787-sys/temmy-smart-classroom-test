@@ -65,7 +65,13 @@
     "silver": "Plata",
     "gold": "Oro",
     "champion": "Campeón",
-    "points": "puntos"
+    "points": "puntos",
+    "classLabel": "Clase",
+    "average": "Promedio",
+    "noStudentsYet": "Aún no hay estudiantes. Añade tu primer estudiante.",
+    "generateAccessCode": "Generar / regenerar código de acceso",
+    "editStudent": "Editar estudiante",
+    "deactivateStudent": "Desactivar estudiante"
   },
   "groups": {
     "title": "Grupos de estudiantes",
