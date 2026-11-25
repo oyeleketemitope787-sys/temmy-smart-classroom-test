@@ -2026,7 +2026,7 @@ async function openAddStudent(){
   const cls=current();
   if(!cls||!cls.id)return alert('Create or select a cloud class first.');
   const requestedClassId=cls.id;
-  const requestedClassName=cls.name;
+  const requestedClassName=cls.name||data.currentClass||'the selected class';
 
   openModal(
     'Add Student',
