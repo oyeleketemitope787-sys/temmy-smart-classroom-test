@@ -361,6 +361,7 @@
     "activityError": "Shughuli hazikuweza kupakiwa.",
     "cloudClassUnavailable": "Darasa lililochaguliwa halipatikani tena. Onyesha upya madarasa kisha ujaribu tena.",
     "sessionChanged": "Kipindi chako cha mwalimu kimebadilika. Ingia tena ili kuendelea.",
-    "noResponse": "Hakuna maandishi ya jibu yaliyohifadhiwa."
+    "noResponse": "Hakuna maandishi ya jibu yaliyohifadhiwa.",
+    "liveTaskType": "Kazi ya Moja kwa Moja"
   }
 }
