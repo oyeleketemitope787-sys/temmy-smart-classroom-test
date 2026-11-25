@@ -25,13 +25,96 @@ let cloudActivities=[];
 let cloudLoading=false;
 let passwordFlowActive=false;
 </script>
+<style id="temmy-premium-theme"> 
+/* Temmy Global Premium Interface — test deployment */
+:root{--temmy-ink:#14233f;--temmy-muted:#687790;--temmy-navy:#10284f;--temmy-blue:#1e4f91;--temmy-gold:#d7ad55;--temmy-line:#e5eaf2;--temmy-surface:#fff;--temmy-canvas:#f3f6fb;--temmy-shadow:0 10px 30px rgba(19,43,79,.07);--temmy-radius:18px}
+html{scroll-behavior:smooth}
+body{background:var(--temmy-canvas);color:var(--temmy-ink);font-family:Inter,"Segoe UI",Arial,sans-serif;letter-spacing:-.01em}
+.top{padding:24px clamp(18px,3vw,48px);background:radial-gradient(ellipse at 80% 0%,rgba(215,173,85,.20),transparent 36%),linear-gradient(118deg,#0e2345 0%,#173e73 58%,#205493 100%);border-bottom:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden}
+.top:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(255,255,255,.08);border-radius:50%;right:-90px;top:-205px;box-shadow:0 0 0 28px rgba(255,255,255,.025),0 0 0 58px rgba(255,255,255,.02);pointer-events:none}
+.top-inner{max-width:1600px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;z-index:1}
+.brand-lockup{display:flex;align-items:center;gap:16px;min-width:0}
+.brand-symbol{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;color:#f4d58e;font-size:31px;background:linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.brand-kicker{font-size:10px;font-weight:800;letter-spacing:.22em;color:#e8c982;margin-bottom:5px}
+.top h1{font-size:clamp(23px,2.3vw,32px);font-weight:760;letter-spacing:-.045em;margin:0;color:#fff;line-height:1.15}
+.top h1 span{font-weight:560;color:#f5f7fc}
+.top p{margin:7px 0 0;color:rgba(255,255,255,.82);font-size:13px;letter-spacing:.015em}
+.top p i{font-style:normal;color:#e7c77f;padding:0 4px}
+.language-panel{display:grid;grid-template-columns:auto minmax(170px,220px);align-items:center;gap:7px 12px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(8,24,49,.24);backdrop-filter:blur(10px);min-width:300px}
+.language-panel label{font-size:12px;font-weight:700;color:#fff}
+.language-panel select{width:100%;min-width:0;border:1px solid rgba(255,255,255,.55);border-radius:9px;background:#fff;color:#172a49;padding:10px 12px}
+.language-panel span{grid-column:2;color:rgba(255,255,255,.7);font-size:10px;line-height:1.4}
+.wrap{max-width:1600px;margin:0 auto;padding:26px clamp(12px,2vw,30px) 44px}
+.app-shell{display:grid;grid-template-columns:246px minmax(0,1fr);gap:22px;align-items:start}
+.app-sidebar{position:sticky;top:18px;min-width:0}
+.nav{display:flex;flex-direction:column;gap:6px;margin:0;padding:12px;background:#fff;border:1px solid var(--temmy-line);border-radius:18px;box-shadow:var(--temmy-shadow)}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;text-align:start;padding:10px 13px;border:1px solid transparent;border-radius:11px;background:transparent;color:#455571;font-size:13px;font-weight:650;transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease}
+.nav button:hover{background:#f3f6fb;color:var(--temmy-blue);border-color:#e8edf5;transform:translateX(2px)}
+.nav button.active{background:linear-gradient(115deg,#143663,#205493);color:#fff;border-color:#214f88;box-shadow:0 5px 14px rgba(21,59,104,.16)}
+.app-main{min-width:0}
+.app-main>section{min-width:0;animation:temmyFade .22s ease}
+@keyframes temmyFade{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{border:1px solid #e9edf4;border-radius:var(--temmy-radius);padding:clamp(16px,1.7vw,24px);box-shadow:var(--temmy-shadow);margin-bottom:18px}
+.card h2{font-size:clamp(18px,1.5vw,22px);font-weight:730;letter-spacing:-.035em;color:#172b4b;margin-bottom:15px}
+.card h3{font-size:16px;color:#1b3153}
+.grid2{gap:18px;grid-template-columns:minmax(0,1.65fr) minmax(260px,.85fr)}
+.grid3{gap:10px}
+.stat{background:linear-gradient(145deg,#f8faff,#f1f5fb);border:1px solid #edf1f7;border-radius:13px;padding:14px}
+.stat small{font-size:11px;font-weight:650;color:#72809a;letter-spacing:.01em}
+.stat strong{font-size:27px;font-weight:760;color:#17345f}
+.btn,.select,input,select,textarea{border-radius:10px}
+.btn{border-color:#dce3ed;padding:9px 14px;font-weight:620;color:#31435f;background:#fff;transition:all .16s ease}
+.btn:hover{border-color:#aebed4;background:#f7f9fc;transform:translateY(-1px)}
+.btn.primary,.nav button.active{background:linear-gradient(115deg,#143663,#205493);color:#fff;border-color:#214f88}
+.btn.gold{background:#fff9eb;border-color:#ead7a9;color:#795a1d}
+input,select,textarea,.select{border:1px solid #dce3ed;background:#fff;color:#20324e;padding:10px 12px}
+input:focus,select:focus,textarea:focus,.btn:focus-visible,.nav button:focus-visible{outline:3px solid rgba(49,111,184,.18);border-color:#5283ba}
+table{border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid #e8edf4;border-radius:12px}
+th{background:#f4f7fb;color:#52637d;font-size:12px;font-weight:750;text-transform:none}
+td{background:#fff;color:#30415c}
+th,td{padding:12px 13px;border-bottom:1px solid #edf1f6}
+tr:last-child td{border-bottom:0}
+.notice{border-radius:12px}
+.modal{background:rgba(8,20,40,.58);backdrop-filter:blur(5px)}
+.modalbox{border:1px solid #e8edf4;border-radius:20px;box-shadow:0 24px 80px rgba(7,21,43,.24);padding:24px}
+.menu{border-color:#e3e9f2;border-radius:12px;box-shadow:0 14px 35px rgba(17,38,69,.15)}
+.tag{letter-spacing:.02em}
+.empty{color:#7b879a}
+#cloudStatus{border-radius:12px}
+html[dir="rtl"] body{text-align:right}
+html[dir="rtl"] .app-shell{grid-template-columns:minmax(0,1fr) 246px}
+html[dir="rtl"] .app-sidebar{grid-column:2;grid-row:1}
+html[dir="rtl"] .app-main{grid-column:1;grid-row:1}
+html[dir="rtl"] .nav button:hover{transform:translateX(-2px)}
+html[dir="rtl"] th,html[dir="rtl"] td{text-align:right}
+html[dir="rtl"] .menu{right:auto;left:0}
+@media(max-width:1050px){.app-shell{grid-template-columns:205px minmax(0,1fr);gap:14px}.nav{padding:8px}.nav button{font-size:12px;padding:9px 10px}.grid2{grid-template-columns:minmax(0,1.35fr) minmax(230px,.85fr)}}
+@media(max-width:760px){.top-inner{align-items:flex-start;flex-direction:column}.language-panel{width:100%;min-width:0;max-width:480px}.wrap{padding:14px 10px 30px}.app-shell,html[dir="rtl"] .app-shell{display:flex;flex-direction:column;gap:12px}.app-sidebar{position:static;width:100%}.nav{display:flex;flex-direction:row;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin;padding:8px;border-radius:14px}.nav button{flex:0 0 auto;width:auto;min-height:40px;white-space:nowrap}.app-main{width:100%}.grid2,.grid3{grid-template-columns:1fr}.card{padding:16px;border-radius:15px}.summary-title{align-items:flex-start}.top{padding:18px}.brand-symbol{width:46px;height:46px;border-radius:14px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-<header class="top"><h1>⭐ Temmy Smart Classroom</h1><p>Smart Learning • Smart Behaviour • Smart Rewards</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px"><label for="interfaceLanguageSelect" data-i18n="common.language" style="font-size:14px;font-weight:700">Interface language</label><select id="interfaceLanguageSelect" aria-label="Choose interface language" style="min-width:190px;padding:9px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.55);background:#fff;color:#172033"><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="hi">हिन्दी</option><option value="ur">اردو</option><option value="sw">Kiswahili</option><option value="zh-Hans">简体中文</option></select><span id="interfaceLanguageStatus" data-i18n="common.languageDeviceSaved" aria-live="polite" style="font-size:12px;opacity:.9">Language preference is stored on this device.</span></div><div style="margin-top:10px;font-size:12px;opacity:.85">STABLE CLASSROOM BUILD • V8.9.2 TEACHER ACTIVITY MONITORING • CLOUD HISTORY FIX • CLEAN BUILD</div></header>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand-lockup">
+      <div class="brand-symbol" aria-hidden="true">✦</div>
+      <div class="brand-copy">
+        <div class="brand-kicker">GLOBAL LEARNING PLATFORM</div>
+        <h1>Temmy <span>Smart Classroom</span></h1>
+        <p>Smart Learning <i>•</i> Smart Behaviour <i>•</i> Smart Rewards</p>
+      </div>
+    </div>
+    <div class="language-panel">
+      <label for="interfaceLanguageSelect" data-i18n="common.language">Interface language</label>
+      <select id="interfaceLanguageSelect" aria-label="Choose interface language">
+        <option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="hi">हिन्दी</option><option value="ur">اردو</option><option value="sw">Kiswahili</option><option value="zh-Hans">简体中文</option>
+      </select>
+      <span id="interfaceLanguageStatus" data-i18n="common.languageDeviceSaved" aria-live="polite">Language preference is stored on this device.</span>
+    </div>
+  </div>
+</header>
 <div class="wrap">
-<nav class="nav"><button id="studentsTab" class="active" onclick="showTab('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="showTab('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="showTab('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="showTab('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="showTab('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="showTab('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="showTab('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="showTab('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="showTab('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="showTab('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="showTab('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="showTab('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav>
-
-<section id="students">
+<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" onclick="showTab('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="showTab('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="showTab('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="showTab('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="showTab('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="showTab('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="showTab('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="showTab('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="showTab('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="showTab('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="showTab('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="showTab('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
 <div id="cloudStatus" class="notice" style="display:none"></div>
 <div class="controls">
 <select id="classSelect" class="select"></select>
@@ -239,7 +322,7 @@ let passwordFlowActive=false;
 
   </div>
 </section>
-<section id="reports" class="hidden"><div class="card"><h2>📊 Class Reports</h2><div class="controls"><select id="reportClass" class="select"></select><button class="btn" onclick="renderReports()">Refresh</button></div><div id="reportBody"></div></div></section>
+<section id="reports" class="hidden"><div class="card"><h2>📊 Class Reports</h2><div class="controls"><select id="reportClass" class="select"></select><button class="btn" onclick="renderReports()">Refresh</button></div><div id="reportBody"></div></div></section></main></div>
 </div>
 
 <div id="modal" class="modal hidden"><div class="modalbox"><h2 id="modalTitle"></h2><div id="modalBody"></div><div class="formactions"><button class="btn" onclick="closeModal()">Cancel</button><button id="modalSave" class="btn primary">Save</button></div></div></div>
