@@ -204,6 +204,29 @@ html[dir="rtl"] .menu{right:auto;left:0}
 .account-profile-card{margin:0;padding:24px;border:1px solid #e5ebf4;border-radius:18px}.account-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.account-profile-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .account-security-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;border:1px solid #e5ebf4;border-radius:16px;background:#fff}.account-security-actions>div:first-child{display:flex;flex-direction:column;gap:4px}.account-security-actions span{color:#7b879b;font-size:11px}.account-security-actions .controls{margin:0;display:flex;gap:9px;flex-wrap:wrap}
 @media(max-width:850px){.account-auth-layout{grid-template-columns:1fr}.account-welcome{min-height:210px}.account-stats{grid-template-columns:1fr}}@media(max-width:600px){.account-welcome,.account-login-card{padding:22px}.account-profile-grid{grid-template-columns:1fr;gap:0}.account-session-banner,.account-security-actions{align-items:flex-start;flex-direction:column}.account-security-actions .controls{width:100%}}
+
+/* TEMMY MESSAGES PREMIUM WORKSPACE */
+.messages-page{padding-bottom:28px}
+.messages-heading{align-items:center}
+.messages-heading .workspace-heading-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.messages-private-label{font-size:12px;font-weight:700;color:#35634f;background:#eaf6ef;border:1px solid #cce8d6;padding:10px 13px;border-radius:999px}
+.messages-status{margin:0 0 16px!important;border-radius:14px}
+.messages-workspace{display:grid;grid-template-columns:minmax(260px,.78fr) minmax(0,1.55fr);gap:18px;align-items:stretch}
+.messages-inbox-panel,.messages-conversation-panel{min-width:0;background:#fff;border:1px solid #dce5f1;border-radius:20px;box-shadow:0 10px 30px rgba(22,48,88,.055);overflow:hidden}
+.messages-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:21px 22px;border-bottom:1px solid #e8eef6;background:linear-gradient(135deg,#f7faff,#fff)}
+.messages-panel-heading h2{font-size:20px;margin:5px 0 4px;color:#17345e}
+.messages-panel-heading p{font-size:12px;color:#718096;margin:0}
+.messages-panel-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:#edf3ff;color:#244d87;font-size:20px;flex:none}
+.messages-inbox-list{padding:14px;max-height:650px;overflow:auto}
+.messages-conversation-body{padding:18px;min-height:420px}
+.messages-welcome{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:#738198}
+.messages-welcome>span{width:64px;height:64px;display:grid;place-items:center;border-radius:22px;background:#edf3ff;font-size:30px;margin-bottom:14px}
+.messages-welcome h3{color:#24436e;margin:0 0 7px;font-size:18px}
+.messages-welcome p{max-width:330px;font-size:13px;line-height:1.6;margin:0}
+.messages-inbox-list .empty{padding:30px 14px;text-align:center;color:#75839a;background:#f7f9fc;border:1px dashed #d7e1ee;border-radius:14px}
+.messages-page .notice{border-radius:13px}
+@media(max-width:800px){.messages-workspace{grid-template-columns:1fr}.messages-inbox-list{max-height:340px}.messages-conversation-body{min-height:300px}.messages-heading .workspace-heading-actions{width:100%;justify-content:space-between}}
+@media(max-width:480px){.messages-heading .workspace-heading-actions{align-items:stretch}.messages-private-label{text-align:center}.messages-heading .workspace-heading-actions .btn{width:100%}.messages-panel-heading{padding:17px}.messages-conversation-body{padding:12px}}
 </style>
 </head>
 <body>
@@ -441,74 +464,28 @@ html[dir="rtl"] .menu{right:auto;left:0}
 
 <section id="account" class="hidden workspace-page premium-page account-page"><div class="workspace-heading account-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">TEACHER WORKSPACE & SECURITY</span><h1>👩‍🏫 Teacher Account</h1><p>Manage your teaching profile, secure sign-in and connected classroom workspace.</p></div><div class="workspace-heading-mark" aria-hidden="true">⚙</div></div><div id="authPanel" class="account-panel"></div></section>
 
-<section id="messages" class="hidden">
-  <div class="card">
-
-    <div class="summary-title">
-      <div>
-        <h2>💬 Teacher–Student Messages</h2>
-        <div class="small">
-          Private chat between you and your students.
-        </div>
-      </div>
-
-      <button class="btn" onclick="loadTeacherMessages()">
-        🔄 Refresh
-      </button>
+<section id="messages" class="hidden workspace-page premium-page messages-page">
+  <div class="workspace-heading messages-heading">
+    <div class="workspace-heading-copy">
+      <span class="workspace-eyebrow">CLASSROOM COMMUNICATION</span>
+      <h1>💬 Messages</h1>
+      <p>A private, focused space to connect with students and support their learning.</p>
     </div>
-
-    <div id="teacherMessageStatus"
-         class="notice"
-         style="margin-top:14px">
-      Click Refresh to load your messages.
+    <div class="workspace-heading-actions">
+      <span class="messages-private-label">🔒 Private conversations</span>
+      <button class="btn primary" onclick="loadTeacherMessages()">↻ Refresh inbox</button>
     </div>
-
-    <div class="grid2" style="margin-top:16px">
-
-      <div class="card"
-           style="box-shadow:none;border:1px solid #d9e2ef">
-
-        <div class="summary-title">
-          <div>
-            <h3>Inbox</h3>
-            <div class="small">
-              Select a student conversation.
-            </div>
-          </div>
-        </div>
-
-        <div id="teacherMessageInbox"
-             style="margin-top:14px">
-        </div>
-
-      </div>
-
-      <div class="card"
-           style="box-shadow:none;border:1px solid #d9e2ef">
-
-        <div class="summary-title">
-          <div>
-            <h3 id="teacherConversationTitle">
-              Conversation
-            </h3>
-
-            <div class="small">
-              Your private conversation with the selected student.
-            </div>
-          </div>
-        </div>
-
-        <div id="teacherConversation"
-             style="margin-top:14px">
-          <div class="empty">
-            Select a student from the inbox.
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
+  </div>
+  <div id="teacherMessageStatus" class="notice messages-status">Your student conversations will appear here.</div>
+  <div class="messages-workspace">
+    <section class="messages-inbox-panel">
+      <div class="messages-panel-heading"><div><span class="workspace-eyebrow">YOUR CLASSROOM</span><h2>Inbox</h2><p>Choose a student to open the conversation.</p></div><span class="messages-panel-icon">✉</span></div>
+      <div id="teacherMessageInbox" class="messages-inbox-list"><div class="empty">Your inbox is ready. Refresh to load messages.</div></div>
+    </section>
+    <section class="messages-conversation-panel">
+      <div class="messages-panel-heading conversation-heading"><div><span class="workspace-eyebrow">PRIVATE CHAT</span><h2 id="teacherConversationTitle">Conversation</h2><p>Messages with your selected student appear below.</p></div><span class="messages-panel-icon">💬</span></div>
+      <div id="teacherConversation" class="messages-conversation-body"><div class="messages-welcome"><span>💬</span><h3>Your conversation space</h3><p>Select a student from your inbox to read messages and send a reply.</p></div></div>
+    </section>
   </div>
 </section>
 <section id="reports" class="hidden workspace-page premium-page reports-page">
