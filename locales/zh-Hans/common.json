@@ -65,7 +65,13 @@
     "silver": "银级",
     "gold": "金级",
     "champion": "冠军",
-    "points": "积分"
+    "points": "积分",
+    "classLabel": "班级",
+    "average": "平均分",
+    "noStudentsYet": "目前还没有学生。请添加第一位学生。",
+    "generateAccessCode": "生成 / 重新生成访问码",
+    "editStudent": "编辑学生",
+    "deactivateStudent": "停用学生"
   },
   "groups": {
     "title": "学生小组",
