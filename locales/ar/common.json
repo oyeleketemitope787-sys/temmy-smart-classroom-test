@@ -65,7 +65,13 @@
     "silver": "فضي",
     "gold": "ذهبي",
     "champion": "بطل",
-    "points": "نقطة"
+    "points": "نقطة",
+    "classLabel": "الفصل",
+    "average": "المتوسط",
+    "noStudentsYet": "لا يوجد طلاب بعد. أضف أول طالب.",
+    "generateAccessCode": "إنشاء / إعادة إنشاء رمز الدخول",
+    "editStudent": "تعديل الطالب",
+    "deactivateStudent": "إلغاء تفعيل الطالب"
   },
   "groups": {
     "title": "مجموعات الطلاب",
