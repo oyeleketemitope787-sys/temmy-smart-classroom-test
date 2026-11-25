@@ -361,6 +361,7 @@
     "activityError": "Não foi possível carregar as atividades.",
     "cloudClassUnavailable": "A turma selecionada não está mais disponível. Atualize as turmas e tente novamente.",
     "sessionChanged": "Sua sessão de professor mudou. Entre novamente para continuar.",
-    "noResponse": "Nenhum texto de resposta armazenado."
+    "noResponse": "Nenhum texto de resposta armazenado.",
+    "liveTaskType": "Tarefa ao vivo"
   }
 }
