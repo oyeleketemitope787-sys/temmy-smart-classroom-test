@@ -91,6 +91,18 @@ html[dir="rtl"] .menu{right:auto;left:0}
 @media(max-width:1050px){.app-shell{grid-template-columns:205px minmax(0,1fr);gap:14px}.nav{padding:8px}.nav button{font-size:12px;padding:9px 10px}.grid2{grid-template-columns:minmax(0,1.35fr) minmax(230px,.85fr)}}
 @media(max-width:760px){.top-inner{align-items:flex-start;flex-direction:column}.language-panel{width:100%;min-width:0;max-width:480px}.wrap{padding:14px 10px 30px}.app-shell,html[dir="rtl"] .app-shell{display:flex;flex-direction:column;gap:12px}.app-sidebar{position:static;width:100%}.nav{display:flex;flex-direction:row;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin;padding:8px;border-radius:14px}.nav button{flex:0 0 auto;width:auto;min-height:40px;white-space:nowrap}.app-main{width:100%}.grid2,.grid3{grid-template-columns:1fr}.card{padding:16px;border-radius:15px}.summary-title{align-items:flex-start}.top{padding:18px}.brand-symbol{width:46px;height:46px;border-radius:14px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Dashboard metrics and reliable navigation interaction refinement */
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.grid4 .stat{min-width:0;padding:12px 10px}
+.grid4 .stat small{min-height:30px;line-height:1.25}
+.grid4 .stat strong{font-size:clamp(20px,1.8vw,27px);overflow-wrap:anywhere}
+.app-sidebar,.app-sidebar .nav,.app-sidebar .nav button,.app-main,.app-main button{pointer-events:auto}
+.app-sidebar{z-index:5}
+.app-sidebar .nav button{position:relative;z-index:6;cursor:pointer;touch-action:manipulation}
+.app-main button{cursor:pointer;touch-action:manipulation}
+@media(max-width:1050px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -114,7 +126,7 @@ html[dir="rtl"] .menu{right:auto;left:0}
   </div>
 </header>
 <div class="wrap">
-<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" onclick="showTab('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="showTab('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="showTab('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="showTab('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="showTab('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="showTab('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="showTab('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="showTab('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="showTab('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="showTab('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="showTab('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="showTab('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
+<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" data-temmy-tab="students">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" data-temmy-tab="classes">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" data-temmy-tab="groups">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" data-temmy-tab="activities">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" data-temmy-tab="award">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" data-temmy-tab="market">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" data-temmy-tab="purchases">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" data-temmy-tab="reports">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" data-temmy-tab="history">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" data-temmy-tab="portal">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" data-temmy-tab="account">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" data-temmy-tab="messages">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
 <div id="cloudStatus" class="notice" style="display:none"></div>
 <div class="controls">
 <select id="classSelect" class="select"></select>
@@ -126,8 +138,8 @@ html[dir="rtl"] .menu{right:auto;left:0}
 <div class="card"><div class="summary-title"><div><h2 id="classTitle">Class</h2><div class="small" data-i18n="students.leaderboard">Student leaderboard</div></div><button class="btn" onclick="showTab('award')"><span data-i18n="students.awardPointsLink">Award points</span> →</button></div>
 <table><thead><tr><th data-i18n="students.rank">Rank</th><th data-i18n="students.student">Student</th><th data-i18n="students.points">Points</th><th data-i18n="students.status">Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
 <div>
-<div class="card"><h2>🏆 <span data-i18n="students.classSummary">Class Summary</span></h2><div class="grid3"><div class="stat"><small data-i18n="students.classAggregatePoints">Class Aggregate Points</small><strong id="classPoints">0</strong></div><div class="stat"><small data-i18n="students.studentsCount">Students</small><strong id="studentCount">0</strong></div><div class="stat"><small data-i18n="students.average">Average</small><strong id="classAverage">0</strong></div></div></div>
-<div class="card"><h2>🎯 <span data-i18n="students.rewardLevelProgress">Reward Level Progress</span></h2><p>🥉 <strong data-i18n="students.bronze">Bronze</strong> — 50+ <span data-i18n="students.points">points</span></p><p>🥈 <strong data-i18n="students.silver">Silver</strong> — 100+ <span data-i18n="students.points">points</span></p><p>🥇 <strong data-i18n="students.gold">Gold</strong> — 150+ <span data-i18n="students.points">points</span></p><p>🏆 <strong data-i18n="students.champion">Champion</strong> — 200+ <span data-i18n="students.points">points</span></p></div>
+<div class="card"><h2>🏆 <span data-i18n="students.classSummary">Class Summary</span></h2><div class="grid4"><div class="stat"><small data-i18n="students.classAggregatePoints">Class Aggregate Points</small><strong id="classPoints">0</strong></div><div class="stat"><small data-i18n="students.classSpendablePoints">Spendable Points</small><strong id="classSpendablePoints">0</strong></div><div class="stat"><small data-i18n="students.studentsCount">Students</small><strong id="studentCount">0</strong></div><div class="stat"><small data-i18n="students.average">Average</small><strong id="classAverage">0</strong></div></div></div>
+<div class="card"><h2>🎯 <span data-i18n="students.rewardLevelProgress">Reward Level Progress</span></h2><p>🥉 <strong data-i18n="students.bronze">Bronze</strong> — 50+ <span data-i18n="students.points">points</span></p><p>🥈 <strong data-i18n="students.silver">Silver</strong> — 100+ <span data-i18n="students.points">points</span></p><p>🥇 <strong data-i18n="students.gold">Gold</strong> — 150+ <span data-i18n="students.points">points</span></p><p>🏆 <strong data-i18n="students.champion">Champion</strong> — 500+ <span data-i18n="students.points">points</span></p></div>
 </div></div></section>
 
 
@@ -365,6 +377,13 @@ function save(){localStorage.setItem(TEST_STORAGE_KEY,JSON.stringify(data))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
 function current(){return data.classes[data.currentClass]||null}
 function now(){return new Date().toLocaleString()}
+document.addEventListener('click',function(event){
+  const tabButton=event.target.closest('[data-temmy-tab]');
+  if(!tabButton)return;
+  event.preventDefault();
+  const tab=tabButton.getAttribute('data-temmy-tab');
+  if(tab)showTab(tab);
+},true);
 function showTab(tab){
 const tabs=['students','classes','groups','activities','award','market','purchases','reports','history','portal','account','messages'];
 tabs.forEach(t=>{const el=document.getElementById(t);if(el)el.classList.toggle('hidden',t!==tab);});
@@ -761,7 +780,7 @@ function renderStudents(){
   const sorted=[...cls.students].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name));
   document.getElementById('studentRows').innerHTML=sorted.length
     ? sorted.map((s,i)=>{
-        const status=s.points>=200?tr('champion'):s.points>=150?tr('gold'):s.points>=100?tr('silver'):s.points>=50?tr('bronze'):'—';
+        const status=s.points>=500?tr('champion'):s.points>=150?tr('gold'):s.points>=100?tr('silver'):s.points>=50?tr('bronze'):'—';
         return `
           <tr>
             <td>${i+1}</td>
@@ -782,6 +801,9 @@ function renderStudents(){
     : `<tr><td colspan="4" class="empty">${tr('noStudentsYet')}</td></tr>`;
   const total=cls.students.reduce((a,s)=>a+s.points,0);
   document.getElementById('classPoints').textContent=total;
+  const spendable=cls.students.reduce((a,s)=>a+Math.max(0,Number(s.points)||0),0);
+  const spendableEl=document.getElementById('classSpendablePoints');
+  if(spendableEl)spendableEl.textContent=spendable;
   document.getElementById('studentCount').textContent=cls.students.length;
   document.getElementById('classAverage').textContent=cls.students.length?(total/cls.students.length).toFixed(1):'0';
 }
