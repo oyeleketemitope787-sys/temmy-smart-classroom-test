@@ -65,7 +65,13 @@
     "silver": "Silver",
     "gold": "Gold",
     "champion": "Champion",
-    "points": "points"
+    "points": "points",
+    "classLabel": "Class",
+    "average": "Average",
+    "noStudentsYet": "No students yet. Add your first student.",
+    "generateAccessCode": "Generate / Regenerate Access Code",
+    "editStudent": "Edit Student",
+    "deactivateStudent": "Deactivate Student"
   },
   "groups": {
     "title": "Student Groups",
