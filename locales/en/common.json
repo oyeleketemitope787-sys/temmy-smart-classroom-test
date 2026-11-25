@@ -361,6 +361,7 @@
     "activityError": "Activities could not be loaded.",
     "cloudClassUnavailable": "The selected class is no longer available. Refresh your classes before trying again.",
     "sessionChanged": "Your teacher session changed. Sign in again before continuing.",
-    "noResponse": "No response text stored."
+    "noResponse": "No response text stored.",
+    "liveTaskType": "Live Task"
   }
 }
