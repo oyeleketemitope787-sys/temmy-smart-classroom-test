@@ -361,6 +361,7 @@
     "activityError": "无法加载活动。",
     "cloudClassUnavailable": "所选班级已不可用。请刷新班级后重试。",
     "sessionChanged": "教师会话已更改。请重新登录后继续。",
-    "noResponse": "未保存回答文本。"
+    "noResponse": "未保存回答文本。",
+    "liveTaskType": "实时任务"
   }
 }
