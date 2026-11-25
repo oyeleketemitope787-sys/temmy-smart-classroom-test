@@ -361,6 +361,7 @@
     "activityError": "Impossible de charger les activités.",
     "cloudClassUnavailable": "La classe sélectionnée n’est plus disponible. Actualisez vos classes puis réessayez.",
     "sessionChanged": "Votre session enseignant a changé. Reconnectez-vous pour continuer.",
-    "noResponse": "Aucune réponse enregistrée."
+    "noResponse": "Aucune réponse enregistrée.",
+    "liveTaskType": "Tâche en direct"
   }
 }
