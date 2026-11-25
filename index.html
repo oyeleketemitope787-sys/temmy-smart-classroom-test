@@ -171,6 +171,18 @@ html[dir="rtl"] .menu{right:auto;left:0}
 .activities-list{padding-top:16px}
 @media(max-width:850px){.activities-commandbar{align-items:stretch;flex-direction:column}.activities-filter{flex-wrap:wrap}.activities-filter .select{margin-left:0;flex:1 1 180px}.groups-toolbar{align-items:stretch;flex-direction:column}.groups-actions .select{flex:1 1 180px}}
 @media(max-width:600px){.classes-actionbar{align-items:stretch;flex-direction:column}.classes-actionbar .btn{width:100%}.groups-actions,.activities-create-actions{display:grid;grid-template-columns:1fr}.groups-actions .select{width:100%}.activities-filter>div{flex:1 1 100%}.activities-content{padding:15px}.activities-content-heading{align-items:flex-start;flex-direction:column}}
+
+/* Premium page refinements — presentation only; existing page actions and data hooks remain unchanged. */
+.premium-page{display:flex;flex-direction:column;gap:18px;}
+.premium-page .workspace-heading{margin-bottom:0;}
+.premium-workspace-body{display:flex;flex-direction:column;gap:18px;}
+.premium-content-card{padding:24px;}
+.premium-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.premium-section-heading h2{margin:0 0 5px;}
+.award-page .grid2{align-items:start;}
+.award-page .card{min-width:0;}
+.market-page .market{min-height:180px;}
+@media(max-width:760px){.premium-content-card{padding:16px}.premium-page{gap:14px}.premium-section-heading .controls{width:100%;}}
 </style>
 </head>
 <body>
@@ -252,7 +264,9 @@ html[dir="rtl"] .menu{right:auto;left:0}
   <div class="activities-content"><div class="activities-content-heading"><div><h2>Classroom activity feed</h2><p>Live tasks and games created for your selected class</p></div><span class="activities-live-indicator"><i></i> Learning hub</span></div><div id="activitiesList" class="activities-list"></div></div>
 </section>
 
-<section id="award" class="hidden">
+<section id="award" class="hidden workspace-page premium-page award-page">
+<div class="workspace-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">STUDENT RECOGNITION</span><h1>⭐ Award Points</h1><p>Recognise achievement, encourage positive behaviour and manage classroom points with clarity.</p></div><div class="workspace-heading-mark" aria-hidden="true">✦</div></div>
+<div class="premium-workspace-body">
 <div class="controls"><select id="awardClassSelect" class="select"></select><button class="btn" onclick="showTab('students')">← Students</button></div>
 <div class="grid2">
 <div class="card"><div class="summary-title"><div><h2>⭐ Award Points</h2><div class="small">Select exactly who should receive the points.</div></div><button id="awardLockBtn" class="btn gold" onclick="toggleAwardLock()">🔒 Lock Award Points</button></div><div id="awardLockNotice" class="notice hidden"></div>
@@ -328,6 +342,7 @@ html[dir="rtl"] .menu{right:auto;left:0}
 </div>
 <div class="card"><div class="summary-title"><h2>↩️ Last Point Action</h2><button class="btn gold" onclick="undoLastPointAction()">Undo</button></div><div id="lastActionBox" class="notice">No point action recorded yet.</div><h3>Recent Activity</h3><div id="recentHistory" class="history-scroll"></div></div>
 </div>
+</div>
 </section>
 
 <section id="classes" class="hidden workspace-page classes-page">
@@ -336,9 +351,16 @@ html[dir="rtl"] .menu{right:auto;left:0}
   <div id="classCards" class="classes-grid"></div>
 </section>
 
-<section id="market" class="hidden"><div class="controls"><button class="btn primary" onclick="openAddReward()">➕ Create Marketplace Item</button></div><div class="card"><h2>🛒 Marketplace</h2><div class="small">Students spend points earned in the selected class.</div><div id="marketItems" class="market" style="margin-top:16px"></div></div></section>
+<section id="market" class="hidden workspace-page premium-page market-page">
+  <div class="workspace-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">CLASS REWARDS</span><h1>🛒 Marketplace</h1><p>Build a motivating rewards experience where students can exchange their earned points for classroom rewards.</p></div><div class="workspace-heading-mark" aria-hidden="true">◇</div></div>
+  <div class="classes-actionbar"><div class="classes-action-copy"><strong>Reward catalogue</strong><span>Manage the items available to students in the selected class</span></div><button class="btn primary" onclick="openAddReward()">➕ Create Marketplace Item</button></div>
+  <div class="card premium-content-card"><div class="premium-section-heading"><div><h2>Available Rewards</h2><div class="small">Students spend points earned in the selected class.</div></div></div><div id="marketItems" class="market" style="margin-top:16px"></div></div>
+</section>
 
-<section id="purchases" class="hidden"><div class="card"><h2>📜 Purchase History</h2><div class="small">Complete marketplace history for all classes and students. Purchases made for multiple students are recorded individually.</div><div id="purchaseList" style="margin-top:16px"></div></div></section>
+<section id="purchases" class="hidden workspace-page premium-page purchases-page">
+  <div class="workspace-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">REWARD ACTIVITY</span><h1>📜 Purchase History</h1><p>Review reward redemptions across classes and students with a clear record of classroom activity.</p></div><div class="workspace-heading-mark" aria-hidden="true">↗</div></div>
+  <div class="card premium-content-card"><div class="premium-section-heading"><div><h2>All Purchases</h2><div class="small">Complete marketplace history for all classes and students. Purchases made for multiple students are recorded individually.</div></div></div><div id="purchaseList" style="margin-top:18px"></div></div>
+</section>
 
 <section id="history" class="hidden"><div class="card"><h2>👤 Individual Student History</h2><div class="controls"><select id="historyClass" class="select"></select><select id="historyStudent" class="select"></select><button class="btn" onclick="renderStudentHistory()">Refresh</button></div><div id="studentProfile"></div><div id="studentHistoryList" style="margin-top:16px"></div></div></section>
 
@@ -418,7 +440,12 @@ html[dir="rtl"] .menu{right:auto;left:0}
 
   </div>
 </section>
-<section id="reports" class="hidden"><div class="card"><h2>📊 Class Reports</h2><div class="controls"><select id="reportClass" class="select"></select><button class="btn" onclick="renderReports()">Refresh</button></div><div id="reportBody"></div></div></section></main></div>
+<section id="reports" class="hidden workspace-page premium-page reports-page">
+  <div class="workspace-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">CLASSROOM INSIGHTS</span><h1>📊 Class Reports</h1><p>Explore class performance and student progress through clear classroom reporting.</p></div><div class="workspace-heading-mark" aria-hidden="true">▥</div></div>
+  <div class="card premium-content-card"><div class="premium-section-heading"><div><h2>Report Overview</h2><div class="small">Choose a class to refresh its report.</div></div><div class="controls"><select id="reportClass" class="select"></select><button class="btn primary" onclick="renderReports()">↻ Refresh Report</button></div></div><div id="reportBody" style="margin-top:18px"></div></div>
+</section>
+
+</main></div>
 </div>
 
 <div id="modal" class="modal hidden"><div class="modalbox"><h2 id="modalTitle"></h2><div id="modalBody"></div><div class="formactions"><button class="btn" onclick="closeModal()">Cancel</button><button id="modalSave" class="btn primary">Save</button></div></div></div>
