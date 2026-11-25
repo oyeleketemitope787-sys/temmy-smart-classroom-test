@@ -1355,7 +1355,7 @@ function syncActivityClassSelect(){
  if(wanted)el.value=wanted;
  el.onchange=()=>loadCloudActivities();
 }
-function activityTypeLabel(type){return type==='live_task'?(window.TemmyI18n?.t('activities.create')||'Live Task'):(window.TemmyI18n?.t('activities.title')||'Activity')}
+function activityTypeLabel(type){return type==='live_task'?(window.TemmyI18n?.t('activities.liveTaskType')||'Live Task'):(window.TemmyI18n?.t('activities.title')||'Activity')}
 function activityStatusLabel(status){return window.TemmyI18n?.t('activities.'+(status==='live'?'live':status==='closed'?'closed':'draft'))||(status==='live'?'LIVE':status==='closed'?'CLOSED':'DRAFT')}
 function renderActivities(){
  const el=document.getElementById('activitiesList');if(!el)return;
