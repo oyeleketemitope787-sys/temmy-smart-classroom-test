@@ -205,6 +205,24 @@ html[dir="rtl"] .menu{right:auto;left:0}
 .account-security-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;border:1px solid #e5ebf4;border-radius:16px;background:#fff}.account-security-actions>div:first-child{display:flex;flex-direction:column;gap:4px}.account-security-actions span{color:#7b879b;font-size:11px}.account-security-actions .controls{margin:0;display:flex;gap:9px;flex-wrap:wrap}
 @media(max-width:850px){.account-auth-layout{grid-template-columns:1fr}.account-welcome{min-height:210px}.account-stats{grid-template-columns:1fr}}@media(max-width:600px){.account-welcome,.account-login-card{padding:22px}.account-profile-grid{grid-template-columns:1fr;gap:0}.account-session-banner,.account-security-actions{align-items:flex-start;flex-direction:column}.account-security-actions .controls{width:100%}}
 
+
+/* TEMMY AWARD WORKSPACE LAYOUT REFINEMENT */
+#award.award-page{display:flex;flex-direction:column;align-items:stretch;width:100%;max-width:100%;min-width:0;direction:ltr}
+#award.award-page>.workspace-heading,#award.award-page>.premium-workspace-body{width:100%;min-width:0;max-width:100%;align-self:stretch}
+#award.award-page .premium-workspace-body{display:flex;flex-direction:column;gap:18px}
+#award.award-page .premium-workspace-body>.controls{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;width:100%}
+#award.award-page .premium-workspace-body>.grid2{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)!important;gap:18px;width:100%;min-width:0;align-items:start}
+#award.award-page .premium-workspace-body>.grid2>.card{width:100%;min-width:0;max-width:100%;margin:0;box-sizing:border-box}
+#award.award-page .action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#award.award-page .action{min-width:0;white-space:normal;overflow-wrap:anywhere}
+#award.award-page .scopebar{display:flex;flex-wrap:wrap;gap:8px}
+#award.award-page .custom-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,1fr);gap:9px}
+#award.award-page .custom-row>*{min-width:0;width:100%;box-sizing:border-box}
+#award.award-page .punctuality-panel{grid-column:1/-1}
+#award.award-page .punctuality-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#award.award-page .punctuality-options button{min-width:0;white-space:normal;padding:10px 6px}
+@media(max-width:900px){#award.award-page .premium-workspace-body>.grid2{grid-template-columns:minmax(0,1fr)!important}}
+@media(max-width:520px){#award.award-page .action-grid{grid-template-columns:1fr}#award.award-page .punctuality-options{grid-template-columns:repeat(2,minmax(0,1fr))}#award.award-page .custom-row{grid-template-columns:1fr}}
 /* TEMMY MESSAGES PREMIUM WORKSPACE */
 .messages-page{padding-bottom:28px}
 .messages-heading{align-items:center}
@@ -330,7 +348,7 @@ html[dir="rtl"] .menu{right:auto;left:0}
 <button class="action positive-action" onclick="applyAward(3,'Excellent Behaviour')"><strong>👏 Excellent Behaviour +3</strong><span>Consistently positive conduct</span></button>
 <button class="action positive-action" onclick="applyAward(3,'Live Task Completed')"><strong>📝 Live Task +3</strong><span>Completed an in-class live task</span></button>
 <button class="action positive-action" onclick="applyAward(5,'Excellent Task Performance')"><strong>🏅 Task Excellence +5</strong><span>Outstanding performance on a learning task</span></button>
-<div style="grid-column:1 / -1;border:1px solid #d9e3f4;border-radius:12px;padding:16px;background:#f8fbff">
+<div class="punctuality-panel" style="grid-column:1 / -1;border:1px solid #d9e3f4;border-radius:12px;padding:16px;background:#f8fbff">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
     <div>
       <h3 style="margin:0">⏰ Punctuality</h3>
@@ -347,7 +365,7 @@ html[dir="rtl"] .menu{right:auto;left:0}
 <div class="selection-info" id="punctualitySelectionInfo">    All students selected
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+  <div class="punctuality-options" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
     <button type="button" id="punctualityOnTimeBtn" class="btn success" onclick="selectPunctualityStatus('On Time',2)">
       <strong>On Time</strong><br>
       <span class="small">+2 points</span>
