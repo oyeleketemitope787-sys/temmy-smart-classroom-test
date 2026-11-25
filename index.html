@@ -137,6 +137,40 @@ html[dir="rtl"] .menu{right:auto;left:0}
 @media(max-width:1050px){.students-layout{grid-template-columns:minmax(0,1.35fr) minmax(250px,.9fr)}}
 @media(max-width:760px){.workspace-heading{padding:19px;border-radius:16px}.workspace-heading-mark{width:46px;height:46px;flex-basis:46px;font-size:24px}.workspace-toolbar{align-items:stretch;flex-direction:column}.students-toolbar .controls{display:flex;flex-wrap:wrap}.students-toolbar .controls .select{flex:1 1 100%}.students-layout{grid-template-columns:1fr}.leaderboard-card{min-height:280px}.students-insights{grid-template-columns:1fr 1fr}.students-insights .card{min-width:0}}
 @media(max-width:520px){.students-insights{grid-template-columns:1fr}.reward-level{grid-template-columns:26px minmax(65px,.7fr) minmax(85px,1fr)}}
+
+/* Distinct premium workspaces: Classes, Groups and Activities */
+.workspace-page{display:flex;flex-direction:column;gap:18px}
+.classes-heading{background:radial-gradient(circle at 90% 15%,rgba(215,173,85,.2),transparent 27%),linear-gradient(120deg,#fff,#f7faff)}
+.classes-heading .workspace-heading-mark{background:linear-gradient(145deg,#1b416f,#2c6596)}
+.classes-actionbar,.groups-toolbar,.activities-commandbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 20px;border:1px solid #e5ebf3;border-radius:17px;background:#fff;box-shadow:0 6px 20px rgba(18,43,78,.045)}
+.classes-action-copy,.groups-toolbar-copy{display:flex;flex-direction:column;gap:5px}
+.classes-action-copy strong,.groups-toolbar-copy strong,.activities-filter strong{color:#1c3558;font-size:14px;font-weight:800}
+.classes-action-copy span,.groups-toolbar-copy span,.activities-filter small{color:#7b879b;font-size:12px}
+.classes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;align-items:stretch}
+.classes-grid:empty{min-height:180px;border:1px dashed #cbd5e3;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(246,249,253,.7))}
+.groups-heading{background:radial-gradient(circle at 90% 10%,rgba(102,160,201,.16),transparent 28%),linear-gradient(120deg,#fff,#f7faff)}
+.groups-heading .workspace-heading-mark{background:linear-gradient(145deg,#284d79,#397ba0)}
+.groups-workspace{overflow:hidden;border:1px solid #e5ebf3;border-radius:19px;background:#fff;box-shadow:var(--temmy-shadow)}
+.groups-toolbar{border:0;border-bottom:1px solid #edf1f6;border-radius:0;box-shadow:none}
+.groups-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.groups-actions .select{min-width:190px}
+.groups-list{min-height:190px;padding:20px}
+.activities-heading{background:radial-gradient(circle at 90% 10%,rgba(215,173,85,.18),transparent 28%),linear-gradient(120deg,#fff,#f7faff)}
+.activities-heading .workspace-heading-mark{background:linear-gradient(145deg,#234b79,#426b91)}
+.activities-commandbar{align-items:center}
+.activities-filter{display:flex;align-items:center;gap:12px;min-width:0}
+.activities-filter>div{display:flex;flex-direction:column;gap:4px;min-width:155px}
+.activities-filter .select{min-width:180px;margin-left:10px}
+.activities-create-actions{display:flex;gap:9px;flex-wrap:wrap}
+.activities-content{min-height:240px;padding:20px;border:1px solid #e5ebf3;border-radius:19px;background:#fff;box-shadow:var(--temmy-shadow)}
+.activities-content-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid #edf1f6}
+.activities-content-heading h2{margin:0 0 5px;color:#1b3558;font-size:18px}
+.activities-content-heading p{margin:0;color:#7b879b;font-size:12px}
+.activities-live-indicator{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #e4ebf3;border-radius:20px;color:#61718a;font-size:11px;font-weight:750;white-space:nowrap}
+.activities-live-indicator i{width:7px;height:7px;border-radius:50%;background:#39a77b;box-shadow:0 0 0 4px rgba(57,167,123,.12)}
+.activities-list{padding-top:16px}
+@media(max-width:850px){.activities-commandbar{align-items:stretch;flex-direction:column}.activities-filter{flex-wrap:wrap}.activities-filter .select{margin-left:0;flex:1 1 180px}.groups-toolbar{align-items:stretch;flex-direction:column}.groups-actions .select{flex:1 1 180px}}
+@media(max-width:600px){.classes-actionbar{align-items:stretch;flex-direction:column}.classes-actionbar .btn{width:100%}.groups-actions,.activities-create-actions{display:grid;grid-template-columns:1fr}.groups-actions .select{width:100%}.activities-filter>div{flex:1 1 100%}.activities-content{padding:15px}.activities-content-heading{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -205,33 +239,17 @@ html[dir="rtl"] .menu{right:auto;left:0}
 </section>
 
 
-<section id="groups" class="hidden">
-<div class="card">
-<div class="summary-title">
-<div><h2>👥 Student Groups</h2><div class="small">Create and manage cloud groups within each class for collaborative learning.</div></div>
-<button class="btn primary" onclick="openCreateGroup()">➕ Create Group</button>
-</div>
-<div class="controls" style="margin-top:16px">
-<select id="groupClassSelect" class="select"></select>
-<button class="btn" onclick="refreshGroups()">🔄 Refresh</button>
-</div>
-<div id="groupsList"></div>
-</div>
+<section id="groups" class="hidden workspace-page groups-page">
+  <div class="workspace-heading groups-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">COLLABORATIVE LEARNING</span><h1>👥 <span data-i18n="groups.title">Student Groups</span></h1><p data-i18n="groups.description">Create and manage cloud groups within each class for collaborative learning.</p></div><div class="workspace-heading-mark" aria-hidden="true">◎</div></div>
+  <div class="groups-workspace">
+    <div class="groups-toolbar"><div class="groups-toolbar-copy"><strong>Group directory</strong><span>Choose a class to view and organise its learning teams</span></div><div class="groups-actions"><select id="groupClassSelect" class="select" aria-label="Select class"></select><button class="btn" onclick="refreshGroups()">🔄 <span data-i18n="groups.refresh">Refresh</span></button><button class="btn primary" onclick="openCreateGroup()">➕ <span data-i18n="groups.createGroup">Create Group</span></button></div></div>
+    <div id="groupsList" class="groups-list"></div>
+  </div>
 </section>
-<section id="activities" class="hidden">
-<div class="card">
-<div class="summary-title">
-<div><h2>📚 <span data-i18n="activities.title">Learning Activities</span></h2><div class="small" data-i18n="activities.description">Create and manage Live Tasks and Temmy Smart Games for your classes.</div></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn primary" onclick="openCreateActivity()">➕ <span data-i18n="activities.create">Create Live Task</span></button>
-<button class="btn gold" onclick="openGameLauncher()">🎮 <span data-i18n="activities.game">Start Smart Game</span></button>
-</div></div>
-<div class="controls" style="margin-top:16px">
-<select id="activityClassSelect" class="select"></select>
-<button class="btn" onclick="refreshActivities()">🔄 <span data-i18n="activities.refresh">Refresh</span></button>
-</div>
-<div id="activitiesList"></div>
-</div>
+<section id="activities" class="hidden workspace-page activities-page">
+  <div class="workspace-heading activities-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">ACTIVE LEARNING STUDIO</span><h1>📚 <span data-i18n="activities.title">Learning Activities</span></h1><p data-i18n="activities.description">Create and manage Live Tasks and Temmy Smart Games for your classes.</p></div><div class="workspace-heading-mark" aria-hidden="true">✧</div></div>
+  <div class="activities-commandbar"><div class="activities-filter"><span class="toolbar-dot"></span><div><strong>Activity workspace</strong><small>Manage classroom tasks and interactive games</small></div><select id="activityClassSelect" class="select" aria-label="Select class"></select><button class="btn" onclick="refreshActivities()">🔄 <span data-i18n="activities.refresh">Refresh</span></button></div><div class="activities-create-actions"><button class="btn primary" onclick="openCreateActivity()">➕ <span data-i18n="activities.create">Create Live Task</span></button><button class="btn gold" onclick="openGameLauncher()">🎮 <span data-i18n="activities.game">Start Smart Game</span></button></div></div>
+  <div class="activities-content"><div class="activities-content-heading"><div><h2>Classroom activity feed</h2><p>Live tasks and games created for your selected class</p></div><span class="activities-live-indicator"><i></i> Learning hub</span></div><div id="activitiesList" class="activities-list"></div></div>
 </section>
 
 <section id="award" class="hidden">
@@ -312,7 +330,11 @@ html[dir="rtl"] .menu{right:auto;left:0}
 </div>
 </section>
 
-<section id="classes" class="hidden"><div class="card"><h2>🏫 <span data-i18n="classes.classesTitle">My Classes</span></h2><div class="notice" data-i18n="classes.classesDescription">Create and manage your classes. Your classes and student data are loaded from the connected cloud database.</div><button class="btn primary" onclick="openCreateClass()">➕ <span data-i18n="classes.createNewClass">Create New Class</span></button><div id="classCards"></div></div></section>
+<section id="classes" class="hidden workspace-page classes-page">
+  <div class="workspace-heading classes-heading"><div class="workspace-heading-copy"><span class="workspace-eyebrow">YOUR TEACHING SPACE</span><h1>🏫 <span data-i18n="classes.classesTitle">My Classes</span></h1><p data-i18n="classes.classesDescription">Create and manage your classes. Your classes and student data are loaded from the connected cloud database.</p></div><div class="workspace-heading-mark" aria-hidden="true">▦</div></div>
+  <div class="classes-actionbar"><div class="classes-action-copy"><strong>Classroom management</strong><span>Organise your learning spaces and student communities</span></div><button class="btn primary" onclick="openCreateClass()">➕ <span data-i18n="classes.createNewClass">Create New Class</span></button></div>
+  <div id="classCards" class="classes-grid"></div>
+</section>
 
 <section id="market" class="hidden"><div class="controls"><button class="btn primary" onclick="openAddReward()">➕ Create Marketplace Item</button></div><div class="card"><h2>🛒 Marketplace</h2><div class="small">Students spend points earned in the selected class.</div><div id="marketItems" class="market" style="margin-top:16px"></div></div></section>
 
