@@ -35,16 +35,16 @@ let passwordFlowActive=false;
 <div id="cloudStatus" class="notice" style="display:none"></div>
 <div class="controls">
 <select id="classSelect" class="select"></select>
-<button class="btn primary" onclick="openAddStudent()">➕ Add Student</button>
-<button class="btn" onclick="showTab('award')">⭐ Award Points</button>
-<button class="btn" onclick="exportData()">⬇️ Export Data</button>
+<button class="btn primary" onclick="openAddStudent()">➕ <span data-i18n="students.addStudent">Add Student</span></button>
+<button class="btn" onclick="showTab('award')">⭐ <span data-i18n="students.awardPoints">Award Points</span></button>
+<button class="btn" onclick="exportData()">⬇️ <span data-i18n="students.exportData">Export Data</span></button>
 </div>
 <div class="grid2">
-<div class="card"><div class="summary-title"><div><h2 id="classTitle">Class</h2><div class="small">Student leaderboard</div></div><button class="btn" onclick="showTab('award')">Award points →</button></div>
-<table><thead><tr><th>Rank</th><th>Student</th><th>Points</th><th>Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+<div class="card"><div class="summary-title"><div><h2 id="classTitle">Class</h2><div class="small" data-i18n="students.leaderboard">Student leaderboard</div></div><button class="btn" onclick="showTab('award')"><span data-i18n="students.awardPointsLink">Award points</span> →</button></div>
+<table><thead><tr><th data-i18n="students.rank">Rank</th><th data-i18n="students.student">Student</th><th data-i18n="students.points">Points</th><th data-i18n="students.status">Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
 <div>
-<div class="card"><h2>🏆 Class Summary</h2><div class="grid3"><div class="stat"><small>Class Points</small><strong id="classPoints">0</strong></div><div class="stat"><small>Students</small><strong id="studentCount">0</strong></div><div class="stat"><small>Average</small><strong id="classAverage">0</strong></div></div></div>
-<div class="card"><h2>🎯 Reward Level Progress</h2><p>🥉 <strong>Bronze</strong> — 50+ points</p><p>🥈 <strong>Silver</strong> — 100+ points</p><p>🥇 <strong>Gold</strong> — 150+ points</p><p>🏆 <strong>Champion</strong> — 200+ points</p></div>
+<div class="card"><h2>🏆 <span data-i18n="students.classSummary">Class Summary</span></h2><div class="grid3"><div class="stat"><small data-i18n="students.classAggregatePoints">Class Aggregate Points</small><strong id="classPoints">0</strong></div><div class="stat"><small data-i18n="students.studentsCount">Students</small><strong id="studentCount">0</strong></div><div class="stat"><small data-i18n="students.average">Average</small><strong id="classAverage">0</strong></div></div></div>
+<div class="card"><h2>🎯 <span data-i18n="students.rewardLevelProgress">Reward Level Progress</span></h2><p>🥉 <strong data-i18n="students.bronze">Bronze</strong> — 50+ <span data-i18n="students.points">points</span></p><p>🥈 <strong data-i18n="students.silver">Silver</strong> — 100+ <span data-i18n="students.points">points</span></p><p>🥇 <strong data-i18n="students.gold">Gold</strong> — 150+ <span data-i18n="students.points">points</span></p><p>🏆 <strong data-i18n="students.champion">Champion</strong> — 200+ <span data-i18n="students.points">points</span></p></div>
 </div></div></section>
 
 
@@ -673,92 +673,37 @@ function renderClassSelects(){const opts=Object.keys(data.classes).map(c=>`<opti
 function renderStudents(){
   const cls=current();
   if(!cls)return;
-
-  document.getElementById('classTitle').textContent='Class '+data.currentClass;
-
-  const sorted=[...cls.students].sort(
-    (a,b)=>b.points-a.points||a.name.localeCompare(b.name)
-  );
-
-  document.getElementById('studentRows').innerHTML=
-    sorted.length
-      ? sorted.map((s,i)=>{
-          const status=
-            s.points>=200?'Champion':
-            s.points>=150?'Gold':
-            s.points>=100?'Silver':
-            s.points>=50?'Bronze':
-            '—';
-
-          return `
-            <tr>
-              <td>${i+1}</td>
-
-              <td>
-                <button class="btn" onclick="openStudentHistory('${esc(s.id)}')">
-                  ${esc(s.name)}
-                </button>
-              </td>
-
-              <td class="points">${s.points}</td>
-
-              <td>
-                ${status}
-
-                <span class="menu-wrap">
-                  <button
-                    class="btn menu-btn"
-                    onclick="toggleMenu('studentMenu_${s.id}')"
-                  >
-                    ...
-                  </button>
-
-                  <span
-                    id="studentMenu_${s.id}"
-                    class="menu hidden"
-                  >
-                    <button
-                      onclick="openStudentCode('${esc(s.id)}');closeAllMenus()"
-                    >
-                      Generate / Regenerate Access Code
-                    </button>
-
-                    <button
-                      onclick="editStudent('${esc(s.id)}');closeAllMenus()"
-                    >
-                      Edit Student
-                    </button>
-
-                    <button
-                      class="menu-danger"
-                      onclick="deactivateStudent('${esc(s.id)}');closeAllMenus()"
-                    >
-                      Deactivate Student
-                    </button>
-                  </span>
+  const tr=(key)=>window.TemmyI18n?.t('students.'+key)||key;
+  document.getElementById('classTitle').textContent=tr('classLabel')+' '+data.currentClass;
+  const sorted=[...cls.students].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name));
+  document.getElementById('studentRows').innerHTML=sorted.length
+    ? sorted.map((s,i)=>{
+        const status=s.points>=200?tr('champion'):s.points>=150?tr('gold'):s.points>=100?tr('silver'):s.points>=50?tr('bronze'):'—';
+        return `
+          <tr>
+            <td>${i+1}</td>
+            <td><button class="btn" onclick="openStudentHistory('${esc(s.id)}')">${esc(s.name)}</button></td>
+            <td class="points">${s.points}</td>
+            <td>${status}
+              <span class="menu-wrap">
+                <button class="btn menu-btn" onclick="toggleMenu('studentMenu_${s.id}')">...</button>
+                <span id="studentMenu_${s.id}" class="menu hidden">
+                  <button onclick="openStudentCode('${esc(s.id)}');closeAllMenus()">${tr('generateAccessCode')}</button>
+                  <button onclick="editStudent('${esc(s.id)}');closeAllMenus()">${tr('editStudent')}</button>
+                  <button class="menu-danger" onclick="deactivateStudent('${esc(s.id)}');closeAllMenus()">${tr('deactivateStudent')}</button>
                 </span>
-              </td>
-            </tr>
-          `;
-        }).join('')
-      : `<tr>
-          <td colspan="4" class="empty">
-            No students yet. Add your first student.
-          </td>
-        </tr>`;
-
-  const total=cls.students.reduce(
-    (a,s)=>a+s.points,
-    0
-  );
-
+              </span>
+            </td>
+          </tr>`;
+      }).join('')
+    : `<tr><td colspan="4" class="empty">${tr('noStudentsYet')}</td></tr>`;
+  const total=cls.students.reduce((a,s)=>a+s.points,0);
   document.getElementById('classPoints').textContent=total;
   document.getElementById('studentCount').textContent=cls.students.length;
-  document.getElementById('classAverage').textContent=
-    cls.students.length
-      ? (total/cls.students.length).toFixed(1)
-      : '0';
+  document.getElementById('classAverage').textContent=cls.students.length?(total/cls.students.length).toFixed(1):'0';
 }
+window.addEventListener('temmy:language-changed',()=>{if(document.getElementById('students')?.classList.contains('hidden')===false)renderStudents();});
+
 async function editStudent(id){
  const cls=current(),requestedTeacherId=authSession?.user?.id,requestedAuthRevision=authStateRevision;
  if(!cls||!requestedTeacherId)return;
