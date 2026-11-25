@@ -65,7 +65,13 @@
     "silver": "چاندی",
     "gold": "سونا",
     "champion": "چیمپئن",
-    "points": "پوائنٹس"
+    "points": "پوائنٹس",
+    "classLabel": "کلاس",
+    "average": "اوسط",
+    "noStudentsYet": "ابھی کوئی طالب علم نہیں۔ اپنا پہلا طالب علم شامل کریں۔",
+    "generateAccessCode": "رسائی کوڈ بنائیں / دوبارہ بنائیں",
+    "editStudent": "طالب علم میں ترمیم کریں",
+    "deactivateStudent": "طالب علم کو غیر فعال کریں"
   },
   "groups": {
     "title": "طلبہ کے گروپس",
