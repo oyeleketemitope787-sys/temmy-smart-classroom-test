@@ -93,13 +93,13 @@ html[dir="rtl"] .menu{right:auto;left:0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 /* Dashboard metrics and reliable navigation interaction refinement */
-.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.grid4 .stat{min-width:0;padding:12px 10px}
-.grid4 .stat small{min-height:30px;line-height:1.25}
+.grid4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid4 .stat{min-width:0;min-height:86px;padding:14px 13px}
+.grid4 .stat small{min-height:24px;line-height:1.35;font-size:12px}
 .grid4 .stat strong{font-size:clamp(20px,1.8vw,27px);overflow-wrap:anywhere}
 .app-sidebar,.app-sidebar .nav,.app-sidebar .nav button,.app-main,.app-main button{pointer-events:auto}
 .app-sidebar{z-index:5}
-.app-sidebar .nav button{position:relative;z-index:6;cursor:pointer;touch-action:manipulation}
+.app-sidebar .nav button{position:relative;z-index:20;display:flex;pointer-events:auto;cursor:pointer;touch-action:manipulation;user-select:none}
 .app-main button{cursor:pointer;touch-action:manipulation}
 @media(max-width:1050px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -126,7 +126,7 @@ html[dir="rtl"] .menu{right:auto;left:0}
   </div>
 </header>
 <div class="wrap">
-<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" data-temmy-tab="students">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" data-temmy-tab="classes">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" data-temmy-tab="groups">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" data-temmy-tab="activities">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" data-temmy-tab="award">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" data-temmy-tab="market">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" data-temmy-tab="purchases">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" data-temmy-tab="reports">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" data-temmy-tab="history">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" data-temmy-tab="portal">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" data-temmy-tab="account">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" data-temmy-tab="messages">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
+<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" onclick="window.temmyNavigate('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="window.temmyNavigate('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="window.temmyNavigate('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="window.temmyNavigate('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="window.temmyNavigate('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="window.temmyNavigate('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="window.temmyNavigate('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="window.temmyNavigate('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="window.temmyNavigate('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="window.temmyNavigate('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="window.temmyNavigate('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="window.temmyNavigate('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
 <div id="cloudStatus" class="notice" style="display:none"></div>
 <div class="controls">
 <select id="classSelect" class="select"></select>
@@ -377,13 +377,6 @@ function save(){localStorage.setItem(TEST_STORAGE_KEY,JSON.stringify(data))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
 function current(){return data.classes[data.currentClass]||null}
 function now(){return new Date().toLocaleString()}
-document.addEventListener('click',function(event){
-  const tabButton=event.target.closest('[data-temmy-tab]');
-  if(!tabButton)return;
-  event.preventDefault();
-  const tab=tabButton.getAttribute('data-temmy-tab');
-  if(tab)showTab(tab);
-},true);
 function showTab(tab){
 const tabs=['students','classes','groups','activities','award','market','purchases','reports','history','portal','account','messages'];
 tabs.forEach(t=>{const el=document.getElementById(t);if(el)el.classList.toggle('hidden',t!==tab);});
@@ -3197,5 +3190,32 @@ window.addEventListener('DOMContentLoaded',()=>{initCloudTeacher();});
 })();
 </script>
 <script type="module" src="./js/i18n.js"></script>
+<script>
+(function(){
+  const allowed=['students','classes','groups','activities','award','market','purchases','reports','history','portal','account','messages'];
+  window.temmyNavigate=function(tab){
+    if(!allowed.includes(tab))return false;
+    allowed.forEach(function(name){
+      const section=document.getElementById(name);
+      if(section)section.classList.toggle('hidden',name!==tab);
+      const button=document.getElementById(name+'Tab');
+      if(button){button.classList.toggle('active',name===tab);button.setAttribute('aria-current',name===tab?'page':'false');}
+    });
+    try{
+      if(tab==='award'&&typeof window.syncAwardClass==='function')window.syncAwardClass();
+      if(tab==='groups'&&typeof window.renderGroups==='function')window.renderGroups();
+      if(tab==='activities'&&typeof window.loadCloudActivities==='function')window.loadCloudActivities();
+      if(tab==='reports'&&typeof window.renderReports==='function')window.renderReports();
+      if(tab==='history'&&typeof window.syncHistorySelectors==='function')window.syncHistorySelectors();
+      if(tab==='portal'&&typeof window.syncPortalSelectors==='function')window.syncPortalSelectors();
+      if(tab==='messages'){
+        if(typeof window.loadTeacherMessages==='function')window.loadTeacherMessages();
+        if(typeof window.startTeacherMessageAutoRefresh==='function')window.startTeacherMessageAutoRefresh();
+      }else if(typeof window.stopTeacherMessageAutoRefresh==='function')window.stopTeacherMessageAutoRefresh();
+    }catch(error){console.error('[Temmy navigation] Section initialization failed:',error);}
+    return true;
+  };
+})();
+</script>
 </body>
 </html>
