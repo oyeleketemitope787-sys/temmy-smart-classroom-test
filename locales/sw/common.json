@@ -65,7 +65,13 @@
     "silver": "Fedha",
     "gold": "Dhahabu",
     "champion": "Bingwa",
-    "points": "pointi"
+    "points": "pointi",
+    "classLabel": "Darasa",
+    "average": "Wastani",
+    "noStudentsYet": "Bado hakuna wanafunzi. Ongeza mwanafunzi wako wa kwanza.",
+    "generateAccessCode": "Tengeneza / tengeneza upya msimbo wa kuingia",
+    "editStudent": "Hariri mwanafunzi",
+    "deactivateStudent": "Zima mwanafunzi"
   },
   "groups": {
     "title": "Vikundi vya Wanafunzi",
