@@ -103,6 +103,40 @@ html[dir="rtl"] .menu{right:auto;left:0}
 .app-main button{cursor:pointer;touch-action:manipulation}
 @media(max-width:1050px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Students workspace — dedicated global dashboard layout */
+.students-page{display:flex;flex-direction:column;gap:16px}
+.workspace-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;border:1px solid #e4eaf2;border-radius:20px;background:radial-gradient(circle at 92% 10%,rgba(215,173,85,.16),transparent 30%),linear-gradient(120deg,#fff 0%,#f8faff 100%);box-shadow:var(--temmy-shadow)}
+.workspace-heading-copy{min-width:0}
+.workspace-eyebrow{display:inline-block;margin-bottom:8px;color:#9a762e;font-size:10px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}
+.workspace-heading h1{margin:0;color:#152e52;font-size:clamp(25px,2.4vw,34px);font-weight:780;letter-spacing:-.045em;line-height:1.15}
+.workspace-heading p{margin:8px 0 0;color:#72809a;font-size:13px}
+.workspace-heading-mark{display:grid;place-items:center;flex:0 0 58px;width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#173b69,#245792);color:#f0d28f;font-size:30px;box-shadow:0 8px 20px rgba(21,59,104,.18)}
+.workspace-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;border:1px solid #e6ebf3;border-radius:15px;background:#fff;box-shadow:0 5px 18px rgba(19,43,79,.045)}
+.toolbar-context{display:flex;align-items:center;gap:9px;color:#52637d;font-size:12px;font-weight:750;white-space:nowrap}
+.toolbar-dot{width:8px;height:8px;border-radius:50%;background:#d7ad55;box-shadow:0 0 0 4px rgba(215,173,85,.14)}
+.students-toolbar .controls{margin:0;align-items:center}
+.students-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,.9fr);gap:18px;align-items:start}
+.leaderboard-card{min-height:390px;margin:0}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.section-heading h2{margin:0 0 5px}
+.section-heading p{margin:0}
+.table-scroll{width:100%;overflow-x:auto}
+.table-scroll table{min-width:520px}
+.students-insights{display:grid;gap:16px;min-width:0}
+.students-insights .card{margin:0}
+.summary-card h2,.reward-card h2{margin-bottom:16px}
+.students-page .grid4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.students-page .grid4 .stat{min-height:100px;display:flex;flex-direction:column;justify-content:space-between}
+.students-page .grid4 .stat strong{font-size:clamp(23px,2vw,30px)}
+.reward-level{display:grid;grid-template-columns:28px minmax(70px,.7fr) minmax(90px,1fr);align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid #edf1f6;color:#52637d;font-size:13px}
+.reward-level:last-child{border-bottom:0;padding-bottom:0}
+.reward-level strong{color:#253b5c}
+.reward-medal{font-size:18px}
+.champion-level{margin:0 -4px;padding:12px 4px 0;border-top:1px solid #eadbb9;background:linear-gradient(90deg,rgba(255,249,235,.65),transparent)}
+@media(max-width:1050px){.students-layout{grid-template-columns:minmax(0,1.35fr) minmax(250px,.9fr)}}
+@media(max-width:760px){.workspace-heading{padding:19px;border-radius:16px}.workspace-heading-mark{width:46px;height:46px;flex-basis:46px;font-size:24px}.workspace-toolbar{align-items:stretch;flex-direction:column}.students-toolbar .controls{display:flex;flex-wrap:wrap}.students-toolbar .controls .select{flex:1 1 100%}.students-layout{grid-template-columns:1fr}.leaderboard-card{min-height:280px}.students-insights{grid-template-columns:1fr 1fr}.students-insights .card{min-width:0}}
+@media(max-width:520px){.students-insights{grid-template-columns:1fr}.reward-level{grid-template-columns:26px minmax(65px,.7fr) minmax(85px,1fr)}}
 </style>
 </head>
 <body>
@@ -126,21 +160,49 @@ html[dir="rtl"] .menu{right:auto;left:0}
   </div>
 </header>
 <div class="wrap">
-<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" onclick="window.temmyNavigate('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="window.temmyNavigate('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="window.temmyNavigate('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="window.temmyNavigate('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="window.temmyNavigate('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="window.temmyNavigate('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="window.temmyNavigate('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="window.temmyNavigate('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="window.temmyNavigate('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="window.temmyNavigate('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="window.temmyNavigate('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="window.temmyNavigate('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students">
+<div class="app-shell"><aside class="app-sidebar"><nav class="nav"><button id="studentsTab" class="active" onclick="window.temmyNavigate('students')">🧑‍🎓 <span data-i18n="navigation.students">Students</span></button><button id="classesTab" onclick="window.temmyNavigate('classes')">🏫 <span data-i18n="navigation.classes">My Classes</span></button><button id="groupsTab" onclick="window.temmyNavigate('groups')">👥 <span data-i18n="navigation.groups">Groups</span></button><button id="activitiesTab" onclick="window.temmyNavigate('activities')">📚 <span data-i18n="navigation.activities">Activities</span></button><button id="awardTab" onclick="window.temmyNavigate('award')">⭐ <span data-i18n="navigation.awardPoints">Award Points</span></button><button id="marketTab" onclick="window.temmyNavigate('market')">🛒 <span data-i18n="navigation.marketplace">Marketplace</span></button><button id="purchasesTab" onclick="window.temmyNavigate('purchases')">📜 <span data-i18n="navigation.purchases">Purchases</span></button><button id="reportsTab" onclick="window.temmyNavigate('reports')">📊 <span data-i18n="navigation.reports">Reports</span></button><button id="historyTab" onclick="window.temmyNavigate('history')">👤 <span data-i18n="navigation.studentHistory">Student History</span></button><button id="portalTab" onclick="window.temmyNavigate('portal')">🎓 <span data-i18n="navigation.studentPortal">Student Portal</span></button><button id="accountTab" onclick="window.temmyNavigate('account')">👨‍🏫 <span data-i18n="navigation.teacherAccount">Teacher Account</span></button><button id="messagesTab" onclick="window.temmyNavigate('messages')">💬 <span data-i18n="navigation.messages">Messages</span></button></nav></aside><main class="app-main"><section id="students" class="workspace-page students-page">
 <div id="cloudStatus" class="notice" style="display:none"></div>
-<div class="controls">
-<select id="classSelect" class="select"></select>
-<button class="btn primary" onclick="openAddStudent()">➕ <span data-i18n="students.addStudent">Add Student</span></button>
-<button class="btn" onclick="showTab('award')">⭐ <span data-i18n="students.awardPoints">Award Points</span></button>
-<button class="btn" onclick="exportData()">⬇️ <span data-i18n="students.exportData">Export Data</span></button>
+<div class="workspace-heading students-heading">
+  <div class="workspace-heading-copy">
+    <span class="workspace-eyebrow" data-i18n="navigation.students">Students</span>
+    <h1 id="classTitle">Class</h1>
+    <p data-i18n="students.leaderboard">Student leaderboard</p>
+  </div>
+  <div class="workspace-heading-mark" aria-hidden="true">✦</div>
 </div>
-<div class="grid2">
-<div class="card"><div class="summary-title"><div><h2 id="classTitle">Class</h2><div class="small" data-i18n="students.leaderboard">Student leaderboard</div></div><button class="btn" onclick="showTab('award')"><span data-i18n="students.awardPointsLink">Award points</span> →</button></div>
-<table><thead><tr><th data-i18n="students.rank">Rank</th><th data-i18n="students.student">Student</th><th data-i18n="students.points">Points</th><th data-i18n="students.status">Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
-<div>
-<div class="card"><h2>🏆 <span data-i18n="students.classSummary">Class Summary</span></h2><div class="grid4"><div class="stat"><small data-i18n="students.classAggregatePoints">Class Aggregate Points</small><strong id="classPoints">0</strong></div><div class="stat"><small data-i18n="students.classSpendablePoints">Spendable Points</small><strong id="classSpendablePoints">0</strong></div><div class="stat"><small data-i18n="students.studentsCount">Students</small><strong id="studentCount">0</strong></div><div class="stat"><small data-i18n="students.average">Average</small><strong id="classAverage">0</strong></div></div></div>
-<div class="card"><h2>🎯 <span data-i18n="students.rewardLevelProgress">Reward Level Progress</span></h2><p>🥉 <strong data-i18n="students.bronze">Bronze</strong> — 50+ <span data-i18n="students.points">points</span></p><p>🥈 <strong data-i18n="students.silver">Silver</strong> — 100+ <span data-i18n="students.points">points</span></p><p>🥇 <strong data-i18n="students.gold">Gold</strong> — 150+ <span data-i18n="students.points">points</span></p><p>🏆 <strong data-i18n="students.champion">Champion</strong> — 500+ <span data-i18n="students.points">points</span></p></div>
-</div></div></section>
+<div class="workspace-toolbar students-toolbar">
+  <div class="toolbar-context"><span class="toolbar-dot"></span><span data-i18n="students.classSummary">Class Summary</span></div>
+  <div class="controls">
+    <select id="classSelect" class="select" aria-label="Select class"></select>
+    <button class="btn primary" onclick="openAddStudent()">➕ <span data-i18n="students.addStudent">Add Student</span></button>
+    <button class="btn" onclick="showTab('award')">⭐ <span data-i18n="students.awardPoints">Award Points</span></button>
+    <button class="btn" onclick="exportData()">⬇️ <span data-i18n="students.exportData">Export Data</span></button>
+  </div>
+</div>
+<div class="students-layout">
+  <div class="card leaderboard-card">
+    <div class="section-heading">
+      <div><h2 data-i18n="students.leaderboard">Student leaderboard</h2><p class="small" data-i18n="students.classSummary">Class Summary</p></div>
+      <button class="btn" onclick="showTab('award')"><span data-i18n="students.awardPointsLink">Award points</span> →</button>
+    </div>
+    <div class="table-scroll"><table><thead><tr><th data-i18n="students.rank">Rank</th><th data-i18n="students.student">Student</th><th data-i18n="students.points">Points</th><th data-i18n="students.status">Status</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+  </div>
+  <aside class="students-insights">
+    <div class="card summary-card"><h2>🏆 <span data-i18n="students.classSummary">Class Summary</span></h2><div class="grid4">
+      <div class="stat"><small data-i18n="students.classAggregatePoints">Class Aggregate Points</small><strong id="classPoints">0</strong></div>
+      <div class="stat"><small data-i18n="students.classSpendablePoints">Spendable Points</small><strong id="classSpendablePoints">0</strong></div>
+      <div class="stat"><small data-i18n="students.studentsCount">Students</small><strong id="studentCount">0</strong></div>
+      <div class="stat"><small data-i18n="students.average">Average</small><strong id="classAverage">0</strong></div>
+    </div></div>
+    <div class="card reward-card"><h2>🎯 <span data-i18n="students.rewardLevelProgress">Reward Level Progress</span></h2>
+      <div class="reward-level"><span class="reward-medal">🥉</span><strong data-i18n="students.bronze">Bronze</strong><span>50+ <span data-i18n="students.points">points</span></span></div>
+      <div class="reward-level"><span class="reward-medal">🥈</span><strong data-i18n="students.silver">Silver</strong><span>100+ <span data-i18n="students.points">points</span></span></div>
+      <div class="reward-level"><span class="reward-medal">🥇</span><strong data-i18n="students.gold">Gold</strong><span>150+ <span data-i18n="students.points">points</span></span></div>
+      <div class="reward-level champion-level"><span class="reward-medal">🏆</span><strong data-i18n="students.champion">Champion</strong><span>500+ <span data-i18n="students.points">points</span></span></div>
+    </div>
+  </aside>
+</div>
+</section>
 
 
 <section id="groups" class="hidden">
