@@ -361,6 +361,7 @@
     "activityError": "No se pudieron cargar las actividades.",
     "cloudClassUnavailable": "La clase seleccionada ya no está disponible. Actualiza tus clases e inténtalo de nuevo.",
     "sessionChanged": "Tu sesión de docente cambió. Inicia sesión de nuevo para continuar.",
-    "noResponse": "No hay texto de respuesta guardado."
+    "noResponse": "No hay texto de respuesta guardado.",
+    "liveTaskType": "Tarea en vivo"
   }
 }
